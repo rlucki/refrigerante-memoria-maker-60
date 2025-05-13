@@ -21,12 +21,13 @@ const Index = () => {
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow-sm py-4 px-6 md:px-10 border-b">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="flex items-center">
+          <div className="flex items-center gap-4">
             <img 
-              src="/lovable-uploads/767f70e2-8522-4f58-aa42-2dd4244eed17.png" 
+              src="/lovable-uploads/0849350b-e654-4690-a2e5-da51a316f627.png" 
               alt="COLDsulting Logo" 
               className="h-16" 
             />
+            <h1 className="text-2xl font-bold text-gray-800">LEGALIZATOR</h1>
           </div>
           <div className="flex gap-3">
             <Link to="/plantilla">
