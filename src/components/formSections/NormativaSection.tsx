@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -98,20 +97,43 @@ const NormativaSection = () => {
     { id: "nueva", nombre: "Nueva", rsif: "RD 552/2019" },
   ];
   
-  // Update RSIF when the installation period or new installation status changes
+  // Update installation period when the installation status changes
   useEffect(() => {
-    // If it's a new installation, always use the latest RSIF
     if (instalacionNueva === "SI") {
-      setRsifAplicable("RD 552/2019");
+      // If it's a new installation, force the period to "nueva"
       setPeriodoInstalacionSeleccionado("nueva");
+      setRsifAplicable("RD 552/2019");
     } else {
-      // Otherwise, set the RSIF based on the selected period
-      const periodo = periodoInstalacion.find(p => p.id === periodoInstalacionSeleccionado);
-      if (periodo) {
-        setRsifAplicable(periodo.rsif);
+      // If it's not a new installation, select the first non-nueva option if "nueva" is currently selected
+      if (periodoInstalacionSeleccionado === "nueva") {
+        setPeriodoInstalacionSeleccionado("desde_2020");
+        setRsifAplicable("RD 552/2019");
+      } else {
+        // Otherwise set RSIF based on the current period
+        const periodo = periodoInstalacion.find(p => p.id === periodoInstalacionSeleccionado);
+        if (periodo) {
+          setRsifAplicable(periodo.rsif);
+        }
       }
     }
-  }, [instalacionNueva, periodoInstalacionSeleccionado]);
+  }, [instalacionNueva]);
+  
+  // Update RSIF when the installation period changes
+  useEffect(() => {
+    const periodo = periodoInstalacion.find(p => p.id === periodoInstalacionSeleccionado);
+    if (periodo) {
+      setRsifAplicable(periodo.rsif);
+    }
+  }, [periodoInstalacionSeleccionado]);
+  
+  // Handle installation nueva change
+  const handleInstalacionNuevaChange = (value: string) => {
+    setInstalacionNueva(value);
+    // If changing to NO and current period is nueva, change it
+    if (value === "NO" && periodoInstalacionSeleccionado === "nueva") {
+      setPeriodoInstalacionSeleccionado("desde_2020");
+    }
+  };
   
   const getNormativaAutonomica = () => {
     const comunidad = comunidadesAutonomas.find(c => c.id === comunidadAutonoma);
@@ -276,7 +298,7 @@ const NormativaSection = () => {
             <Label htmlFor="instalacion_nueva_select">Instalación nueva</Label>
             <Select 
               value={instalacionNueva} 
-              onValueChange={setInstalacionNueva}
+              onValueChange={handleInstalacionNuevaChange}
               id="instalacion_nueva_select"
             >
               <SelectTrigger>
@@ -301,11 +323,14 @@ const NormativaSection = () => {
                 <SelectValue placeholder="Seleccionar" />
               </SelectTrigger>
               <SelectContent>
-                {periodoInstalacion.map(periodo => (
-                  <SelectItem key={periodo.id} value={periodo.id}>
-                    {periodo.nombre}
-                  </SelectItem>
-                ))}
+                {periodoInstalacion
+                  .filter(periodo => instalacionNueva === "SI" ? periodo.id === "nueva" : periodo.id !== "nueva")
+                  .map(periodo => (
+                    <SelectItem key={periodo.id} value={periodo.id}>
+                      {periodo.nombre}
+                    </SelectItem>
+                  ))
+                }
               </SelectContent>
             </Select>
           </div>
@@ -427,7 +452,7 @@ const NormativaSection = () => {
           type="hidden" 
           id="normativa_completa" 
           name="normativa_completa" 
-          value={getNormativaJSON()} 
+          value={JSON.stringify(getAplicableRegulations(), null, 2)} 
         />
       </div>
     </Card>
