@@ -8,11 +8,12 @@ import DatosInstaladorSection from "./formSections/DatosInstaladorSection";
 import DatosInstalacionSection from "./formSections/DatosInstalacionSection";
 import DatosTecnicosSection from "./formSections/DatosTecnicosSection";
 import NormativaSection from "./formSections/NormativaSection";
+import ClasificacionSection from "./formSections/ClasificacionSection";
 import { FileUpload } from "./FileUpload";
 
 interface MemoriaTecnicaFormProps {
   onSubmit: () => void;
-  onChange?: (field: string, value: string) => void;
+  onChange?: (field: string, value: any) => void;
   onLogoUpload?: (file: File) => void;
 }
 
@@ -26,9 +27,20 @@ const MemoriaTecnicaForm = ({ onSubmit, onChange, onLogoUpload }: MemoriaTecnica
   };
 
   // Modificamos esta función para manejar cualquier tipo de evento de cambio
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement> | { id: string, value: string }) => {
     if (onChange) {
-      onChange(e.target.id, e.target.value);
+      if ('target' in e) {
+        onChange(e.target.id, e.target.value);
+      } else {
+        onChange(e.id, e.value);
+      }
+    }
+  };
+  
+  // Función para manejar cambios en objetos complejos como la normativa
+  const handleComplexChange = (field: string, value: any) => {
+    if (onChange) {
+      onChange(field, value);
     }
   };
   
@@ -54,11 +66,12 @@ const MemoriaTecnicaForm = ({ onSubmit, onChange, onLogoUpload }: MemoriaTecnica
       </Card>
       
       <Tabs defaultValue="titular" value={activeTab} onValueChange={setActiveTab} className="mb-6">
-        <TabsList className="grid grid-cols-5 w-full">
+        <TabsList className="grid grid-cols-6 w-full">
           <TabsTrigger value="titular">Datos Titular</TabsTrigger>
           <TabsTrigger value="instalador">Datos Instalador</TabsTrigger>
           <TabsTrigger value="instalacion">Datos Instalación</TabsTrigger>
           <TabsTrigger value="tecnicos">Datos Técnicos</TabsTrigger>
+          <TabsTrigger value="clasificacion">Clasificación</TabsTrigger>
           <TabsTrigger value="normativa">Normativa</TabsTrigger>
         </TabsList>
         
@@ -78,8 +91,12 @@ const MemoriaTecnicaForm = ({ onSubmit, onChange, onLogoUpload }: MemoriaTecnica
           <DatosTecnicosSection />
         </TabsContent>
         
+        <TabsContent value="clasificacion" className="mt-6">
+          <ClasificacionSection onChange={handleInputChange} />
+        </TabsContent>
+        
         <TabsContent value="normativa" className="mt-6">
-          <NormativaSection />
+          <NormativaSection onChange={handleComplexChange} />
         </TabsContent>
       </Tabs>
       
@@ -93,7 +110,8 @@ const MemoriaTecnicaForm = ({ onSubmit, onChange, onLogoUpload }: MemoriaTecnica
               "instalador": "titular",
               "instalacion": "instalador",
               "tecnicos": "instalacion",
-              "normativa": "tecnicos"
+              "clasificacion": "tecnicos",
+              "normativa": "clasificacion"
             }[activeTab];
             setActiveTab(prevTab);
           }}
@@ -110,7 +128,8 @@ const MemoriaTecnicaForm = ({ onSubmit, onChange, onLogoUpload }: MemoriaTecnica
                 "titular": "instalador",
                 "instalador": "instalacion",
                 "instalacion": "tecnicos",
-                "tecnicos": "normativa",
+                "tecnicos": "clasificacion",
+                "clasificacion": "normativa",
                 "normativa": "normativa"
               }[activeTab];
               setActiveTab(nextTab);

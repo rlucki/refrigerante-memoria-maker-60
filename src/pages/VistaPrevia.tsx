@@ -21,7 +21,30 @@ const VistaPrevia = () => {
     poblacionInstalacion: "PUERTO DE LA CRUZ",
     cpInstalacion: "35610",
     provinciaInstalacion: "SANTA CRUZ DE TENERIFE",
-    titulo: "MEMORIA TÉCNICA DESCRIPTIVA"
+    titulo: "MEMORIA TÉCNICA DESCRIPTIVA",
+    
+    // Datos de clasificación
+    metodoEnfriamiento: "Sistema indirecto",
+    seguridadSistema: "Tipo 1",
+    categoriaLocal: "Categoría A",
+    refrigerante: "R-434A",
+    composicionRefrigerante: "(63,2% R-125 / 18% R-143a / 16% R-134a / 2,8% R-600a)",
+    inflamabilidad: "Grupo 1",
+    toxicidad: "Grupo A",
+    grupoSeguridad: "A1",
+    directivaEquipos: "2",
+    pca: "3245",
+    agotamientoOzono: "0",
+    limitePractico: "0.32 kg/m3",
+    atelOdl: "0.32 kg/m3",
+    limiteInflamabilidad: "NF",
+    temperaturaAutoignicion: "ND",
+    gasFluorado: "SI",
+    nivelInstalacion: "Nivel 1",
+    documentoNecesario: "Memoria",
+    
+    // Datos de normativa
+    normativaCompleta: null
   });
   
   const [clienteLogo, setClienteLogo] = useState("");
@@ -52,7 +75,8 @@ const VistaPrevia = () => {
     };
   }, []);
 
-  const handleFormChange = (field: string, value: string) => {
+  const handleFormChange = (field: string, value: any) => {
+    console.log(`Field changed: ${field}`, value);
     setMemoriaData(prev => ({ ...prev, [field]: value }));
   };
   

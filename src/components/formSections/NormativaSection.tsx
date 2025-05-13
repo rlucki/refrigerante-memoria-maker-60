@@ -59,13 +59,18 @@ const normativaSeguridadSalud = {
   "RD 1627/1997": `Real Decreto 1627/1997, de 24 de octubre, por el que se establecen disposiciones mínimas de seguridad y salud en las obras de construcción. Transpone la Directiva Europea 92/57/CEE, de 24 de junio. El RD 2177/2004, de 12 de noviembre, modifica el anexo IV. El RD 604/2006, de 19 de mayo, incorpora una disposición adicional única. El RD 1109/2007, de 24 de agosto, modifica los artículos 13.4 y 18.2. Finalmente, el RD 337/2010, de 19 de marzo, deroga el artículo 18 y modifica el 19.1.`
 };
 
-const NormativaSection = () => {
+interface NormativaSectionProps {
+  onChange?: (field: string, value: any) => void;
+}
+
+const NormativaSection = ({ onChange }: NormativaSectionProps) => {
   const [comunidadAutonoma, setComunidadAutonoma] = useState("CATALUNYA");
   const [instalacionNueva, setInstalacionNueva] = useState("SI");
   const [periodoInstalacionSeleccionado, setPeriodoInstalacionSeleccionado] = useState("nueva");
   const [aplicaLegionela, setAplicaLegionela] = useState("SI");
   const [aplicaGasesFluorados, setAplicaGasesFluorados] = useState("NO");
   const [rsifAplicable, setRsifAplicable] = useState("RD 552/2019");
+  const [normativaCompleta, setNormativaCompleta] = useState({});
   
   const comunidadesAutonomas = [
     { id: "ANDALUCIA", nombre: "ANDALUCÍA", normativa: "Decreto-Ley 4/2023", aplicaSiempre: true },
@@ -246,15 +251,101 @@ const NormativaSection = () => {
     return regulations;
   };
   
-  // Function to convert all applicable regulations to a JSON string for debugging or saving
-  const getNormativaJSON = () => {
-    return JSON.stringify(getAplicableRegulations(), null, 2);
+  // Update normativa when any input changes
+  useEffect(() => {
+    const regulations = getAplicableRegulations();
+    setNormativaCompleta(regulations);
+    
+    // Notify parent component about normativa changes
+    if (onChange) {
+      onChange('normativaCompleta', regulations);
+    }
+  }, [comunidadAutonoma, instalacionNueva, periodoInstalacionSeleccionado, aplicaLegionela, aplicaGasesFluorados]);
+  
+  // Render a normativa section with its regulations
+  const renderNormativaSection = (title: string, regulations: any[]) => {
+    if (regulations.length === 0) return null;
+    
+    return (
+      <div className="space-y-2 mt-4">
+        <Label className="font-semibold">{title}</Label>
+        {regulations.map((reg, index) => (
+          <p key={index} className="text-sm text-gray-500">{reg.name} - {reg.description}</p>
+        ))}
+      </div>
+    );
   };
   
-  // For debugging - log the regulations when selections change
-  useEffect(() => {
-    console.log("Normativa aplicable:", getAplicableRegulations());
-  }, [comunidadAutonoma, instalacionNueva, periodoInstalacionSeleccionado, aplicaLegionela, aplicaGasesFluorados]);
+  // Render normativa preview based on current selections
+  const renderNormativaPreview = () => {
+    const regulations = getAplicableRegulations();
+    
+    return (
+      <div className="mt-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="space-y-6">
+            {renderNormativaSection(regulations.reglamentoRSIF.title, regulations.reglamentoRSIF.regulations)}
+            
+            {renderNormativaSection(regulations.reglamentoAutonomico.title, regulations.reglamentoAutonomico.regulations)}
+            
+            {renderNormativaSection(regulations.normativasSiempreAplican.title, regulations.normativasSiempreAplican.regulations)}
+            
+            <div className="space-y-2">
+              <Label className="font-semibold">NORMATIVA GASES FLUORADOS</Label>
+              <Select 
+                value={aplicaGasesFluorados} 
+                onValueChange={setAplicaGasesFluorados}
+                id="gases_fluorados_select"
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Seleccionar" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="SI">SI</SelectItem>
+                  <SelectItem value="NO">NO</SelectItem>
+                </SelectContent>
+              </Select>
+              {aplicaGasesFluorados === "NO" && (
+                <p className="text-sm text-gray-500 mt-2">No aplica</p>
+              )}
+              {aplicaGasesFluorados === "SI" && (
+                renderNormativaSection("", regulations.gasesFluorados.regulations)
+              )}
+            </div>
+          </div>
+          
+          <div className="space-y-6">
+            {renderNormativaSection(regulations.edificacion.title, regulations.edificacion.regulations)}
+            
+            <div className="space-y-2">
+              <Label className="font-semibold">NORMATIVA LEGIONELOSIS</Label>
+              <Select 
+                value={aplicaLegionela} 
+                onValueChange={setAplicaLegionela}
+                id="legionela_select"
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Seleccionar" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="SI">SI</SelectItem>
+                  <SelectItem value="NO">NO</SelectItem>
+                </SelectContent>
+              </Select>
+              {aplicaLegionela === "SI" && (
+                renderNormativaSection("", regulations.legionela.regulations)
+              )}
+              {aplicaLegionela === "NO" && (
+                <p className="text-sm text-gray-500 mt-2">No aplica</p>
+              )}
+            </div>
+            
+            {renderNormativaSection(regulations.seguridadSalud.title, regulations.seguridadSalud.regulations)}
+          </div>
+        </div>
+      </div>
+    );
+  };
   
   return (
     <Card>
@@ -346,119 +437,15 @@ const NormativaSection = () => {
           </div>
         </div>
         
-        <div className="mt-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="space-y-6">
-              <div className="flex items-center space-x-2">
-                <Checkbox id="siempre_aplica" checked={true} />
-                <label
-                  htmlFor="siempre_aplica"
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  Siempre aplica
-                </label>
-              </div>
-              
-              <div className="space-y-2">
-                <Label className="font-semibold">REGLAMENTOS DE INSTALACIONES FRIGORÍFICAS</Label>
-                <p className="text-sm text-gray-500">RD 552/2019 - Real Decreto 552/2019, de 27 de septiembre, por el que se aprueban el Reglamento de seguridad para instalaciones frigoríficas y sus instrucciones técnicas complementarias. Es el Reglamento que se encuentra en vigor desde el 2 de enero de 2020.</p>
-              </div>
-              
-              <div className="space-y-2">
-                <Label className="font-semibold">NORMATIVA AUTONÓMICA</Label>
-                <p className="text-sm text-gray-500">Decret 192/2023, de 7 de noviembre, de la Seguretat Industrial dels Establiments, les Instal·lacions i els Productes, publicada en el Diari Oficial de la Generalitat de Catalunya (DOGC) n.º 9037 el 9 de noviembre de 2023.</p>
-              </div>
-              
-              <div className="space-y-2">
-                <Label className="font-semibold">NORMATIVA QUE SIEMPRE APLICA</Label>
-                <p className="text-sm text-gray-500">RD 709/2015 - Real Decreto 709/2015, de 24 de julio, por el que se dictan las disposiciones de aplicación de la Directiva del Parlamento Europeo y del Consejo, 2014/68/UE.</p>
-                <p className="text-sm text-gray-500">RD 842/2002 - Real Decreto 842/2002, de 2 de agosto, por el que se aprueba el Reglamento Electrotécnico para Baja Tensión y sus instrucciones técnicas complementarias.</p>
-              </div>
-              
-              <div className="space-y-2">
-                <Label className="font-semibold">Gases fluorados</Label>
-                <Select 
-                  value={aplicaGasesFluorados} 
-                  onValueChange={setAplicaGasesFluorados}
-                  id="gases_fluorados_select"
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Seleccionar" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="SI">SI</SelectItem>
-                    <SelectItem value="NO">NO</SelectItem>
-                  </SelectContent>
-                </Select>
-                {aplicaGasesFluorados === "NO" && (
-                  <p className="text-sm text-gray-500 mt-2">No aplica</p>
-                )}
-                {aplicaGasesFluorados === "SI" && (
-                  <div className="space-y-2 mt-2">
-                    <p className="text-sm text-gray-500">Reglamento (UE) 2024/573</p>
-                    <p className="text-sm text-gray-500">Reglamento de ejecución (UE) 2024/2174</p>
-                    <p className="text-sm text-gray-500">Reglamento (UE) 2024/590</p>
-                    <p className="text-sm text-gray-500">Reglamento (CE) 1516/2007</p>
-                    <p className="text-sm text-gray-500">RD 115/2017</p>
-                  </div>
-                )}
-              </div>
-            </div>
-            
-            <div className="space-y-6">
-              <div className="space-y-2">
-                <Label className="font-semibold">NORMATIVA EDIFICACIÓN</Label>
-                <div className="space-y-2">
-                  <p className="text-sm text-gray-500">RD 314/2006</p>
-                  <p className="text-sm text-gray-500">RD1371/2007</p>
-                  <p className="text-sm text-gray-500">RD732/2019</p>
-                </div>
-              </div>
-              
-              <div className="space-y-2">
-                <Label className="font-semibold">NORMATIVA LEGIONELOSIS</Label>
-                <Select 
-                  value={aplicaLegionela} 
-                  onValueChange={setAplicaLegionela}
-                  id="legionela_select"
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Seleccionar" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="SI">SI</SelectItem>
-                    <SelectItem value="NO">NO</SelectItem>
-                  </SelectContent>
-                </Select>
-                {aplicaLegionela === "SI" && (
-                  <div className="space-y-2 mt-2">
-                    <p className="text-sm text-gray-500">RD 487/2022</p>
-                    <p className="text-sm text-gray-500">RD 614/2024</p>
-                  </div>
-                )}
-                {aplicaLegionela === "NO" && (
-                  <p className="text-sm text-gray-500 mt-2">No aplica</p>
-                )}
-              </div>
-              
-              <div className="space-y-2">
-                <Label className="font-semibold">NORMATIVA SEGURIDAD Y SALUD</Label>
-                <div className="space-y-2">
-                  <p className="text-sm text-gray-500">Ley 31/1995</p>
-                  <p className="text-sm text-gray-500">RD 485/1997</p>
-                  <p className="text-sm text-gray-500">RD 1627/1997</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* Dynamic preview of the normativa */}
+        {renderNormativaPreview()}
 
-        {/* Hidden input to store the full regulation data for form submission - optional */}
+        {/* Hidden input to store the full regulation data for form submission */}
         <input 
           type="hidden" 
           id="normativa_completa" 
           name="normativa_completa" 
-          value={JSON.stringify(getAplicableRegulations(), null, 2)} 
+          value={JSON.stringify(getAplicableRegulations())} 
         />
       </div>
     </Card>

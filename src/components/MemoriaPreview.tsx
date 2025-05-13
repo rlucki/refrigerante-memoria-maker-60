@@ -1,5 +1,6 @@
 import React from "react";
 import { Card } from "@/components/ui/card";
+import MemoriaPreviewNormativa from "./MemoriaPreviewNormativa";
 
 interface MemoriaPreviewProps {
   data: {
@@ -36,6 +37,9 @@ interface MemoriaPreviewProps {
     gasFluorado?: string;
     nivelInstalacion?: string;
     documentoNecesario?: string;
+    
+    // Datos de normativa
+    normativaCompleta?: any;
   };
   currentPage?: number;
 }
@@ -490,101 +494,133 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
           </div>
         </div>
 
-        {/* Cuarta página - Sección 8: NORMATIVA DE APLICACIÓN */}
+        {/* Cuarta página - NORMATIVA DE APLICACIÓN */}
+        <MemoriaPreviewNormativa 
+          data={data}
+          pageNumber={currentPage + 3}
+          companyLogo={companyLogo}
+          clienteLogo={data.clienteLogo}
+        />
+        
+        {/* Quinta página - Sección 9: CLASIFICACIÓN DE LA INSTALACIÓN */}
         <div className="mb-12 max-w-[595px] mx-auto bg-white shadow-sm border min-h-[842px] relative p-10">
           {/* Content container with padding at bottom to prevent overlap with footer */}
           <div className="pb-32">
-            {/* Sección 8 - NORMATIVA DE APLICACIÓN */}
+            {/* Sección 9 - CLASIFICACIÓN DE LA INSTALACIÓN */}
             <div className="mb-6">
-              <h3 className="text-lg font-bold">8. NORMATIVA DE APLICACIÓN</h3>
-              <p className="text-sm mt-3 mb-4">
-                Para la elaboración de este documento y para la ejecución de la instalación, se deberán tener en cuenta, 
-                entre otras, las siguientes disposiciones:
-              </p>
-
-              <div className="space-y-4 text-sm">
-                <div>
-                  <h4 className="font-semibold">REGLAMENTOS DE INSTALACIONES FRIGORÍFICAS</h4>
+              <h3 className="text-lg font-bold">9. CLASIFICACIÓN DE LA INSTALACIÓN</h3>
+              
+              {/* Sección 9.1 - CLASIFICACIÓN DEL SISTEMA */}
+              <div className="mt-4 mb-6">
+                <h4 className="text-base font-bold">9.1. CLASIFICACIÓN DEL SISTEMA</h4>
+                <p className="text-sm mt-2">
+                  Según lo especificado en el Artículo 6 del Capítulo II del Reglamento de Seguridad de Instalaciones 
+                  Frigoríficas (RSIF), existen dos grupos de clasificación:
+                </p>
+                
+                <div className="mt-3 text-sm">
+                  <p className="font-medium">1.- Atendiendo al método de extracción de calor (enfriamiento) o cesión de calor (calentamiento) a la atmósfera o al medio a tratar:</p>
                   <ul className="list-disc pl-6 mt-2 space-y-2">
                     <li>
-                      <p className="font-medium">Real Decreto 552/2019, de 27 de septiembre</p>
-                      <p>Por el que se aprueban el Reglamento de seguridad para instalaciones frigoríficas y sus instrucciones técnicas complementarias. Es el Reglamento que se encuentra en vigor desde el 2 de enero de 2020.</p>
+                      <span className="font-medium">Sistemas directos:</span> cuando el evaporador o el condensador del sistema 
+                      de refrigeración está en contacto directo con el medio que se enfría o calienta.
+                    </li>
+                    <li>
+                      <span className="font-medium">Sistemas indirectos:</span> cuando el evaporador o el condensador del sistema 
+                      de refrigeración, situado fuera del local en donde se extrae o cede calor al medio a tratar, enfría o 
+                      calienta un fluido secundario que se hace circular por unos intercambiadores para enfriar o calentar el medio citado.
                     </li>
                   </ul>
                 </div>
-
-                <div>
-                  <h4 className="font-semibold">NORMATIVA AUTONÓMICA</h4>
+                
+                <div className="mt-4 text-sm">
+                  <p className="font-medium">2.- Atendiendo a criterios de seguridad, los sistemas de refrigeración se clasifican en los siguientes tipos, según cuál sea su emplazamiento:</p>
                   <ul className="list-disc pl-6 mt-2 space-y-2">
                     <li>
-                      <p className="font-medium">Decret 192/2023, de 7 de noviembre</p>
-                      <p>De la Seguretat Industrial dels Establiments, les Instal·lacions i els Productes, publicada en el Diari Oficial de la Generalitat de Catalunya (DOGC) n.º 9037 el 9 de noviembre de 2023. Este Decret deroga, entre otras, las Instruccions 1/2015, 2/2015 y 1/2019.</p>
+                      <span className="font-medium">Tipo 1:</span> Sistema de refrigeración con todas las partes que contengan 
+                      refrigerante situadas en un espacio ocupado por personas.
+                    </li>
+                    <li>
+                      <span className="font-medium">Tipo 2:</span> Sistema de refrigeración con los compresores, recipientes y 
+                      condensadores situados en una sala de máquinas no ocupada por personas o al aire libre. Los enfriadores, 
+                      las tuberías y las válvulas pueden estar situados en espacios ocupados por personas.
+                    </li>
+                    <li>
+                      <span className="font-medium">Tipo 3:</span> Sistema de refrigeración con todas las partes que contienen 
+                      refrigerante situado en una sala de máquinas no ocupada por personas o al aire libre.
+                    </li>
+                    <li>
+                      <span className="font-medium">Tipo 4:</span> Sistema de refrigeración en el que todas las partes que contienen 
+                      refrigerante están situadas en el interior de una envolvente ventilada.
                     </li>
                   </ul>
                 </div>
-
-                <div>
-                  <h4 className="font-semibold">NORMATIVA QUE SIEMPRE APLICA</h4>
+                
+                <div className="mt-6 text-sm border-t pt-4">
+                  <p className="font-medium">En esta instalación, la clasificación en función de los dos grupos es:</p>
+                  <div className="mt-2 grid grid-cols-2 gap-2">
+                    <div>
+                      <p className="font-medium">Atendiendo al método de enfriamiento:</p>
+                    </div>
+                    <div>
+                      <p>{data.metodoEnfriamiento || "Sistema directo"}</p>
+                    </div>
+                    <div>
+                      <p className="font-medium">Atendiendo a los criterios de seguridad del sistema:</p>
+                    </div>
+                    <div>
+                      <p>{data.seguridadSistema || "Tipo 2"}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Sección 9.2 - CLASIFICACIÓN DEL LOCAL */}
+              <div className="mt-4 mb-6">
+                <h4 className="text-base font-bold">9.2. CLASIFICACIÓN DEL LOCAL</h4>
+                <p className="text-sm mt-2">
+                  Los locales están clasificados según el acceso público y la seguridad de las personas, según lo establecido en la IF-01 del R.S.I.F.
+                </p>
+                
+                <div className="mt-3 text-sm">
+                  <p className="font-medium">Categorías:</p>
                   <ul className="list-disc pl-6 mt-2 space-y-2">
                     <li>
-                      <p className="font-medium">Real Decreto 709/2015, de 24 de julio</p>
-                      <p>Por el que se dictan las disposiciones de aplicación de la Directiva del Parlamento Europeo y del Consejo, 2014/68/UE, relativa a la armonización de las legislaciones de los Estados miembros sobre la comercialización de equipos a presión, y que deroga la Directiva 97/23/CE.</p>
+                      <span className="font-medium">Categoría A:</span> Locales, no abiertos habitualmente al público donde:
+                      <ul className="list-[circle] pl-6 mt-1 space-y-1">
+                        <li>Sólo tienen acceso personas autorizadas que conocen las medidas de seguridad generales del establecimiento.</li>
+                        <li>Se fabrican, procesan o almacenan productos.</li>
+                      </ul>
                     </li>
                     <li>
-                      <p className="font-medium">Real Decreto 842/2002, de 2 de agosto</p>
-                      <p>Por el que se aprueba el Reglamento Electrotécnico para Baja Tensión y sus instrucciones técnicas complementarias.</p>
+                      <span className="font-medium">Categoría B:</span> Locales, zonas o edificios abiertos al público, donde:
+                      <ul className="list-[circle] pl-6 mt-1 space-y-1">
+                        <li>Se permite que las personas pernocten.</li>
+                        <li>Los movimientos son restringidos.</li>
+                      </ul>
+                    </li>
+                    <li>
+                      <span className="font-medium">Categoría C:</span> Locales, zonas o edificios abiertos al público, donde:
+                      <ul className="list-[circle] pl-6 mt-1 space-y-1">
+                        <li>Se permite que las personas permanezcan.</li>
+                        <li>Un número significativo de personas tienen libertad de movimiento.</li>
+                      </ul>
+                    </li>
+                    <li>
+                      <span className="font-medium">Categoría D:</span> Locales, zonas o edificios abiertos al público, donde:
+                      <ul className="list-[circle] pl-6 mt-1 space-y-1">
+                        <li>Se permite que las personas accedan con libertad de movimiento.</li>
+                        <li>Las personas no pueden evacuar por sí mismas sin ayuda.</li>
+                      </ul>
                     </li>
                   </ul>
                 </div>
-
-                <div>
-                  <h4 className="font-semibold">NORMATIVA EDIFICACIÓN</h4>
-                  <ul className="list-disc pl-6 mt-2 space-y-2">
-                    <li>
-                      <p className="font-medium">Real Decreto 314/2006, de 17 de marzo</p>
-                      <p>Por el que se aprueba el Código Técnico de la Edificación y modificaciones posteriores.</p>
-                    </li>
-                    <li>
-                      <p className="font-medium">Real Decreto 1371/2007, de 19 de octubre</p>
-                      <p>Por el que se aprueba el documento básico "DB-HR Protección frente al ruido" del Código Técnico de la Edificación y se modifica el RD 314/2006.</p>
-                    </li>
-                    <li>
-                      <p className="font-medium">Real Decreto 732/2019, de 20 de diciembre</p>
-                      <p>Por el que se modifica el Código Técnico de la Edificación, aprobado por el RD 314/2006.</p>
-                    </li>
-                  </ul>
-                </div>
-
-                <div>
-                  <h4 className="font-semibold">NORMATIVA LEGIONELOSIS</h4>
-                  <ul className="list-disc pl-6 mt-2 space-y-2">
-                    <li>
-                      <p className="font-medium">Real Decreto 487/2022, de 21 de junio</p>
-                      <p>Por el que se establecen los requisitos sanitarios para la prevención y el control de la legionelosis.</p>
-                    </li>
-                    <li>
-                      <p className="font-medium">Real Decreto 614/2024, de 2 de julio</p>
-                      <p>Por el que se modifica el Real Decreto 487/2022, de 21 de junio.</p>
-                    </li>
-                  </ul>
-                </div>
-
-                <div>
-                  <h4 className="font-semibold">NORMATIVA SEGURIDAD Y SALUD</h4>
-                  <ul className="list-disc pl-6 mt-2 space-y-2">
-                    <li>
-                      <p className="font-medium">Ley 31/1995 de 8 de noviembre</p>
-                      <p>De Prevención de Riesgos Laborales.</p>
-                    </li>
-                    <li>
-                      <p className="font-medium">Real Decreto 485/1997, de 14 de abril de 1997</p>
-                      <p>Sobre disposiciones mínimas en materia de señalización y salud en el trabajo.</p>
-                    </li>
-                    <li>
-                      <p className="font-medium">Real Decreto 1627/1997, de 24 de octubre</p>
-                      <p>Por el que se establecen disposiciones mínimas de seguridad y salud en las obras de construcción. Transpone la Directiva Europea 92/57/CEE, de 24 de junio.</p>
-                    </li>
-                  </ul>
+                
+                <div className="mt-6 text-sm border-t pt-4">
+                  <p className="font-medium">En esta instalación, la clasificación del local es:</p>
+                  <div className="mt-2">
+                    <p><span className="font-medium">Categoría del local:</span> {data.categoriaLocal || "Categoría A"}</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -607,7 +643,7 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
               )}
             </div>
             <div className="text-right mt-2">
-              <p className="text-xs text-gray-500">Página {currentPage + 3} de 64</p>
+              <p className="text-xs text-gray-500">Página {currentPage + 4} de 64</p>
             </div>
           </div>
         </div>
