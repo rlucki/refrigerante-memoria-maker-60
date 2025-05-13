@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -195,8 +196,9 @@ const NormativaSection = () => {
       regulations.normativasSiempreAplican.regulations.push({ name, description });
     });
     
-    // Add gases fluorados if applicable
+    // Add gases fluorados regulations
     if (aplicaGasesFluorados === "SI") {
+      // If Gases Fluorados is YES, add ALL regulations
       Object.entries(normativasGasesFluorados).forEach(([name, description]) => {
         regulations.gasesFluorados.regulations.push({ name, description });
       });
@@ -363,6 +365,10 @@ const NormativaSection = () => {
                 {aplicaGasesFluorados === "SI" && (
                   <div className="space-y-2 mt-2">
                     <p className="text-sm text-gray-500">Reglamento (UE) 2024/573</p>
+                    <p className="text-sm text-gray-500">Reglamento de ejecución (UE) 2024/2174</p>
+                    <p className="text-sm text-gray-500">Reglamento (UE) 2024/590</p>
+                    <p className="text-sm text-gray-500">Reglamento (CE) 1516/2007</p>
+                    <p className="text-sm text-gray-500">RD 115/2017</p>
                   </div>
                 )}
               </div>

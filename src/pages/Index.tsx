@@ -20,7 +20,14 @@ const Index = () => {
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow-sm py-4 px-6 md:px-10 border-b">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-gray-800">Sistema de Generación de Memoria Técnica</h1>
+          <div className="flex items-center gap-4">
+            <img 
+              src="/lovable-uploads/767f70e2-8522-4f58-aa42-2dd4244eed17.png" 
+              alt="COLDsulting Logo" 
+              className="h-12" 
+            />
+            <h1 className="text-2xl font-bold text-gray-800">L3G4L1Z4T0R</h1>
+          </div>
           <Button variant="outline" className="flex items-center gap-2">
             <FileText size={18} />
             <span>Ver Plantilla</span>
