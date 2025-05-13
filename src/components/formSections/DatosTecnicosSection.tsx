@@ -4,11 +4,48 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const DatosTecnicosSection = () => {
   const [refrigerante, setRefrigerante] = useState("R-448A");
   const [camarasFrescos, setCamarasFrescos] = useState("2");
   const [camarasCongelados, setCamarasCongelados] = useState("2");
+  
+  const refrigerantes = [
+    "R-1234yf",
+    "R-1234ze",
+    "R-134a",
+    "R-170",
+    "R-22",
+    "R-290",
+    "R-32",
+    "R-404A",
+    "R-407F",
+    "R-410A",
+    "R-424A",
+    "R-427A",
+    "R-434A",
+    "R-442A",
+    "R-448A",
+    "R-449A",
+    "R-450A",
+    "R-452A",
+    "R-453A",
+    "R-454C",
+    "R-455A",
+    "R-507A",
+    "R-513A",
+    "R-600",
+    "R-600a",
+    "R-717",
+    "R-744"
+  ];
   
   return (
     <Card>
@@ -167,21 +204,42 @@ const DatosTecnicosSection = () => {
             
             <div className="space-y-2">
               <Label htmlFor="refrigerante">Identificación del refrigerante</Label>
-              <Input 
+              <Select 
                 id="refrigerante" 
-                placeholder="Refrigerante" 
                 value={refrigerante}
-                onChange={(e) => setRefrigerante(e.target.value)}
-              />
+                onValueChange={setRefrigerante}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Seleccionar refrigerante" />
+                </SelectTrigger>
+                <SelectContent>
+                  {refrigerantes.map((ref) => (
+                    <SelectItem key={ref} value={ref}>
+                      {ref}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             
             <div className="space-y-2">
               <Label htmlFor="refrigerante_secundario">Identificación del refrigerante (Secundario)</Label>
-              <Input 
+              <Select 
                 id="refrigerante_secundario" 
-                placeholder="Refrigerante" 
                 defaultValue="-"
-              />
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Seleccionar refrigerante" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="-">-</SelectItem>
+                  {refrigerantes.map((ref) => (
+                    <SelectItem key={`sec-${ref}`} value={ref}>
+                      {ref}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             
             <div className="space-y-2">
@@ -300,12 +358,22 @@ const DatosTecnicosSection = () => {
             
             <div className="space-y-2">
               <Label htmlFor="refrigerante_sala">Refrigerante</Label>
-              <Input 
+              <Select 
                 id="refrigerante_sala" 
-                placeholder="Refrigerante" 
                 value={refrigerante}
-                onChange={(e) => setRefrigerante(e.target.value)}
-              />
+                onValueChange={setRefrigerante}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Seleccionar refrigerante" />
+                </SelectTrigger>
+                <SelectContent>
+                  {refrigerantes.map((ref) => (
+                    <SelectItem key={`sala-${ref}`} value={ref}>
+                      {ref}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </div>
