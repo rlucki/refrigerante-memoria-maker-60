@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
@@ -15,8 +14,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 const NormativaSection = () => {
   const [comunidadAutonoma, setComunidadAutonoma] = useState("CATALUNYA");
   const [instalacionNueva, setInstalacionNueva] = useState("SI");
+  const [periodoInstalacionSeleccionado, setPeriodoInstalacionSeleccionado] = useState("nueva");
   const [aplicaLegionela, setAplicaLegionela] = useState("SI");
   const [aplicaGasesFluorados, setAplicaGasesFluorados] = useState("NO");
+  const [rsifAplicable, setRsifAplicable] = useState("RD 552/2019");
   
   const comunidadesAutonomas = [
     { id: "ANDALUCIA", nombre: "ANDALUCÍA", normativa: "Decreto-Ley 4/2023" },
@@ -48,6 +49,21 @@ const NormativaSection = () => {
     { id: "nueva", nombre: "Nueva", rsif: "RD 552/2019" },
   ];
   
+  // Update RSIF when the installation period or new installation status changes
+  useEffect(() => {
+    // If it's a new installation, always use the latest RSIF
+    if (instalacionNueva === "SI") {
+      setRsifAplicable("RD 552/2019");
+      setPeriodoInstalacionSeleccionado("nueva");
+    } else {
+      // Otherwise, set the RSIF based on the selected period
+      const periodo = periodoInstalacion.find(p => p.id === periodoInstalacionSeleccionado);
+      if (periodo) {
+        setRsifAplicable(periodo.rsif);
+      }
+    }
+  }, [instalacionNueva, periodoInstalacionSeleccionado]);
+  
   const getNormativaAutonomica = () => {
     const comunidad = comunidadesAutonomas.find(c => c.id === comunidadAutonoma);
     return comunidad ? comunidad.normativa : "No aplica";
@@ -60,10 +76,11 @@ const NormativaSection = () => {
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <Label htmlFor="comunidad_autonoma">Comunidad Autónoma</Label>
+            <Label htmlFor="comunidad_autonoma_select">Comunidad Autónoma</Label>
             <Select 
               value={comunidadAutonoma} 
               onValueChange={setComunidadAutonoma}
+              id="comunidad_autonoma_select"
             >
               <SelectTrigger>
                 <SelectValue placeholder="Seleccionar comunidad autónoma" />
@@ -91,10 +108,11 @@ const NormativaSection = () => {
         
         <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="space-y-2">
-            <Label htmlFor="instalacion_nueva">Instalación nueva</Label>
+            <Label htmlFor="instalacion_nueva_select">Instalación nueva</Label>
             <Select 
               value={instalacionNueva} 
               onValueChange={setInstalacionNueva}
+              id="instalacion_nueva_select"
             >
               <SelectTrigger>
                 <SelectValue placeholder="Seleccionar" />
@@ -107,8 +125,13 @@ const NormativaSection = () => {
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="ano_instalacion">Año instalación</Label>
-            <Select defaultValue="nueva">
+            <Label htmlFor="ano_instalacion_select">Año instalación</Label>
+            <Select 
+              value={periodoInstalacionSeleccionado}
+              onValueChange={setPeriodoInstalacionSeleccionado}
+              id="ano_instalacion_select"
+              disabled={instalacionNueva === "SI"}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Seleccionar" />
               </SelectTrigger>
@@ -127,7 +150,7 @@ const NormativaSection = () => {
             <Input 
               id="rsif_aplicacion" 
               placeholder="RSIF" 
-              defaultValue="RD 552/2019"
+              value={rsifAplicable}
               readOnly
             />
           </div>
@@ -161,6 +184,7 @@ const NormativaSection = () => {
                 <Select 
                   value={aplicaGasesFluorados} 
                   onValueChange={setAplicaGasesFluorados}
+                  id="gases_fluorados_select"
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Seleccionar" />
@@ -196,6 +220,7 @@ const NormativaSection = () => {
                 <Select 
                   value={aplicaLegionela} 
                   onValueChange={setAplicaLegionela}
+                  id="legionela_select"
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Seleccionar" />
