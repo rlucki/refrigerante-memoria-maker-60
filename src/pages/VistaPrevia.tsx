@@ -1,7 +1,7 @@
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, FileDown, Book, Printer } from "lucide-react";
+import { ChevronLeft, FileDown, Printer } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import MemoriaTecnicaForm from "@/components/MemoriaTecnicaForm";
 import MemoriaPreview from "@/components/MemoriaPreview";
@@ -25,6 +25,32 @@ const VistaPrevia = () => {
   });
   
   const [clienteLogo, setClienteLogo] = useState("");
+  const formContainerRef = useRef<HTMLDivElement>(null);
+  const previewContainerRef = useRef<HTMLDivElement>(null);
+
+  // Sync scroll between form and preview
+  useEffect(() => {
+    const formContainer = formContainerRef.current;
+    const previewContainer = previewContainerRef.current;
+
+    if (!formContainer || !previewContainer) return;
+
+    const handleScroll = () => {
+      if (formContainer && previewContainer) {
+        const formScrollPercentage = 
+          formContainer.scrollTop / (formContainer.scrollHeight - formContainer.clientHeight);
+
+        // Apply the same scroll percentage to the preview
+        const previewScrollMax = previewContainer.scrollHeight - previewContainer.clientHeight;
+        previewContainer.scrollTop = formScrollPercentage * previewScrollMax;
+      }
+    };
+
+    formContainer.addEventListener("scroll", handleScroll);
+    return () => {
+      formContainer.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const handleFormChange = (field: string, value: string) => {
     setMemoriaData(prev => ({ ...prev, [field]: value }));
@@ -46,7 +72,7 @@ const VistaPrevia = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <header className="bg-white shadow-sm py-4 px-6 md:px-10 border-b">
+      <header className="bg-white shadow-sm py-4 px-6 md:px-10 border-b sticky top-0 z-10">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-4">
             <Button 
@@ -73,7 +99,11 @@ const VistaPrevia = () => {
       
       <main className="flex-1 flex flex-col lg:flex-row">
         {/* Panel de formulario (lado izquierdo) */}
-        <div className="w-full lg:w-1/2 p-4 overflow-auto border-r">
+        <div 
+          className="w-full lg:w-1/2 p-4 overflow-auto border-r" 
+          style={{ height: 'calc(100vh - 72px)' }}
+          ref={formContainerRef}
+        >
           <div className="max-w-2xl mx-auto">
             <MemoriaTecnicaForm 
               onSubmit={() => {}} 
@@ -84,7 +114,11 @@ const VistaPrevia = () => {
         </div>
         
         {/* Panel de vista previa (lado derecho) */}
-        <div className="w-full lg:w-1/2 p-4 bg-gray-50">
+        <div 
+          className="w-full lg:w-1/2 p-4 bg-gray-50 overflow-auto"
+          style={{ height: 'calc(100vh - 72px)' }}
+          ref={previewContainerRef}
+        >
           <MemoriaPreview 
             data={{
               ...memoriaData,

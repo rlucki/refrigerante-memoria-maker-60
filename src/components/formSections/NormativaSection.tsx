@@ -360,17 +360,23 @@ const NormativaSection = () => {
               </div>
               
               <div className="space-y-2">
-                <Label>RD 709/2015</Label>
-                <p className="text-sm text-gray-500">Real Decreto 709/2015, de 24 de julio, por el que se dictan las disposiciones de aplicación de la Directiva del Parlamento Europeo y del Consejo, 2014/68/UE, relativa a la armonización de las legislaciones de los Estados miembros.</p>
+                <Label className="font-semibold">REGLAMENTOS DE INSTALACIONES FRIGORÍFICAS</Label>
+                <p className="text-sm text-gray-500">RD 552/2019 - Real Decreto 552/2019, de 27 de septiembre, por el que se aprueban el Reglamento de seguridad para instalaciones frigoríficas y sus instrucciones técnicas complementarias. Es el Reglamento que se encuentra en vigor desde el 2 de enero de 2020.</p>
               </div>
               
               <div className="space-y-2">
-                <Label>RD 842/2002</Label>
-                <p className="text-sm text-gray-500">Real Decreto 842/2002, de 2 de agosto, por el que se aprueba el Reglamento Electrotécnico para Baja Tensión y sus instrucciones técnicas complementarias.</p>
+                <Label className="font-semibold">NORMATIVA AUTONÓMICA</Label>
+                <p className="text-sm text-gray-500">Decret 192/2023, de 7 de noviembre, de la Seguretat Industrial dels Establiments, les Instal·lacions i els Productes, publicada en el Diari Oficial de la Generalitat de Catalunya (DOGC) n.º 9037 el 9 de noviembre de 2023.</p>
               </div>
               
               <div className="space-y-2">
-                <Label className="font-medium">Gases fluorados</Label>
+                <Label className="font-semibold">NORMATIVA QUE SIEMPRE APLICA</Label>
+                <p className="text-sm text-gray-500">RD 709/2015 - Real Decreto 709/2015, de 24 de julio, por el que se dictan las disposiciones de aplicación de la Directiva del Parlamento Europeo y del Consejo, 2014/68/UE.</p>
+                <p className="text-sm text-gray-500">RD 842/2002 - Real Decreto 842/2002, de 2 de agosto, por el que se aprueba el Reglamento Electrotécnico para Baja Tensión y sus instrucciones técnicas complementarias.</p>
+              </div>
+              
+              <div className="space-y-2">
+                <Label className="font-semibold">Gases fluorados</Label>
                 <Select 
                   value={aplicaGasesFluorados} 
                   onValueChange={setAplicaGasesFluorados}
@@ -401,7 +407,7 @@ const NormativaSection = () => {
             
             <div className="space-y-6">
               <div className="space-y-2">
-                <Label className="font-medium">Edificación</Label>
+                <Label className="font-semibold">NORMATIVA EDIFICACIÓN</Label>
                 <div className="space-y-2">
                   <p className="text-sm text-gray-500">RD 314/2006</p>
                   <p className="text-sm text-gray-500">RD1371/2007</p>
@@ -410,7 +416,7 @@ const NormativaSection = () => {
               </div>
               
               <div className="space-y-2">
-                <Label className="font-medium">Legionela</Label>
+                <Label className="font-semibold">NORMATIVA LEGIONELOSIS</Label>
                 <Select 
                   value={aplicaLegionela} 
                   onValueChange={setAplicaLegionela}
@@ -436,7 +442,7 @@ const NormativaSection = () => {
               </div>
               
               <div className="space-y-2">
-                <Label className="font-medium">Seguridad y Salud</Label>
+                <Label className="font-semibold">NORMATIVA SEGURIDAD Y SALUD</Label>
                 <div className="space-y-2">
                   <p className="text-sm text-gray-500">Ley 31/1995</p>
                   <p className="text-sm text-gray-500">RD 485/1997</p>
