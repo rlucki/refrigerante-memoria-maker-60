@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import MemoriaTecnicaForm from "@/components/MemoriaTecnicaForm";
 import MemoriaPreview from "@/components/MemoriaPreview";
 import { toast } from "@/hooks/use-toast";
+import html2pdf from "html2pdf.js";
 
 const VistaPrevia = () => {
   const navigate = useNavigate();
@@ -50,6 +51,7 @@ const VistaPrevia = () => {
   const [clienteLogo, setClienteLogo] = useState("");
   const formContainerRef = useRef<HTMLDivElement>(null);
   const previewContainerRef = useRef<HTMLDivElement>(null);
+  const previewRef = useRef<HTMLDivElement>(null);
 
   // Sync scroll between form and preview
   useEffect(() => {
@@ -87,11 +89,54 @@ const VistaPrevia = () => {
   };
 
   const handleGenerarDocumento = () => {
-    // Aquí iría la lógica para generar el documento final
+    if (!previewRef.current) {
+      toast({
+        title: "Error al generar documento",
+        description: "No se pudo generar el documento. Inténtelo nuevamente.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Mostrar toast de generando documento
     toast({
-      title: "Documento generado",
-      description: "Se ha generado el documento correctamente",
+      title: "Generando documento",
+      description: "Espere mientras se genera el PDF...",
     });
+
+    // Configuración para html2pdf
+    const opt = {
+      margin: [10, 10, 10, 10],
+      filename: `Memoria_Técnica_${memoriaData.titular.replace(/\s+/g, '_')}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { 
+        scale: 2,
+        useCORS: true,
+        letterRendering: true,
+        allowTaint: true
+      },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    // Crear una copia del contenido para manipularlo sin afectar la visualización
+    const content = previewRef.current.cloneNode(true) as HTMLElement;
+    
+    // Convertir a PDF y descargar
+    html2pdf().from(content).set(opt).save()
+      .then(() => {
+        toast({
+          title: "Documento generado",
+          description: "Se ha generado el documento correctamente",
+        });
+      })
+      .catch((error) => {
+        console.error("Error al generar PDF:", error);
+        toast({
+          title: "Error al generar documento",
+          description: "Ocurrió un error al generar el PDF. Inténtelo nuevamente.",
+          variant: "destructive"
+        });
+      });
   };
 
   return (
@@ -143,12 +188,14 @@ const VistaPrevia = () => {
           style={{ height: 'calc(100vh - 72px)' }}
           ref={previewContainerRef}
         >
-          <MemoriaPreview 
-            data={{
-              ...memoriaData,
-              clienteLogo
-            }} 
-          />
+          <div ref={previewRef}>
+            <MemoriaPreview 
+              data={{
+                ...memoriaData,
+                clienteLogo
+              }} 
+            />
+          </div>
         </div>
       </main>
     </div>
