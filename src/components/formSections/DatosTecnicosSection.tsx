@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -203,9 +202,9 @@ const DatosTecnicosSection = () => {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="refrigerante">Identificación del refrigerante</Label>
+              <Label htmlFor="refrigerante_select">Identificación del refrigerante</Label>
               <Select 
-                id="refrigerante" 
+                id="refrigerante_select" 
                 value={refrigerante}
                 onValueChange={setRefrigerante}
               >
@@ -223,9 +222,9 @@ const DatosTecnicosSection = () => {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="refrigerante_secundario">Identificación del refrigerante (Secundario)</Label>
+              <Label htmlFor="refrigerante_secundario_select">Identificación del refrigerante (Secundario)</Label>
               <Select 
-                id="refrigerante_secundario" 
+                id="refrigerante_secundario_select" 
                 defaultValue="-"
               >
                 <SelectTrigger>
@@ -357,9 +356,9 @@ const DatosTecnicosSection = () => {
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="refrigerante_sala">Refrigerante</Label>
+              <Label htmlFor="refrigerante_sala_select">Refrigerante</Label>
               <Select 
-                id="refrigerante_sala" 
+                id="refrigerante_sala_select" 
                 value={refrigerante}
                 onValueChange={setRefrigerante}
               >

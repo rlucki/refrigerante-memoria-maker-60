@@ -1,10 +1,38 @@
+
 import * as React from "react"
 import * as SelectPrimitive from "@radix-ui/react-select"
 import { Check, ChevronDown, ChevronUp } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
-const Select = SelectPrimitive.Root
+// Extend SelectPrimitive.Root props to include id
+interface SelectProps extends React.ComponentPropsWithoutRef<typeof SelectPrimitive.Root> {
+  id?: string
+}
+
+// Create a custom Select component that forwards the id to the trigger
+const Select = React.forwardRef<
+  React.ElementRef<typeof SelectPrimitive.Root>,
+  SelectProps
+>(({ children, id, ...props }, ref) => {
+  // Store the ID to be used by the trigger
+  const triggerId = id
+  
+  // Clone the children to inject the id to the first SelectTrigger
+  const childrenWithTrigger = React.Children.map(children, child => {
+    if (React.isValidElement(child) && child.type === SelectTrigger) {
+      return React.cloneElement(child, { id: triggerId, ...child.props })
+    }
+    return child
+  })
+
+  return (
+    <SelectPrimitive.Root {...props}>
+      {childrenWithTrigger}
+    </SelectPrimitive.Root>
+  )
+})
+Select.displayName = "Select"
 
 const SelectGroup = SelectPrimitive.Group
 
