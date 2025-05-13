@@ -4,6 +4,7 @@ import MemoriaTecnicaForm from "@/components/MemoriaTecnicaForm";
 import { Button } from "@/components/ui/button";
 import { FileText } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { Link } from "react-router-dom";
 
 const Index = () => {
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
@@ -22,16 +23,18 @@ const Index = () => {
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-4">
             <img 
-              src="/lovable-uploads/6622e8a0-82cb-4de8-9f0a-9d398b1ea20b.png" 
+              src="/lovable-uploads/767f70e2-8522-4f58-aa42-2dd4244eed17.png" 
               alt="COLDsulting Logo" 
               className="h-12" 
             />
             <h1 className="text-2xl font-bold text-gray-800">L3G4L1Z4T0R</h1>
           </div>
-          <Button variant="outline" className="flex items-center gap-2">
-            <FileText size={18} />
-            <span>Ver Plantilla</span>
-          </Button>
+          <Link to="/plantilla">
+            <Button variant="outline" className="flex items-center gap-2">
+              <FileText size={18} />
+              <span>Ver Plantilla</span>
+            </Button>
+          </Link>
         </div>
       </header>
       
