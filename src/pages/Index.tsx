@@ -22,7 +22,7 @@ const Index = () => {
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center gap-4">
             <img 
-              src="/lovable-uploads/767f70e2-8522-4f58-aa42-2dd4244eed17.png" 
+              src="/lovable-uploads/6622e8a0-82cb-4de8-9f0a-9d398b1ea20b.png" 
               alt="COLDsulting Logo" 
               className="h-12" 
             />
