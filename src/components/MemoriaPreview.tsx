@@ -22,8 +22,8 @@ interface MemoriaPreviewProps {
 }
 
 const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }) => {
-  // Use a company logo that won't have the incorrect one
-  const companyLogo = "/lovable-uploads/2b54f50e-bf5f-4be0-8559-6310a024aa33.png";
+  // Use the correct COLDsulting logo
+  const companyLogo = "/lovable-uploads/02dc6811-1655-4701-81f9-bad03d948d87.png";
   
   return (
     <div className="bg-white shadow-lg border rounded-lg overflow-hidden h-full flex flex-col">
@@ -132,6 +132,10 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
             </div>
             <div className="flex justify-between">
               <p>4. DOMICILIO A EFECTOS DE NOTIFICACIONES</p>
+              <p>3</p>
+            </div>
+            <div className="flex justify-between">
+              <p>5. UBICACIÓN DE LA INSTALACIÓN</p>
               <p>3</p>
             </div>
             <div className="flex justify-between">
@@ -355,6 +359,106 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
           {/* Numeración de página */}
           <div className="absolute bottom-5 right-5">
             <p className="text-xs text-gray-500">Pág. {currentPage + 1}</p>
+          </div>
+        </div>
+
+        {/* Tercera página - Contenido de secciones 1-7 */}
+        <div className="mb-12 max-w-[595px] mx-auto bg-white shadow-sm border min-h-[842px] relative p-10">
+          {/* Cabecera con logos */}
+          <div className="flex justify-between mb-8">
+            <img 
+              src={companyLogo} 
+              alt="Logo Empresa" 
+              className="h-10 object-contain" 
+            />
+            {data.clienteLogo && (
+              <img 
+                src={data.clienteLogo} 
+                alt="Logo Cliente" 
+                className="h-10 object-contain" 
+              />
+            )}
+          </div>
+
+          {/* Sección 1 - OBJETO */}
+          <div className="mb-6">
+            <h3 className="text-lg font-bold">1. OBJETO</h3>
+            <p className="text-sm mt-2">
+              El objeto de esta memoria es el de describir la instalación frigorífica dedicada a la conservación
+              de productos perecederos en un supermercado, del que es su titular DINOSOL SUPERMERCADOS, S.L.,
+              y que está situada en la localidad de Puerto de la Cruz (Santa Cruz de Tenerife), de modo que quede
+              incorporada en el Registro de Instalaciones Frigoríficas del Gobierno de Canarias.
+            </p>
+          </div>
+
+          {/* Sección 2 - ANTECEDENTES */}
+          <div className="mb-6">
+            <h3 className="text-lg font-bold">2. ANTECEDENTES</h3>
+            <p className="text-sm mt-2">
+              No existen antecedentes administrativos de la instalación objeto de este proyecto y,
+              por lo tanto, se tramitará como nueva instalación.
+            </p>
+          </div>
+
+          {/* Sección 3 - TITULAR */}
+          <div className="mb-6">
+            <h3 className="text-lg font-bold">3. TITULAR</h3>
+            <div className="text-sm mt-2 space-y-1">
+              <p><span className="font-medium">Titular:</span> {data.titular || "DINOSOL SUPERMERCADOS S.L."}</p>
+              <p><span className="font-medium">CIF:</span> {data.nif || "B61742565"}</p>
+              <p><span className="font-medium">Domicilio social:</span> Error! Not a valid link.</p>
+            </div>
+          </div>
+
+          {/* Sección 4 - DOMICILIO A EFECTOS DE NOTIFICACIONES */}
+          <div className="mb-6">
+            <h3 className="text-lg font-bold">4. DOMICILIO A EFECTOS DE NOTIFICACIONES</h3>
+            <div className="text-sm mt-2 space-y-1">
+              <p><span className="font-medium">Dirección:</span> C/ Luis Correa Medina, 9</p>
+              <p>35013 LAS PALMAS DE GRAN CANARIA (LAS PALMAS)</p>
+              <p><span className="font-medium">Teléfono:</span> 928303600</p>
+            </div>
+          </div>
+
+          {/* Sección 5 - UBICACIÓN DE LA INSTALACIÓN */}
+          <div className="mb-6">
+            <h3 className="text-lg font-bold">5. UBICACIÓN DE LA INSTALACIÓN</h3>
+            <div className="text-sm mt-2 space-y-1">
+              <p><span className="font-medium">Dirección:</span> {data.direccionInstalacion || "AVDA. BLAS PÉREZ GONZÁLEZ, 4"}</p>
+              <p>{data.poblacionInstalacion || "PUERTO DE LA CRUZ"}</p>
+              <p>{data.provinciaInstalacion || "SANTA CRUZ DE TENERIFE"}</p>
+              <p><span className="font-medium">Teléfono:</span> 922443768</p>
+              <p><span className="font-medium">Número de inscripción de la instalación:</span></p>
+            </div>
+          </div>
+
+          {/* Sección 6 - EMPRESA INSTALADORA */}
+          <div className="mb-6">
+            <h3 className="text-lg font-bold">6. EMPRESA INSTALADORA</h3>
+            <div className="text-sm mt-2 space-y-1">
+              <p><span className="font-medium">Nombre:</span> {data.instalador || "GESTÉCNICA INTEGRAL 10. S.L."}</p>
+              <p><span className="font-medium">NIF:</span> B76501931</p>
+              <p><span className="font-medium">Domicilio Social:</span> C/ ISAAC PERAL, Nº 3, NAVE 5</p>
+              <p>38109</p>
+              <p>EL ROSARIO,</p>
+              <p>SANTA CRUZ DE TENERIFE</p>
+              <p><span className="font-medium">Teléfono:</span> 922618202</p>
+              <p><span className="font-medium">Email:</span> gestecnicaintegral10@gestecnicaintegral10.es</p>
+              <p><span className="font-medium">N.º REIF:</span> 38020755</p>
+            </div>
+          </div>
+
+          {/* Sección 7 - ACTIVIDAD */}
+          <div className="mb-6">
+            <h3 className="text-lg font-bold">7. ACTIVIDAD</h3>
+            <p className="text-sm mt-2">
+              Supermercado para la venta al público de productos alimentarios perecederos, así como otros productos.
+            </p>
+          </div>
+
+          {/* Numeración de página */}
+          <div className="absolute bottom-5 right-5">
+            <p className="text-xs text-gray-500">Pág. {currentPage + 2}</p>
           </div>
         </div>
       </div>
