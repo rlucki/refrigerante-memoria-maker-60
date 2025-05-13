@@ -88,7 +88,7 @@ const MemoriaTecnicaForm = ({ onSubmit, onChange, onLogoUpload }: MemoriaTecnica
         </TabsContent>
         
         <TabsContent value="tecnicos" className="mt-6">
-          <DatosTecnicosSection />
+          <DatosTecnicosSection onChange={handleComplexChange} />
         </TabsContent>
         
         <TabsContent value="clasificacion" className="mt-6">
