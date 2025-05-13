@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -31,7 +30,7 @@ const reglamentosAutonomicos = {
 };
 
 const normativasSiempreAplican = {
-  "RD 709/2015": "Real Decreto 709/2015, de 24 de julio, por el que se dictan las disposiciones de aplicación de la Directiva del Parlamento Europeo y del Consejo, 2014/68/UE, relativa a la armonización de las legislaciones de los Estados miembros sobre la comercialización de equipos a presión, y que deroga la Directiva 97/23/CE. Este Real Decreto deroga el Real Decreto 769/1999, por el que se dictaban las disposiciones de aplicación de la Directiva 97/23/CE.",
+  "RD 709/2015": "Real Decreto 709/2015, de 24 de julio, por el que se dictan las disposiciones de aplicación de la Directiva del Parlamento Europeo y del Consejo, 2014/68/UE, relativa a la armonización de las legislaciones de los Estados miembros sobre la comercialización de equipos a presión, y que deroga la Directiva 97/23/CE.",
   "RD 842/2002": "Real Decreto 842/2002, de 2 de agosto, por el que se aprueba el Reglamento Electrotécnico para Baja Tensión y sus instrucciones técnicas complementarias."
 };
 
@@ -45,7 +44,7 @@ const normativasGasesFluorados = {
 
 const normativaEdificacion = {
   "RD 314/2006": "Real Decreto 314/2006, de 17 de marzo, por el que se aprueba el Código Técnico de la Edificación y modificaciones posteriores.",
-  "RD 1371/2007": "Real Decreto 1371/2007, de 19 de octubre, por el que se aprueba el documento básico "DB-HR Protección frente al ruido" del Código Técnico de la Edificación y se modifica el RD 314/2006.",
+  "RD 1371/2007": "Real Decreto 1371/2007, de 19 de octubre, por el que se aprueba el documento básico \"DB-HR Protección frente al ruido\" del Código Técnico de la Edificación y se modifica el RD 314/2006.",
   "RD 732/2019": "Real Decreto 732/2019, de 20 de diciembre, por el que se modifica el Código Técnico de la Edificación, aprobado por el RD 314/2006."
 };
 
