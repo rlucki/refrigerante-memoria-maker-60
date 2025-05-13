@@ -15,7 +15,7 @@ const DatosInstalacionSection = ({ onChange }: DatosInstalacionSectionProps) => 
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2 md:col-span-2">
-            <Label htmlFor="direccion_instalacion">Dirección de la instalación</Label>
+            <Label htmlFor="direccionInstalacion">Dirección de la instalación</Label>
             <Input 
               id="direccionInstalacion" 
               placeholder="Dirección de la instalación" 
@@ -25,29 +25,32 @@ const DatosInstalacionSection = ({ onChange }: DatosInstalacionSectionProps) => 
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="poblacion_instalacion">Población</Label>
+            <Label htmlFor="poblacionInstalacion">Población</Label>
             <Input 
-              id="poblacion_instalacion" 
+              id="poblacionInstalacion" 
               placeholder="Población" 
               defaultValue="PUERTO DE LA CRUZ"
+              onChange={onChange}
             />
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="provincia_instalacion">Provincia</Label>
+            <Label htmlFor="provinciaInstalacion">Provincia</Label>
             <Input 
-              id="provincia_instalacion" 
+              id="provinciaInstalacion" 
               placeholder="Provincia" 
               defaultValue="SANTA CRUZ DE TENERIFE"
+              onChange={onChange}
             />
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="cp_instalacion">C.P.</Label>
+            <Label htmlFor="cpInstalacion">C.P.</Label>
             <Input 
-              id="cp_instalacion" 
+              id="cpInstalacion" 
               placeholder="Código postal" 
               defaultValue="35610"
+              onChange={onChange}
             />
           </div>
           
@@ -57,6 +60,7 @@ const DatosInstalacionSection = ({ onChange }: DatosInstalacionSectionProps) => 
               id="telefono_instalacion" 
               placeholder="Teléfono" 
               defaultValue="922443768"
+              onChange={onChange}
             />
           </div>
         </div>
@@ -70,6 +74,7 @@ const DatosInstalacionSection = ({ onChange }: DatosInstalacionSectionProps) => 
               id="num_inscripcion" 
               placeholder="Número de inscripción" 
               defaultValue="IF202400127"
+              onChange={onChange}
             />
           </div>
           
@@ -80,6 +85,7 @@ const DatosInstalacionSection = ({ onChange }: DatosInstalacionSectionProps) => 
               placeholder="Fecha" 
               type="date"
               defaultValue="2024-09-23"
+              onChange={onChange}
             />
           </div>
         </div>

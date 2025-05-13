@@ -35,7 +35,7 @@ const DatosTitularSection = ({ onChange }: DatosTitularSectionProps) => {
           </div>
           
           <div className="space-y-2 md:col-span-2">
-            <Label htmlFor="direccion_fiscal">Dirección fiscal</Label>
+            <Label htmlFor="direccion">Dirección fiscal</Label>
             <Input 
               id="direccion" 
               placeholder="Dirección fiscal" 

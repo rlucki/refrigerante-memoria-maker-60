@@ -12,12 +12,15 @@ const VistaPrevia = () => {
   const [memoriaData, setMemoriaData] = useState({
     titular: "DINOSOL SUPERMERCADOS S.L.",
     nif: "B61742565",
-    direccion: "CTRA. DEL RINCÓN, S/N, 4ª PLANTA",
+    direccion: "CTRA. DEL RINCÓN, S/N, 4ª PLANTA Edif. Anexo C.C. Las Arenas",
     poblacion: "LAS PALMAS DE GRAN CANARIA",
     provincia: "LAS PALMAS",
     cp: "35010",
     instalador: "GESTÉCNICA INTEGRAL 10. S.L.",
     direccionInstalacion: "AVDA. BLAS PÉREZ GONZÁLEZ, 4",
+    poblacionInstalacion: "PUERTO DE LA CRUZ",
+    cpInstalacion: "35610",
+    provinciaInstalacion: "SANTA CRUZ DE TENERIFE",
     titulo: "MEMORIA TÉCNICA DESCRIPTIVA"
   });
   
