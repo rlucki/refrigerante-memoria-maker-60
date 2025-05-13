@@ -364,80 +364,83 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
 
         {/* Tercera página - Contenido de secciones 1-7 */}
         <div className="mb-12 max-w-[595px] mx-auto bg-white shadow-sm border min-h-[842px] relative p-10">
-          {/* Sección 1 - OBJETO */}
-          <div className="mb-6">
-            <h3 className="text-lg font-bold">1. OBJETO</h3>
-            <p className="text-sm mt-2">
-              El objeto de esta memoria es el de describir la instalación frigorífica dedicada a la conservación
-              de productos perecederos en un supermercado, del que es su titular DINOSOL SUPERMERCADOS, S.L.,
-              y que está situada en la localidad de Puerto de la Cruz (Santa Cruz de Tenerife), de modo que quede
-              incorporada en el Registro de Instalaciones Frigoríficas del Gobierno de Canarias.
-            </p>
-          </div>
-
-          {/* Sección 2 - ANTECEDENTES */}
-          <div className="mb-6">
-            <h3 className="text-lg font-bold">2. ANTECEDENTES</h3>
-            <p className="text-sm mt-2">
-              No existen antecedentes administrativos de la instalación objeto de este proyecto y,
-              por lo tanto, se tramitará como nueva instalación.
-            </p>
-          </div>
-
-          {/* Sección 3 - TITULAR */}
-          <div className="mb-6">
-            <h3 className="text-lg font-bold">3. TITULAR</h3>
-            <div className="text-sm mt-2 space-y-1">
-              <p><span className="font-medium">Titular:</span> {data.titular || "DINOSOL SUPERMERCADOS S.L."}</p>
-              <p><span className="font-medium">CIF:</span> {data.nif || "B61742565"}</p>
-              <p><span className="font-medium">Domicilio social:</span> Error! Not a valid link.</p>
+          {/* Content container with padding at bottom to prevent overlap with footer */}
+          <div className="pb-32">
+            {/* Sección 1 - OBJETO */}
+            <div className="mb-6">
+              <h3 className="text-lg font-bold">1. OBJETO</h3>
+              <p className="text-sm mt-2">
+                El objeto de esta memoria es el de describir la instalación frigorífica dedicada a la conservación
+                de productos perecederos en un supermercado, del que es su titular DINOSOL SUPERMERCADOS, S.L.,
+                y que está situada en la localidad de Puerto de la Cruz (Santa Cruz de Tenerife), de modo que quede
+                incorporada en el Registro de Instalaciones Frigoríficas del Gobierno de Canarias.
+              </p>
             </div>
-          </div>
 
-          {/* Sección 4 - DOMICILIO A EFECTOS DE NOTIFICACIONES */}
-          <div className="mb-6">
-            <h3 className="text-lg font-bold">4. DOMICILIO A EFECTOS DE NOTIFICACIONES</h3>
-            <div className="text-sm mt-2 space-y-1">
-              <p><span className="font-medium">Dirección:</span> C/ Luis Correa Medina, 9</p>
-              <p>35013 LAS PALMAS DE GRAN CANARIA (LAS PALMAS)</p>
-              <p><span className="font-medium">Teléfono:</span> 928303600</p>
+            {/* Sección 2 - ANTECEDENTES */}
+            <div className="mb-6">
+              <h3 className="text-lg font-bold">2. ANTECEDENTES</h3>
+              <p className="text-sm mt-2">
+                No existen antecedentes administrativos de la instalación objeto de este proyecto y,
+                por lo tanto, se tramitará como nueva instalación.
+              </p>
             </div>
-          </div>
 
-          {/* Sección 5 - UBICACIÓN DE LA INSTALACIÓN */}
-          <div className="mb-6">
-            <h3 className="text-lg font-bold">5. UBICACIÓN DE LA INSTALACIÓN</h3>
-            <div className="text-sm mt-2 space-y-1">
-              <p><span className="font-medium">Dirección:</span> {data.direccionInstalacion || "AVDA. BLAS PÉREZ GONZÁLEZ, 4"}</p>
-              <p>{data.poblacionInstalacion || "PUERTO DE LA CRUZ"}</p>
-              <p>{data.provinciaInstalacion || "SANTA CRUZ DE TENERIFE"}</p>
-              <p><span className="font-medium">Teléfono:</span> 922443768</p>
-              <p><span className="font-medium">Número de inscripción de la instalación:</span></p>
+            {/* Sección 3 - TITULAR */}
+            <div className="mb-6">
+              <h3 className="text-lg font-bold">3. TITULAR</h3>
+              <div className="text-sm mt-2 space-y-1">
+                <p><span className="font-medium">Titular:</span> {data.titular || "DINOSOL SUPERMERCADOS S.L."}</p>
+                <p><span className="font-medium">CIF:</span> {data.nif || "B61742565"}</p>
+                <p><span className="font-medium">Domicilio social:</span> Error! Not a valid link.</p>
+              </div>
             </div>
-          </div>
 
-          {/* Sección 6 - EMPRESA INSTALADORA */}
-          <div className="mb-6">
-            <h3 className="text-lg font-bold">6. EMPRESA INSTALADORA</h3>
-            <div className="text-sm mt-2 space-y-1">
-              <p><span className="font-medium">Nombre:</span> {data.instalador || "GESTÉCNICA INTEGRAL 10. S.L."}</p>
-              <p><span className="font-medium">NIF:</span> B76501931</p>
-              <p><span className="font-medium">Domicilio Social:</span> C/ ISAAC PERAL, Nº 3, NAVE 5</p>
-              <p>38109</p>
-              <p>EL ROSARIO,</p>
-              <p>SANTA CRUZ DE TENERIFE</p>
-              <p><span className="font-medium">Teléfono:</span> 922618202</p>
-              <p><span className="font-medium">Email:</span> gestecnicaintegral10@gestecnicaintegral10.es</p>
-              <p><span className="font-medium">N.º REIF:</span> 38020755</p>
+            {/* Sección 4 - DOMICILIO A EFECTOS DE NOTIFICACIONES */}
+            <div className="mb-6">
+              <h3 className="text-lg font-bold">4. DOMICILIO A EFECTOS DE NOTIFICACIONES</h3>
+              <div className="text-sm mt-2 space-y-1">
+                <p><span className="font-medium">Dirección:</span> C/ Luis Correa Medina, 9</p>
+                <p>35013 LAS PALMAS DE GRAN CANARIA (LAS PALMAS)</p>
+                <p><span className="font-medium">Teléfono:</span> 928303600</p>
+              </div>
             </div>
-          </div>
 
-          {/* Sección 7 - ACTIVIDAD */}
-          <div className="mb-6">
-            <h3 className="text-lg font-bold">7. ACTIVIDAD</h3>
-            <p className="text-sm mt-2">
-              Supermercado para la venta al público de productos alimentarios perecederos, así como otros productos.
-            </p>
+            {/* Sección 5 - UBICACIÓN DE LA INSTALACIÓN */}
+            <div className="mb-6">
+              <h3 className="text-lg font-bold">5. UBICACIÓN DE LA INSTALACIÓN</h3>
+              <div className="text-sm mt-2 space-y-1">
+                <p><span className="font-medium">Dirección:</span> {data.direccionInstalacion || "AVDA. BLAS PÉREZ GONZÁLEZ, 4"}</p>
+                <p>{data.poblacionInstalacion || "PUERTO DE LA CRUZ"}</p>
+                <p>{data.provinciaInstalacion || "SANTA CRUZ DE TENERIFE"}</p>
+                <p><span className="font-medium">Teléfono:</span> 922443768</p>
+                <p><span className="font-medium">Número de inscripción de la instalación:</span></p>
+              </div>
+            </div>
+
+            {/* Sección 6 - EMPRESA INSTALADORA */}
+            <div className="mb-6">
+              <h3 className="text-lg font-bold">6. EMPRESA INSTALADORA</h3>
+              <div className="text-sm mt-2 space-y-1">
+                <p><span className="font-medium">Nombre:</span> {data.instalador || "GESTÉCNICA INTEGRAL 10. S.L."}</p>
+                <p><span className="font-medium">NIF:</span> B76501931</p>
+                <p><span className="font-medium">Domicilio Social:</span> C/ ISAAC PERAL, Nº 3, NAVE 5</p>
+                <p>38109</p>
+                <p>EL ROSARIO,</p>
+                <p>SANTA CRUZ DE TENERIFE</p>
+                <p><span className="font-medium">Teléfono:</span> 922618202</p>
+                <p><span className="font-medium">Email:</span> gestecnicaintegral10@gestecnicaintegral10.es</p>
+                <p><span className="font-medium">N.º REIF:</span> 38020755</p>
+              </div>
+            </div>
+
+            {/* Sección 7 - ACTIVIDAD */}
+            <div className="mb-6">
+              <h3 className="text-lg font-bold">7. ACTIVIDAD</h3>
+              <p className="text-sm mt-2">
+                Supermercado para la venta al público de productos alimentarios perecederos, así como otros productos.
+              </p>
+            </div>
           </div>
 
           {/* Footer with logos and page number */}
@@ -458,6 +461,128 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
             </div>
             <div className="text-right mt-2">
               <p className="text-xs text-gray-500">Página {currentPage + 2} de 64</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Cuarta página - Sección 8: NORMATIVA DE APLICACIÓN */}
+        <div className="mb-12 max-w-[595px] mx-auto bg-white shadow-sm border min-h-[842px] relative p-10">
+          {/* Content container with padding at bottom to prevent overlap with footer */}
+          <div className="pb-32">
+            {/* Sección 8 - NORMATIVA DE APLICACIÓN */}
+            <div className="mb-6">
+              <h3 className="text-lg font-bold">8. NORMATIVA DE APLICACIÓN</h3>
+              <p className="text-sm mt-3 mb-4">
+                Para la elaboración de este documento y para la ejecución de la instalación, se deberán tener en cuenta, 
+                entre otras, las siguientes disposiciones:
+              </p>
+
+              <div className="space-y-4 text-sm">
+                <div>
+                  <h4 className="font-semibold">REGLAMENTOS DE INSTALACIONES FRIGORÍFICAS</h4>
+                  <ul className="list-disc pl-6 mt-2 space-y-2">
+                    <li>
+                      <p className="font-medium">Real Decreto 552/2019, de 27 de septiembre</p>
+                      <p>Por el que se aprueban el Reglamento de seguridad para instalaciones frigoríficas y sus instrucciones técnicas complementarias. Es el Reglamento que se encuentra en vigor desde el 2 de enero de 2020.</p>
+                    </li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="font-semibold">NORMATIVA AUTONÓMICA</h4>
+                  <ul className="list-disc pl-6 mt-2 space-y-2">
+                    <li>
+                      <p className="font-medium">Decret 192/2023, de 7 de noviembre</p>
+                      <p>De la Seguretat Industrial dels Establiments, les Instal·lacions i els Productes, publicada en el Diari Oficial de la Generalitat de Catalunya (DOGC) n.º 9037 el 9 de noviembre de 2023. Este Decret deroga, entre otras, las Instruccions 1/2015, 2/2015 y 1/2019.</p>
+                    </li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="font-semibold">NORMATIVA QUE SIEMPRE APLICA</h4>
+                  <ul className="list-disc pl-6 mt-2 space-y-2">
+                    <li>
+                      <p className="font-medium">Real Decreto 709/2015, de 24 de julio</p>
+                      <p>Por el que se dictan las disposiciones de aplicación de la Directiva del Parlamento Europeo y del Consejo, 2014/68/UE, relativa a la armonización de las legislaciones de los Estados miembros sobre la comercialización de equipos a presión, y que deroga la Directiva 97/23/CE.</p>
+                    </li>
+                    <li>
+                      <p className="font-medium">Real Decreto 842/2002, de 2 de agosto</p>
+                      <p>Por el que se aprueba el Reglamento Electrotécnico para Baja Tensión y sus instrucciones técnicas complementarias.</p>
+                    </li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="font-semibold">NORMATIVA EDIFICACIÓN</h4>
+                  <ul className="list-disc pl-6 mt-2 space-y-2">
+                    <li>
+                      <p className="font-medium">Real Decreto 314/2006, de 17 de marzo</p>
+                      <p>Por el que se aprueba el Código Técnico de la Edificación y modificaciones posteriores.</p>
+                    </li>
+                    <li>
+                      <p className="font-medium">Real Decreto 1371/2007, de 19 de octubre</p>
+                      <p>Por el que se aprueba el documento básico "DB-HR Protección frente al ruido" del Código Técnico de la Edificación y se modifica el RD 314/2006.</p>
+                    </li>
+                    <li>
+                      <p className="font-medium">Real Decreto 732/2019, de 20 de diciembre</p>
+                      <p>Por el que se modifica el Código Técnico de la Edificación, aprobado por el RD 314/2006.</p>
+                    </li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="font-semibold">NORMATIVA LEGIONELOSIS</h4>
+                  <ul className="list-disc pl-6 mt-2 space-y-2">
+                    <li>
+                      <p className="font-medium">Real Decreto 487/2022, de 21 de junio</p>
+                      <p>Por el que se establecen los requisitos sanitarios para la prevención y el control de la legionelosis.</p>
+                    </li>
+                    <li>
+                      <p className="font-medium">Real Decreto 614/2024, de 2 de julio</p>
+                      <p>Por el que se modifica el Real Decreto 487/2022, de 21 de junio.</p>
+                    </li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="font-semibold">NORMATIVA SEGURIDAD Y SALUD</h4>
+                  <ul className="list-disc pl-6 mt-2 space-y-2">
+                    <li>
+                      <p className="font-medium">Ley 31/1995 de 8 de noviembre</p>
+                      <p>De Prevención de Riesgos Laborales.</p>
+                    </li>
+                    <li>
+                      <p className="font-medium">Real Decreto 485/1997, de 14 de abril de 1997</p>
+                      <p>Sobre disposiciones mínimas en materia de señalización y salud en el trabajo.</p>
+                    </li>
+                    <li>
+                      <p className="font-medium">Real Decreto 1627/1997, de 24 de octubre</p>
+                      <p>Por el que se establecen disposiciones mínimas de seguridad y salud en las obras de construcción. Transpone la Directiva Europea 92/57/CEE, de 24 de junio.</p>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Footer with logos and page number */}
+          <div className="absolute bottom-10 left-0 w-full px-10">
+            <div className="flex justify-between items-center">
+              <img 
+                src={companyLogo} 
+                alt="Logo Empresa" 
+                className="h-8 object-contain" 
+              />
+              {data.clienteLogo && (
+                <img 
+                  src={data.clienteLogo} 
+                  alt="Logo Cliente" 
+                  className="h-8 object-contain" 
+                />
+              )}
+            </div>
+            <div className="text-right mt-2">
+              <p className="text-xs text-gray-500">Página {currentPage + 3} de 64</p>
             </div>
           </div>
         </div>
