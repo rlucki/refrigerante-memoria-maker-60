@@ -25,6 +25,7 @@ const MemoriaTecnicaForm = ({ onSubmit, onChange, onLogoUpload }: MemoriaTecnica
     onSubmit();
   };
 
+  // Modificamos esta función para manejar cualquier tipo de evento de cambio
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (onChange) {
       onChange(e.target.id, e.target.value);
@@ -74,11 +75,11 @@ const MemoriaTecnicaForm = ({ onSubmit, onChange, onLogoUpload }: MemoriaTecnica
         </TabsContent>
         
         <TabsContent value="tecnicos" className="mt-6">
-          <DatosTecnicosSection onChange={handleInputChange} />
+          <DatosTecnicosSection />
         </TabsContent>
         
         <TabsContent value="normativa" className="mt-6">
-          <NormativaSection onChange={handleInputChange} />
+          <NormativaSection />
         </TabsContent>
       </Tabs>
       
