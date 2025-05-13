@@ -2,7 +2,7 @@
 import { useState } from "react";
 import MemoriaTecnicaForm from "@/components/MemoriaTecnicaForm";
 import { Button } from "@/components/ui/button";
-import { FileText } from "lucide-react";
+import { FileText, Eye } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
 
@@ -29,12 +29,20 @@ const Index = () => {
             />
             <h1 className="text-2xl font-bold text-gray-800">L3G4L1Z4T0R</h1>
           </div>
-          <Link to="/plantilla">
-            <Button variant="outline" className="flex items-center gap-2">
-              <FileText size={18} />
-              <span>Ver Plantilla</span>
-            </Button>
-          </Link>
+          <div className="flex gap-3">
+            <Link to="/plantilla">
+              <Button variant="outline" className="flex items-center gap-2">
+                <FileText size={18} />
+                <span>Ver Plantilla</span>
+              </Button>
+            </Link>
+            <Link to="/vista-previa">
+              <Button className="flex items-center gap-2">
+                <Eye size={18} />
+                <span>Vista Previa</span>
+              </Button>
+            </Link>
+          </div>
         </div>
       </header>
       

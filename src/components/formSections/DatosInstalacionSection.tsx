@@ -1,10 +1,13 @@
-
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
-const DatosInstalacionSection = () => {
+interface DatosInstalacionSectionProps {
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+const DatosInstalacionSection = ({ onChange }: DatosInstalacionSectionProps) => {
   return (
     <Card>
       <div className="p-6">
@@ -14,9 +17,10 @@ const DatosInstalacionSection = () => {
           <div className="space-y-2 md:col-span-2">
             <Label htmlFor="direccion_instalacion">Dirección de la instalación</Label>
             <Input 
-              id="direccion_instalacion" 
+              id="direccionInstalacion" 
               placeholder="Dirección de la instalación" 
               defaultValue="AVDA. BLAS PÉREZ GONZÁLEZ, 4"
+              onChange={onChange}
             />
           </div>
           

@@ -3,7 +3,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 
-const DatosTitularSection = () => {
+interface DatosTitularSectionProps {
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+const DatosTitularSection = ({ onChange }: DatosTitularSectionProps) => {
   return (
     <Card>
       <div className="p-6">
@@ -16,6 +20,7 @@ const DatosTitularSection = () => {
               id="titular" 
               placeholder="Nombre del titular" 
               defaultValue="DINOSOL SUPERMERCADOS S.L."
+              onChange={onChange}
             />
           </div>
           
@@ -25,15 +30,17 @@ const DatosTitularSection = () => {
               id="nif" 
               placeholder="NIF del titular" 
               defaultValue="B61742565"
+              onChange={onChange}
             />
           </div>
           
           <div className="space-y-2 md:col-span-2">
             <Label htmlFor="direccion_fiscal">Dirección fiscal</Label>
             <Input 
-              id="direccion_fiscal" 
+              id="direccion" 
               placeholder="Dirección fiscal" 
               defaultValue="CTRA. DEL RINCÓN, S/N, 4ª PLANTA Edif. Anexo C.C. Las Arenas"
+              onChange={onChange}
             />
           </div>
           
@@ -43,6 +50,7 @@ const DatosTitularSection = () => {
               id="poblacion" 
               placeholder="Población" 
               defaultValue="LAS PALMAS DE GRAN CANARIA"
+              onChange={onChange}
             />
           </div>
           
@@ -52,6 +60,7 @@ const DatosTitularSection = () => {
               id="provincia" 
               placeholder="Provincia" 
               defaultValue="LAS PALMAS"
+              onChange={onChange}
             />
           </div>
           
@@ -61,6 +70,7 @@ const DatosTitularSection = () => {
               id="cp" 
               placeholder="Código postal" 
               defaultValue="35010"
+              onChange={onChange}
             />
           </div>
           
@@ -70,6 +80,7 @@ const DatosTitularSection = () => {
               id="telefono" 
               placeholder="Teléfono" 
               defaultValue="928303600"
+              onChange={onChange}
             />
           </div>
           
@@ -80,6 +91,7 @@ const DatosTitularSection = () => {
               placeholder="Email" 
               type="email"
               defaultValue="info.supermercado@dinosol.es"
+              onChange={onChange}
             />
           </div>
         </div>

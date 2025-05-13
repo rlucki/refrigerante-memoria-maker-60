@@ -1,10 +1,13 @@
-
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
-const DatosInstaladorSection = () => {
+interface DatosInstaladorSectionProps {
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+const DatosInstaladorSection = ({ onChange }: DatosInstaladorSectionProps) => {
   return (
     <Card>
       <div className="p-6">
@@ -16,9 +19,10 @@ const DatosInstaladorSection = () => {
             <div className="space-y-2 md:col-span-2">
               <Label htmlFor="empresa_instalacion">Empresa frigorista</Label>
               <Input 
-                id="empresa_instalacion" 
+                id="instalador" 
                 placeholder="Empresa frigorista que realiza la instalación" 
                 defaultValue="GESTÉCNICA INTEGRAL 10. S.L."
+                onChange={onChange}
               />
             </div>
             
@@ -28,6 +32,7 @@ const DatosInstaladorSection = () => {
                 id="cif_instalacion" 
                 placeholder="CIF" 
                 defaultValue="B76501931"
+                onChange={onChange}
               />
             </div>
             
@@ -37,15 +42,17 @@ const DatosInstaladorSection = () => {
                 id="n_registro_instalacion" 
                 placeholder="Nº registro" 
                 defaultValue="38020755"
+                onChange={onChange}
               />
             </div>
             
             <div className="space-y-2 md:col-span-2">
               <Label htmlFor="direccion_instalacion">Dirección</Label>
               <Input 
-                id="direccion_instalacion" 
+                id="direccion_instalador" 
                 placeholder="Dirección" 
                 defaultValue="C/ ISAAC PERAL, Nº 3, NAVE 5"
+                onChange={onChange}
               />
             </div>
             

@@ -12,15 +12,23 @@ import { FileUpload } from "./FileUpload";
 
 interface MemoriaTecnicaFormProps {
   onSubmit: () => void;
+  onChange?: (field: string, value: string) => void;
+  onLogoUpload?: (file: File) => void;
 }
 
-const MemoriaTecnicaForm = ({ onSubmit }: MemoriaTecnicaFormProps) => {
+const MemoriaTecnicaForm = ({ onSubmit, onChange, onLogoUpload }: MemoriaTecnicaFormProps) => {
   const [activeTab, setActiveTab] = useState("titular");
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Aquí iría la lógica para validar y procesar todos los datos del formulario
     onSubmit();
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (onChange) {
+      onChange(e.target.id, e.target.value);
+    }
   };
   
   return (
@@ -33,7 +41,12 @@ const MemoriaTecnicaForm = ({ onSubmit }: MemoriaTecnicaFormProps) => {
           <div className="mt-4">
             <FileUpload 
               accept="image/png, image/jpeg"
-              onChange={(file) => console.log("Logo subido:", file)}
+              onChange={(file) => {
+                console.log("Logo subido:", file);
+                if (onLogoUpload && file) {
+                  onLogoUpload(file);
+                }
+              }}
             />
           </div>
         </div>
@@ -49,23 +62,23 @@ const MemoriaTecnicaForm = ({ onSubmit }: MemoriaTecnicaFormProps) => {
         </TabsList>
         
         <TabsContent value="titular" className="mt-6">
-          <DatosTitularSection />
+          <DatosTitularSection onChange={handleInputChange} />
         </TabsContent>
         
         <TabsContent value="instalador" className="mt-6">
-          <DatosInstaladorSection />
+          <DatosInstaladorSection onChange={handleInputChange} />
         </TabsContent>
         
         <TabsContent value="instalacion" className="mt-6">
-          <DatosInstalacionSection />
+          <DatosInstalacionSection onChange={handleInputChange} />
         </TabsContent>
         
         <TabsContent value="tecnicos" className="mt-6">
-          <DatosTecnicosSection />
+          <DatosTecnicosSection onChange={handleInputChange} />
         </TabsContent>
         
         <TabsContent value="normativa" className="mt-6">
-          <NormativaSection />
+          <NormativaSection onChange={handleInputChange} />
         </TabsContent>
       </Tabs>
       
