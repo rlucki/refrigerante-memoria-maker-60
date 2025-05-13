@@ -16,6 +16,26 @@ interface MemoriaPreviewProps {
     provinciaInstalacion?: string;
     titulo?: string;
     clienteLogo?: string;
+    
+    // Datos de clasificación
+    metodoEnfriamiento?: string;
+    seguridadSistema?: string;
+    categoriaLocal?: string;
+    refrigerante?: string;
+    composicionRefrigerante?: string;
+    inflamabilidad?: string;
+    toxicidad?: string;
+    grupoSeguridad?: string;
+    directivaEquipos?: string;
+    pca?: string;
+    agotamientoOzono?: string;
+    limitePractico?: string;
+    atelOdl?: string;
+    limiteInflamabilidad?: string;
+    temperaturaAutoignicion?: string;
+    gasFluorado?: string;
+    nivelInstalacion?: string;
+    documentoNecesario?: string;
   };
   currentPage?: number;
 }
