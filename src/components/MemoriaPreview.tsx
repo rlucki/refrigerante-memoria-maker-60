@@ -36,24 +36,8 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
       <div className="flex-1 overflow-auto p-8">
         {/* Portada */}
         <div className="mb-12 max-w-[595px] mx-auto bg-white shadow-sm border min-h-[842px] relative p-10">
-          {/* Logos en la parte superior */}
-          <div className="flex justify-between mb-32">
-            <img 
-              src={companyLogo} 
-              alt="Logo Empresa" 
-              className="h-16 object-contain" 
-            />
-            {data.clienteLogo && (
-              <img 
-                src={data.clienteLogo} 
-                alt="Logo Cliente" 
-                className="h-16 object-contain" 
-              />
-            )}
-          </div>
-          
           {/* Título central */}
-          <div className="text-center mb-28">
+          <div className="text-center mb-28 mt-32">
             <h1 className="text-3xl font-bold mb-6">MEMORIA TÉCNICA</h1>
             <h2 className="text-2xl">INSTALACIÓN FRIGORÍFICA</h2>
           </div>
@@ -89,30 +73,30 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
             </div>
           </div>
           
-          {/* Numeración de página */}
-          <div className="absolute bottom-5 right-5">
-            <p className="text-xs text-gray-500">Pág. {currentPage}</p>
+          {/* Footer with logos and page number */}
+          <div className="absolute bottom-10 left-0 w-full px-10">
+            <div className="flex justify-between items-center">
+              <img 
+                src={companyLogo} 
+                alt="Logo Empresa" 
+                className="h-8 object-contain" 
+              />
+              {data.clienteLogo && (
+                <img 
+                  src={data.clienteLogo} 
+                  alt="Logo Cliente" 
+                  className="h-8 object-contain" 
+                />
+              )}
+            </div>
+            <div className="text-right mt-2">
+              <p className="text-xs text-gray-500">Página {currentPage} de 64</p>
+            </div>
           </div>
         </div>
         
         {/* Segunda página - Índice */}
         <div className="mb-12 max-w-[595px] mx-auto bg-white shadow-sm border min-h-[842px] relative p-10">
-          {/* Cabecera con logos */}
-          <div className="flex justify-between mb-8">
-            <img 
-              src={companyLogo} 
-              alt="Logo Empresa" 
-              className="h-10 object-contain" 
-            />
-            {data.clienteLogo && (
-              <img 
-                src={data.clienteLogo} 
-                alt="Logo Cliente" 
-                className="h-10 object-contain" 
-              />
-            )}
-          </div>
-          
           {/* Título de índice */}
           <h2 className="text-2xl font-bold mb-8 text-center">ÍNDICE</h2>
           
@@ -356,30 +340,30 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
             </div>
           </div>
           
-          {/* Numeración de página */}
-          <div className="absolute bottom-5 right-5">
-            <p className="text-xs text-gray-500">Pág. {currentPage + 1}</p>
+          {/* Footer with logos and page number */}
+          <div className="absolute bottom-10 left-0 w-full px-10">
+            <div className="flex justify-between items-center">
+              <img 
+                src={companyLogo} 
+                alt="Logo Empresa" 
+                className="h-8 object-contain" 
+              />
+              {data.clienteLogo && (
+                <img 
+                  src={data.clienteLogo} 
+                  alt="Logo Cliente" 
+                  className="h-8 object-contain" 
+                />
+              )}
+            </div>
+            <div className="text-right mt-2">
+              <p className="text-xs text-gray-500">Página {currentPage + 1} de 64</p>
+            </div>
           </div>
         </div>
 
         {/* Tercera página - Contenido de secciones 1-7 */}
         <div className="mb-12 max-w-[595px] mx-auto bg-white shadow-sm border min-h-[842px] relative p-10">
-          {/* Cabecera con logos */}
-          <div className="flex justify-between mb-8">
-            <img 
-              src={companyLogo} 
-              alt="Logo Empresa" 
-              className="h-10 object-contain" 
-            />
-            {data.clienteLogo && (
-              <img 
-                src={data.clienteLogo} 
-                alt="Logo Cliente" 
-                className="h-10 object-contain" 
-              />
-            )}
-          </div>
-
           {/* Sección 1 - OBJETO */}
           <div className="mb-6">
             <h3 className="text-lg font-bold">1. OBJETO</h3>
@@ -456,9 +440,25 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
             </p>
           </div>
 
-          {/* Numeración de página */}
-          <div className="absolute bottom-5 right-5">
-            <p className="text-xs text-gray-500">Pág. {currentPage + 2}</p>
+          {/* Footer with logos and page number */}
+          <div className="absolute bottom-10 left-0 w-full px-10">
+            <div className="flex justify-between items-center">
+              <img 
+                src={companyLogo} 
+                alt="Logo Empresa" 
+                className="h-8 object-contain" 
+              />
+              {data.clienteLogo && (
+                <img 
+                  src={data.clienteLogo} 
+                  alt="Logo Cliente" 
+                  className="h-8 object-contain" 
+                />
+              )}
+            </div>
+            <div className="text-right mt-2">
+              <p className="text-xs text-gray-500">Página {currentPage + 2} de 64</p>
+            </div>
           </div>
         </div>
       </div>
