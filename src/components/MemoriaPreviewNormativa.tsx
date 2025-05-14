@@ -130,23 +130,53 @@ const MemoriaPreviewNormativa: React.FC<MemoriaPreviewNormativaProps> = ({
   
   const normativa = data.normativaCompleta || defaultNormativa;
   
-  // Función para renderizar cada sección de normativa sin mostrar el título de categoría
-  const renderRegulationSection = (category: RegulationCategory) => {
-    if (!category || !category.regulations || category.regulations.length === 0) {
-      return null;
+  // Función para renderizar todas las regulaciones sin mostrar los títulos de categoría
+  const renderRegulations = () => {
+    const allRegulations: RegulationItem[] = [];
+    
+    // Combinar todas las regulaciones en un solo array
+    if (normativa.reglamentoRSIF.regulations.length > 0) {
+      allRegulations.push(...normativa.reglamentoRSIF.regulations);
+    }
+    
+    if (normativa.reglamentoAutonomico.regulations.length > 0) {
+      allRegulations.push(...normativa.reglamentoAutonomico.regulations);
+    }
+    
+    if (normativa.normativasSiempreAplican.regulations.length > 0) {
+      allRegulations.push(...normativa.normativasSiempreAplican.regulations);
+    }
+    
+    if (normativa.gasesFluorados.regulations.length > 0) {
+      allRegulations.push(...normativa.gasesFluorados.regulations);
+    }
+    
+    if (normativa.edificacion.regulations.length > 0) {
+      allRegulations.push(...normativa.edificacion.regulations);
+    }
+    
+    if (normativa.legionela.regulations.length > 0) {
+      allRegulations.push(...normativa.legionela.regulations);
+    }
+    
+    if (normativa.seguridadSalud.regulations.length > 0) {
+      allRegulations.push(...normativa.seguridadSalud.regulations);
     }
     
     return (
-      <div className="mb-4">
-        <ul className="list-disc pl-6 mt-2 space-y-2">
-          {category.regulations.map((reg, index) => (
-            <li key={index}>
-              <p className="font-medium">{reg.name}</p>
-              <p>{reg.description}</p>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <ul className="list-none pl-0 mt-4 space-y-4">
+        {allRegulations.map((reg, index) => (
+          <li key={index} className="flex flex-col">
+            <div className="flex items-start">
+              <span className="text-xl mr-2">•</span>
+              <div>
+                <p className="font-medium">{reg.name}</p>
+                <p className="text-justify">{reg.description}</p>
+              </div>
+            </div>
+          </li>
+        ))}
+      </ul>
     );
   };
   
@@ -163,17 +193,7 @@ const MemoriaPreviewNormativa: React.FC<MemoriaPreviewNormativaProps> = ({
           </p>
 
           <div className="space-y-4 text-sm">
-            {renderRegulationSection(normativa.reglamentoRSIF)}
-            {renderRegulationSection(normativa.reglamentoAutonomico)}
-            {renderRegulationSection(normativa.normativasSiempreAplican)}
-            
-            {normativa.gasesFluorados.regulations.length > 0 && (
-              renderRegulationSection(normativa.gasesFluorados)
-            )}
-            
-            {renderRegulationSection(normativa.edificacion)}
-            {renderRegulationSection(normativa.legionela)}
-            {renderRegulationSection(normativa.seguridadSalud)}
+            {renderRegulations()}
           </div>
         </div>
       </div>
