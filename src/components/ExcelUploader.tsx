@@ -19,10 +19,10 @@ const ExcelUploader: React.FC<ExcelUploaderProps> = ({ onDataLoaded }) => {
       const selectedFile = e.target.files[0];
       
       // Validate file type
-      if (!selectedFile.name.endsWith('.xlsx') && !selectedFile.name.endsWith('.xls')) {
+      if (!selectedFile.name.endsWith('.xlsx') && !selectedFile.name.endsWith('.xls') && !selectedFile.name.endsWith('.xlsm')) {
         toast({
           title: "Formato no válido",
-          description: "Por favor, seleccione un archivo de Excel (.xlsx o .xls)",
+          description: "Por favor, seleccione un archivo de Excel (.xlsx, .xls o .xlsm)",
           variant: "destructive"
         });
         return;
@@ -104,7 +104,7 @@ const ExcelUploader: React.FC<ExcelUploaderProps> = ({ onDataLoaded }) => {
             id="excelFile"
             onChange={handleFileChange}
             className="hidden"
-            accept=".xlsx,.xls"
+            accept=".xlsx,.xls,.xlsm"
           />
           <label
             htmlFor="excelFile"

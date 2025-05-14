@@ -225,10 +225,7 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
           >
             <div ref={previewRef} className="pdf-preview-container">
               <MemoriaPreview 
-                data={{
-                  ...memoriaData,
-                  clienteLogo
-                }} 
+                data={memoriaData} 
               />
             </div>
           </div>
