@@ -8,6 +8,8 @@ import MemoriaPreview from "@/components/MemoriaPreview";
 import { toast } from "@/hooks/use-toast";
 import html2pdf from "html2pdf.js";
 import { validateMargin } from "@/lib/utils";
+import ExcelUploader from "@/components/ExcelUploader";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const VistaPrevia = () => {
   const navigate = useNavigate();
@@ -46,10 +48,23 @@ const VistaPrevia = () => {
     documentoNecesario: "Memoria",
     
     // Datos de normativa
-    normativaCompleta: null
+    normativaCompleta: null,
+    
+    // Descripción de la instalación
+    descripcionInstalacion: `La instalación está compuesta por varios muebles frigoríficos tipo mural y dos armarios de congelados, así como tres cámaras de conservación, un obrador y dos cámaras de congelados. Los servicios positivos se alimentan desde una central compacta positiva, mientras que los servicios negativos se alimentan desde una central compacta negativa.
+
+Las centrales compactas frigoríficas se encuentran ubicadas dentro de una sala de máquinas no específica. Los compresores utilizados son de tipo scroll de la marca COPELAND. Dichos compresores van provistos de todos los elementos de seguridad necesarios para garantizar el funcionamiento correcto de los mismos y un mantenimiento mínimo. 
+
+Las centrales compactas frigoríficas incorporan el condensador de aire dentro de su propio carrozado. Los ventiladores de los condensadores son radiales de conmutación electrónica (EC) y medio nivel sonoro.
+
+El refrigerante condensado se almacena en su correspondiente recipiente de líquido individual incorporado dentro de las propias máquinas descritas.  
+Se ha instalado un evaporador en cada cámara, correctamente dimensionado a sus necesidades. El desescarche de los evaporadores se realiza por resistencias eléctricas.
+El gas utilizado en la instalación es R-448A. La carga de refrigerante para la central compacta positiva es de 50 kg, mientras que la carga de refrigerante para la central compacta negativa es de 35 kg. Por lo que la instalación cuenta con una carga total de 85 kg de refrigerante R-448A repartida en dos sistemas diferentes.`
   });
   
   const [clienteLogo, setClienteLogo] = useState("");
+  const [excelData, setExcelData] = useState(null);
+  const [activeTab, setActiveTab] = useState("form");
   const formContainerRef = useRef<HTMLDivElement>(null);
   const previewContainerRef = useRef<HTMLDivElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
@@ -87,6 +102,11 @@ const VistaPrevia = () => {
     const url = URL.createObjectURL(file);
     setClienteLogo(url);
     setMemoriaData(prev => ({ ...prev, clienteLogo: url }));
+  };
+
+  const handleExcelUpload = (data: any) => {
+    console.log("Excel data loaded:", data);
+    setExcelData(data);
   };
 
   const handleGenerarDocumento = () => {
@@ -167,38 +187,70 @@ const VistaPrevia = () => {
         </div>
       </header>
       
-      <main className="flex-1 flex flex-col lg:flex-row">
-        {/* Panel de formulario (lado izquierdo) */}
-        <div 
-          className="w-full lg:w-1/2 p-4 overflow-auto border-r" 
-          style={{ height: 'calc(100vh - 72px)' }}
-          ref={formContainerRef}
-        >
-          <div className="max-w-2xl mx-auto">
-            <MemoriaTecnicaForm 
-              onSubmit={() => {}} 
-              onChange={handleFormChange}
-              onLogoUpload={handleLogoUpload}
-            />
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1">
+        <div className="border-b bg-white">
+          <div className="max-w-7xl mx-auto">
+            <TabsList className="h-12">
+              <TabsTrigger value="form" className="data-[state=active]:border-b-2 data-[state=active]:border-primary">
+                Formulario
+              </TabsTrigger>
+              <TabsTrigger value="excel" className="data-[state=active]:border-b-2 data-[state=active]:border-primary">
+                Cálculos Excel
+              </TabsTrigger>
+            </TabsList>
           </div>
         </div>
         
-        {/* Panel de vista previa (lado derecho) */}
-        <div 
-          className="w-full lg:w-1/2 p-4 bg-gray-50 overflow-auto"
-          style={{ height: 'calc(100vh - 72px)' }}
-          ref={previewContainerRef}
-        >
-          <div ref={previewRef} className="pdf-preview-container">
-            <MemoriaPreview 
-              data={{
-                ...memoriaData,
-                clienteLogo
-              }} 
-            />
+        <TabsContent value="form" className="flex-1 flex flex-col lg:flex-row">
+          {/* Panel de formulario (lado izquierdo) */}
+          <div 
+            className="w-full lg:w-1/2 p-4 overflow-auto border-r" 
+            style={{ height: 'calc(100vh - 126px)' }}
+            ref={formContainerRef}
+          >
+            <div className="max-w-2xl mx-auto">
+              <MemoriaTecnicaForm 
+                onSubmit={() => {}} 
+                onChange={handleFormChange}
+                onLogoUpload={handleLogoUpload}
+              />
+            </div>
           </div>
-        </div>
-      </main>
+          
+          {/* Panel de vista previa (lado derecho) */}
+          <div 
+            className="w-full lg:w-1/2 p-4 bg-gray-50 overflow-auto"
+            style={{ height: 'calc(100vh - 126px)' }}
+            ref={previewContainerRef}
+          >
+            <div ref={previewRef} className="pdf-preview-container">
+              <MemoriaPreview 
+                data={{
+                  ...memoriaData,
+                  clienteLogo
+                }} 
+              />
+            </div>
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="excel" className="flex-1 flex flex-col lg:flex-row">
+          <div className="w-full p-4 overflow-auto">
+            <div className="max-w-4xl mx-auto">
+              <ExcelUploader onDataLoaded={handleExcelUpload} />
+              
+              {excelData && (
+                <div className="mt-6">
+                  <h2 className="text-xl font-bold mb-4">Datos de la hoja "RESUM LEGA"</h2>
+                  <pre className="bg-gray-100 p-4 rounded-md overflow-auto max-h-96">
+                    {JSON.stringify(excelData, null, 2)}
+                  </pre>
+                </div>
+              )}
+            </div>
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

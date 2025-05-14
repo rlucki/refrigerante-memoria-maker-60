@@ -551,7 +551,7 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
               <div className="mt-3 text-sm">
                 <div className="grid grid-cols-2 gap-2">
                   <p className="font-medium">Clasificación sistema:</p>
-                  <p>{data.metodoEnfriamiento || "Directo"}</p>
+                  <p>{data.metodoEnfriamiento || "Sistema directo"}</p>
                   <p className="font-medium">Tipo:</p>
                   <p>{data.seguridadSistema || "Tipo 2"}</p>
                   <p className="font-medium">Clasificación del local:</p>
@@ -586,6 +586,42 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
           </div>
           <div className="text-right mt-2">
             <p className="text-xs text-gray-500">Página {currentPage + 4} de 64</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Sexta página - Sección 10: DESCRIPCIÓN DE LA INSTALACIÓN FRIGORÍFICA */}
+      <div className="mb-8 max-w-[210mm] mx-auto bg-white min-h-[297mm] relative p-6">
+        {/* Content container with padding at bottom to prevent overlap with footer */}
+        <div className="pb-20">
+          {/* Sección 10 - DESCRIPCIÓN DE LA INSTALACIÓN FRIGORÍFICA */}
+          <div className="mb-6">
+            <h3 className="text-lg font-bold">10. DESCRIPCIÓN DE LA INSTALACIÓN FRIGORÍFICA</h3>
+            
+            <div className="mt-4 text-sm text-justify">
+              <p className="whitespace-pre-line">{data.descripcionInstalacion}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer with logos and page number */}
+        <div className="absolute bottom-6 left-0 w-full px-6">
+          <div className="flex justify-between items-center">
+            <img 
+              src={companyLogo} 
+              alt="Logo Empresa" 
+              className="h-8 object-contain" 
+            />
+            {data.clienteLogo && (
+              <img 
+                src={data.clienteLogo} 
+                alt="Logo Cliente" 
+                className="h-8 object-contain" 
+              />
+            )}
+          </div>
+          <div className="text-right mt-2">
+            <p className="text-xs text-gray-500">Página {currentPage + 5} de 64</p>
           </div>
         </div>
       </div>
