@@ -130,7 +130,7 @@ const MemoriaPreviewNormativa: React.FC<MemoriaPreviewNormativaProps> = ({
   
   const normativa = data.normativaCompleta || defaultNormativa;
   
-  // Función para renderizar cada sección de normativa
+  // Función para renderizar cada sección de normativa sin mostrar el título de categoría
   const renderRegulationSection = (category: RegulationCategory) => {
     if (!category || !category.regulations || category.regulations.length === 0) {
       return null;
@@ -138,7 +138,6 @@ const MemoriaPreviewNormativa: React.FC<MemoriaPreviewNormativaProps> = ({
     
     return (
       <div className="mb-4">
-        <h4 className="font-semibold">{category.title}</h4>
         <ul className="list-disc pl-6 mt-2 space-y-2">
           {category.regulations.map((reg, index) => (
             <li key={index}>
