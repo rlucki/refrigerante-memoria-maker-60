@@ -10,6 +10,8 @@ import DatosTecnicosSection from "./formSections/DatosTecnicosSection";
 import NormativaSection from "./formSections/NormativaSection";
 import ClasificacionSection from "./formSections/ClasificacionSection";
 import { FileUpload } from "./FileUpload";
+import { Textarea } from "./ui/textarea";
+import { Label } from "./ui/label";
 
 interface MemoriaTecnicaFormProps {
   onSubmit: () => void;
@@ -41,6 +43,13 @@ const MemoriaTecnicaForm = ({ onSubmit, onChange, onLogoUpload }: MemoriaTecnica
   const handleComplexChange = (field: string, value: any) => {
     if (onChange) {
       onChange(field, value);
+    }
+  };
+  
+  // Función para manejar cambios en elementos textarea
+  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (onChange) {
+      onChange(e.target.id, e.target.value);
     }
   };
   
@@ -98,6 +107,34 @@ const MemoriaTecnicaForm = ({ onSubmit, onChange, onLogoUpload }: MemoriaTecnica
         <TabsContent value="normativa" className="mt-6">
           <NormativaSection onChange={handleComplexChange} />
         </TabsContent>
+
+        <TabsContent value="descripcion" className="mt-6">
+          <Card>
+            <div className="p-6">
+              <h3 className="text-lg font-medium mb-4">10. DESCRIPCIÓN DE LA INSTALACIÓN FRIGORÍFICA</h3>
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="descripcionInstalacion">Descripción de la instalación</Label>
+                  <Textarea 
+                    id="descripcionInstalacion"
+                    className="min-h-[300px] mt-2"
+                    placeholder="Introduzca la descripción de la instalación frigorífica..."
+                    onChange={handleTextareaChange}
+                    defaultValue="La instalación está compuesta por varios muebles frigoríficos tipo mural y dos armarios de congelados, así como tres cámaras de conservación, un obrador y dos cámaras de congelados. Los servicios positivos se alimentan desde una central compacta positiva, mientras que los servicios negativos se alimentan desde una central compacta negativa.
+
+Las centrales compactas frigoríficas se encuentran ubicadas dentro de una sala de máquinas no específica. Los compresores utilizados son de tipo scroll de la marca COPELAND. Dichos compresores van provistos de todos los elementos de seguridad necesarios para garantizar el funcionamiento correcto de los mismos y un mantenimiento mínimo. 
+
+Las centrales compactas frigoríficas incorporan el condensador de aire dentro de su propio carrozado. Los ventiladores de los condensadores son radiales de conmutación electrónica (EC) y medio nivel sonoro.
+
+El refrigerante condensado se almacena en su correspondiente recipiente de líquido individual incorporado dentro de las propias máquinas descritas.  
+Se ha instalado un evaporador en cada cámara, correctamente dimensionado a sus necesidades. El desescarche de los evaporadores se realiza por resistencias eléctricas.
+El gas utilizado en la instalación es R-448A. La carga de refrigerante para la central compacta positiva es de 50 kg, mientras que la carga de refrigerante para la central compacta negativa es de 35 kg. Por lo que la instalación cuenta con una carga total de 85 kg de refrigerante R-448A repartida en dos sistemas diferentes."
+                  />
+                </div>
+              </div>
+            </div>
+          </Card>
+        </TabsContent>
       </Tabs>
       
       <div className="flex justify-between gap-4 mt-8">
@@ -111,7 +148,8 @@ const MemoriaTecnicaForm = ({ onSubmit, onChange, onLogoUpload }: MemoriaTecnica
               "instalacion": "instalador",
               "tecnicos": "instalacion",
               "clasificacion": "tecnicos",
-              "normativa": "clasificacion"
+              "normativa": "clasificacion",
+              "descripcion": "normativa"
             }[activeTab];
             setActiveTab(prevTab);
           }}
@@ -120,7 +158,7 @@ const MemoriaTecnicaForm = ({ onSubmit, onChange, onLogoUpload }: MemoriaTecnica
           Anterior
         </Button>
         
-        {activeTab !== "normativa" ? (
+        {activeTab !== "descripcion" ? (
           <Button 
             type="button"
             onClick={() => {
@@ -130,7 +168,8 @@ const MemoriaTecnicaForm = ({ onSubmit, onChange, onLogoUpload }: MemoriaTecnica
                 "instalacion": "tecnicos",
                 "tecnicos": "clasificacion",
                 "clasificacion": "normativa",
-                "normativa": "normativa"
+                "normativa": "descripcion",
+                "descripcion": "descripcion"
               }[activeTab];
               setActiveTab(nextTab);
             }}

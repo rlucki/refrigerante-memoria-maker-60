@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Card } from "@/components/ui/card";
 import MemoriaPreviewNormativa from "./MemoriaPreviewNormativa";
@@ -40,6 +41,9 @@ interface MemoriaPreviewProps {
     
     // Datos de normativa
     normativaCompleta?: any;
+    
+    // Descripción de la instalación
+    descripcionInstalacion?: string;
   };
   currentPage?: number;
 }
