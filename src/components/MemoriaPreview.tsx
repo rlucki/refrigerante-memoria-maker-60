@@ -44,6 +44,9 @@ interface MemoriaPreviewProps {
     
     // Descripción de la instalación
     descripcionInstalacion?: string;
+    
+    // Instalación eléctrica
+    instalacionElectrica?: string;
   };
   currentPage?: number;
 }
@@ -166,6 +169,10 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
             <div className="flex justify-between">
               <p>10. DESCRIPCIÓN DE LA INSTALACIÓN FRIGORÍFICA</p>
               <p>12</p>
+            </div>
+            <div className="flex justify-between">
+              <p>14. INSTALACIÓN ELÉCTRICA</p>
+              <p>15</p>
             </div>
           </div>
           
@@ -626,6 +633,42 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
           </div>
           <div className="text-right mt-2">
             <p className="text-xs text-gray-500">Página {currentPage + 5} de 64</p>
+          </div>
+        </div>
+      </div>
+      
+      {/* Séptima página - Sección 14: INSTALACIÓN ELÉCTRICA */}
+      <div className="mb-8 max-w-[210mm] mx-auto bg-white min-h-[297mm] relative p-6">
+        {/* Content container with padding at bottom to prevent overlap with footer */}
+        <div className="pb-20">
+          {/* Sección 14 - INSTALACIÓN ELÉCTRICA */}
+          <div className="mb-6">
+            <h3 className="text-lg font-bold">14. INSTALACIÓN ELÉCTRICA</h3>
+            
+            <div className="mt-4 text-sm text-justify">
+              <p className="whitespace-pre-line">{data.instalacionElectrica?.replace("14. INSTALACIÓN ELÉCTRICA", "")}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer with logos and page number */}
+        <div className="absolute bottom-6 left-0 w-full px-6">
+          <div className="flex justify-between items-center">
+            <img 
+              src={companyLogo} 
+              alt="Logo Empresa" 
+              className="h-8 object-contain" 
+            />
+            {data.clienteLogo && (
+              <img 
+                src={data.clienteLogo} 
+                alt="Logo Cliente" 
+                className="h-8 object-contain" 
+              />
+            )}
+          </div>
+          <div className="text-right mt-2">
+            <p className="text-xs text-gray-500">Página {currentPage + 6} de 64</p>
           </div>
         </div>
       </div>

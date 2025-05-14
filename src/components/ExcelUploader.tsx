@@ -1,134 +1,147 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { FileUp } from "lucide-react";
-import { Card } from "@/components/ui/card";
+import * as XLSX from "xlsx";
 import { toast } from "@/hooks/use-toast";
-import * as XLSX from 'xlsx';
+import { cn } from "@/lib/utils";
 
 interface ExcelUploaderProps {
   onDataLoaded: (data: any) => void;
+  className?: string;
 }
 
-const ExcelUploader: React.FC<ExcelUploaderProps> = ({ onDataLoaded }) => {
-  const [file, setFile] = useState<File | null>(null);
+const ExcelUploader = ({ onDataLoaded, className }: ExcelUploaderProps) => {
   const [isLoading, setIsLoading] = useState(false);
-  
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const selectedFile = e.target.files[0];
-      
-      // Validate file type
-      if (!selectedFile.name.endsWith('.xlsx') && !selectedFile.name.endsWith('.xls')) {
+  const [fileName, setFileName] = useState<string | null>(null);
+
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const file = files[0];
+    setFileName(file.name);
+    setIsLoading(true);
+
+    try {
+      // Check file extension
+      const fileExtension = file.name.split('.').pop()?.toLowerCase();
+      if (fileExtension !== 'xlsx' && fileExtension !== 'xls' && fileExtension !== 'xlsm') {
         toast({
-          title: "Formato no válido",
-          description: "Por favor, seleccione un archivo de Excel (.xlsx o .xls)",
+          title: "Formato de archivo no soportado",
+          description: "Por favor sube un archivo Excel (.xlsx, .xls o .xlsm)",
           variant: "destructive"
         });
+        setIsLoading(false);
+        return;
+      }
+
+      const data = await file.arrayBuffer();
+      const workbook = XLSX.read(data);
+      
+      // Check if the worksheet exists
+      if (!workbook.SheetNames.includes('RESUM LEGA')) {
+        toast({
+          title: "Hoja no encontrada",
+          description: "El archivo no contiene la hoja 'RESUM LEGA'",
+          variant: "destructive"
+        });
+        setIsLoading(false);
         return;
       }
       
-      setFile(selectedFile);
-    }
-  };
-  
-  const handleUpload = async () => {
-    if (!file) return;
-    
-    setIsLoading(true);
-    
-    try {
-      const reader = new FileReader();
+      // Extract data from the 'RESUM LEGA' sheet
+      const worksheet = workbook.Sheets['RESUM LEGA'];
+      const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
       
-      reader.onload = (e) => {
-        try {
-          const data = e.target?.result;
-          const workbook = XLSX.read(data, { type: 'binary' });
-          
-          // Check if "RESUM LEGA" sheet exists
-          if (!workbook.SheetNames.includes('RESUM LEGA')) {
-            toast({
-              title: "Hoja no encontrada",
-              description: "El archivo Excel debe contener una hoja llamada 'RESUM LEGA'",
-              variant: "destructive"
-            });
-            setIsLoading(false);
-            return;
-          }
-          
-          // Get data from "RESUM LEGA" sheet
-          const worksheet = workbook.Sheets['RESUM LEGA'];
-          const jsonData = XLSX.utils.sheet_to_json(worksheet);
-          
-          onDataLoaded(jsonData);
-          
-          toast({
-            title: "Datos cargados",
-            description: `Se cargaron ${jsonData.length} registros de la hoja "RESUM LEGA"`,
-          });
-        } catch (error) {
-          console.error("Error processing Excel file:", error);
-          toast({
-            title: "Error al procesar archivo",
-            description: "No se pudo procesar el archivo de Excel",
-            variant: "destructive"
-          });
-        } finally {
-          setIsLoading(false);
-        }
-      };
+      // Process the data if needed
+      onDataLoaded(jsonData);
       
-      reader.readAsBinaryString(file);
-    } catch (error) {
-      console.error("Error reading Excel file:", error);
       toast({
-        title: "Error al leer archivo",
-        description: "No se pudo leer el archivo de Excel",
+        title: "Datos cargados correctamente",
+        description: `Se han cargado los datos de la hoja 'RESUM LEGA' del archivo ${file.name}`,
+      });
+    } catch (error) {
+      console.error("Error al procesar el archivo Excel:", error);
+      toast({
+        title: "Error al procesar el archivo",
+        description: "Ocurrió un error al procesar el archivo Excel",
         variant: "destructive"
       });
+    } finally {
       setIsLoading(false);
     }
   };
-  
+
   return (
-    <Card className="p-6">
-      <h2 className="text-xl font-bold mb-4">Cargar datos de Excel</h2>
-      <p className="text-sm text-gray-500 mb-6">
-        Sube un archivo Excel que contenga una hoja llamada "RESUM LEGA" para importar los datos
-      </p>
+    <div className={cn("space-y-4", className)}>
+      <div className="flex flex-col gap-2">
+        <h2 className="text-xl font-bold">Cargar archivo Excel</h2>
+        <p className="text-sm text-gray-500">
+          Sube un archivo Excel que contenga la hoja "RESUM LEGA" para cargar los datos de cálculos.
+        </p>
+      </div>
       
-      <div className="flex flex-col space-y-4">
-        <div className="flex items-center gap-4">
-          <input
-            type="file"
-            id="excelFile"
-            onChange={handleFileChange}
-            className="hidden"
-            accept=".xlsx,.xls"
-          />
-          <label
-            htmlFor="excelFile"
-            className="cursor-pointer flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md bg-white hover:bg-gray-50 transition-colors"
-          >
-            <FileUp className="mr-2 h-4 w-4" />
-            Seleccionar archivo
-          </label>
-          {file && (
-            <span className="text-sm text-gray-500">
-              {file.name}
+      <div className="border border-dashed border-gray-300 rounded-md p-8 text-center">
+        <input
+          type="file"
+          id="excel-upload"
+          className="hidden"
+          accept=".xlsx,.xls,.xlsm"
+          onChange={handleUpload}
+        />
+        <label
+          htmlFor="excel-upload"
+          className="flex flex-col items-center justify-center cursor-pointer"
+        >
+          <div className="mb-3">
+            <svg
+              className="mx-auto h-12 w-12 text-gray-400"
+              stroke="currentColor"
+              fill="none"
+              viewBox="0 0 48 48"
+              aria-hidden="true"
+            >
+              <path
+                d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
+          <div className="flex text-sm text-gray-600">
+            <span className="relative bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
+              Seleccionar archivo
             </span>
+            <p className="pl-1">o arrastrar y soltar</p>
+          </div>
+          <p className="text-xs text-gray-500 mt-1">
+            XLSX, XLS o XLSM (máx. 10MB)
+          </p>
+        </label>
+      </div>
+      
+      {fileName && (
+        <div className="bg-gray-50 p-4 rounded-md">
+          <p className="text-sm font-medium">Archivo cargado: {fileName}</p>
+          {isLoading ? (
+            <p className="text-sm text-gray-500">Procesando archivo...</p>
+          ) : (
+            <div className="flex justify-end mt-2">
+              <Button
+                size="sm"
+                onClick={() => {
+                  setFileName(null);
+                  document.getElementById("excel-upload") && (document.getElementById("excel-upload") as HTMLInputElement).value = "";
+                }}
+              >
+                Eliminar
+              </Button>
+            </div>
           )}
         </div>
-        
-        <Button 
-          onClick={handleUpload} 
-          disabled={!file || isLoading}
-          className="w-fit"
-        >
-          {isLoading ? "Procesando..." : "Cargar datos"}
-        </Button>
-      </div>
-    </Card>
+      )}
+    </div>
   );
 };
 
