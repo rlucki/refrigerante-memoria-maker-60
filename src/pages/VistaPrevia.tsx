@@ -10,7 +10,6 @@ import html2pdf from "html2pdf.js";
 import { validateMargin } from "@/lib/utils";
 import ExcelUploader from "@/components/ExcelUploader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
 
 const VistaPrevia = () => {
   const navigate = useNavigate();
@@ -60,30 +59,7 @@ Las centrales compactas frigoríficas incorporan el condensador de aire dentro d
 
 El refrigerante condensado se almacena en su correspondiente recipiente de líquido individual incorporado dentro de las propias máquinas descritas.  
 Se ha instalado un evaporador en cada cámara, correctamente dimensionado a sus necesidades. El desescarche de los evaporadores se realiza por resistencias eléctricas.
-El gas utilizado en la instalación es R-448A. La carga de refrigerante para la central compacta positiva es de 50 kg, mientras que la carga de refrigerante para la central compacta negativa es de 35 kg. Por lo que la instalación cuenta con una carga total de 85 kg de refrigerante R-448A repartida en dos sistemas diferentes.`,
-    
-    // Instalación eléctrica
-    instalacionElectrica: `14. INSTALACIÓN ELÉCTRICA
-Las líneas eléctricas de potencia que parten del panel de control están constituidas por cable debidamente seleccionado, según la intensidad eléctrica que tenga que circular por ellos, la distancia, la temperatura ambiente y la tensión de alimentación de 400 V III, siendo las máximas caídas de tensión admitidas:
--	6% máximo total en las líneas de alimentación a los motores eléctricos.
--	4% máximo total en las líneas de control.
-Características principales de la instalación eléctrica:
--	Los cables están posicionados en las canales portacables a una distancia regular y oportunamente fijados. Los cables están adecuadamente protegidos y anclados entre el canal portacables y el elemento a conexionar.
--	Los pasajes en las paredes (pasamuros) están sellados adecuadamente. Cuando de forma puntual los pasajes sean a través de las paredes frías, estos serán herméticamente cerrados y sucesivamente aislados con poliuretano expandido para evitar al máximo las transmisiones térmicas y los fenómenos de condensación.
--	Canalización mediante bandeja metálica.
-
-Todos los circuitos eléctricos disponen de su conductor de protección correspondiente, los cuales confluyen en placa de cobre del cuadro correspondiente desde donde se conectará a la red de tierra general de la instalación. 
-
-Los circuitos eléctricos de alimentación de los sistemas frigoríficos se instalan de forma que la corriente se establezca o interrumpa independientemente de la alimentación de otras partes de la instalación, en especial, de la red de alumbrado (normal y de emergencia), dispositivos de ventilación y sistemas de alarma.
-
-A efectos de lo dispuesto por el Reglamento Electrotécnico para Baja Tensión, y sus Instrucciones técnicas complementarias MIE-BT 029 y MIE-BT 030, se considerarán:
-Locales húmedos: Las cámaras y antecámaras frigoríficas. 
-
-Locales mojados: La fabricación de hielo en tanques de salmuera y sus cámaras y antecámaras frigoríficas, salas de condensadores (excepto los condensadores enfriados por aire o por agua en circuitos cerrados) y torres de refrigeración.
-
-Locales con riesgo de explosión o incendio: locales con instalaciones que utilicen refrigerantes inflamables pertenecientes a los grupos L2 o L3, salvo con el refrigerante amoníaco según lo dispuesto en el apartado 3.4 de esta instrucción.
-Por lo que las cámaras frigoríficas descritas en esta memoria se consideran locales húmedos.
-Además de lo indicado anteriormente, para las instalaciones con cámaras a una temperatura inferior a -20ºC (cámaras negativas), se ha aplicado lo que exige al respecto el REBT y el apartado 6 de la Instrucción técnica complementaria BT-30.`
+El gas utilizado en la instalación es R-448A. La carga de refrigerante para la central compacta positiva es de 50 kg, mientras que la carga de refrigerante para la central compacta negativa es de 35 kg. Por lo que la instalación cuenta con una carga total de 85 kg de refrigerante R-448A repartida en dos sistemas diferentes.`
   });
   
   const [clienteLogo, setClienteLogo] = useState("");
@@ -221,9 +197,6 @@ Además de lo indicado anteriormente, para las instalaciones con cámaras a una 
               <TabsTrigger value="excel" className="data-[state=active]:border-b-2 data-[state=active]:border-primary">
                 Cálculos Excel
               </TabsTrigger>
-              <TabsTrigger value="preview-edit" className="data-[state=active]:border-b-2 data-[state=active]:border-primary">
-                Edición Directa
-              </TabsTrigger>
             </TabsList>
           </div>
         </div>
@@ -274,30 +247,6 @@ Además de lo indicado anteriormente, para las instalaciones con cámaras a una 
                   </pre>
                 </div>
               )}
-            </div>
-          </div>
-        </TabsContent>
-        
-        <TabsContent value="preview-edit" className="flex-1 flex flex-col">
-          <div className="w-full p-4 overflow-auto">
-            <div className="max-w-4xl mx-auto space-y-6">
-              <div>
-                <h2 className="text-xl font-bold mb-2">10. DESCRIPCIÓN DE LA INSTALACIÓN FRIGORÍFICA</h2>
-                <Textarea 
-                  value={memoriaData.descripcionInstalacion}
-                  onChange={(e) => setMemoriaData(prev => ({ ...prev, descripcionInstalacion: e.target.value }))}
-                  className="min-h-[300px]"
-                />
-              </div>
-              
-              <div>
-                <h2 className="text-xl font-bold mb-2">14. INSTALACIÓN ELÉCTRICA</h2>
-                <Textarea 
-                  value={memoriaData.instalacionElectrica}
-                  onChange={(e) => setMemoriaData(prev => ({ ...prev, instalacionElectrica: e.target.value }))}
-                  className="min-h-[400px]"
-                />
-              </div>
             </div>
           </div>
         </TabsContent>
