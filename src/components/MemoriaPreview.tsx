@@ -159,205 +159,9 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
               <p>9. CLASIFICACIÓN DE LA INSTALACIÓN</p>
               <p>7</p>
             </div>
-            <div className="flex justify-between ml-4">
-              <p>9.1. CLASIFICACIÓN DEL SISTEMA</p>
-              <p>7</p>
-            </div>
-            <div className="flex justify-between ml-4">
-              <p>9.2. CLASIFICACIÓN DEL LOCAL</p>
-              <p>8</p>
-            </div>
-            <div className="flex justify-between ml-4">
-              <p>9.3. CLASIFICACIÓN DEL GAS REFRIGERANTE</p>
-              <p>9</p>
-            </div>
-            <div className="flex justify-between ml-4">
-              <p>9.4. CLASIFICACIÓN DE LA INSTALACIÓN</p>
-              <p>10</p>
-            </div>
-            <div className="flex justify-between ml-4">
-              <p>9.5. SALA DE MÁQUINAS</p>
-              <p>11</p>
-            </div>
-            <div className="flex justify-between ml-4">
-              <p>9.6. RESUMEN</p>
-              <p>11</p>
-            </div>
             <div className="flex justify-between">
               <p>10. DESCRIPCIÓN DE LA INSTALACIÓN FRIGORÍFICA</p>
               <p>12</p>
-            </div>
-            <div className="flex justify-between">
-              <p>11. CARGAS TÉRMICAS MUEBLES FRIGORÍFICOS Y CÁMARAS</p>
-              <p>13</p>
-            </div>
-            <div className="flex justify-between">
-              <p>12. MAQUINARIA INSTALADA</p>
-              <p>14</p>
-            </div>
-            <div className="flex justify-between ml-4">
-              <p>12.1. CENTRALES POSITIVAS</p>
-              <p>14</p>
-            </div>
-            <div className="flex justify-between ml-4">
-              <p>12.2. CENTRAL NEGATIVA</p>
-              <p>15</p>
-            </div>
-            <div className="flex justify-between ml-4">
-              <p>12.3. EVAPORADORES</p>
-              <p>16</p>
-            </div>
-            <div className="flex justify-between ml-8">
-              <p>12.3.1. VALVULERÍA Y ELEMENTOS MUEBLES Y EVAPORADORES</p>
-              <p>16</p>
-            </div>
-            <div className="flex justify-between ml-4">
-              <p>12.4. ELEMENTOS DE SEGURIDAD EN CÁMARAS</p>
-              <p>17</p>
-            </div>
-            <div className="flex justify-between">
-              <p>13. CUADROS ELÉCTRICOS</p>
-              <p>20</p>
-            </div>
-            <div className="flex justify-between ml-4">
-              <p>13.1. TELEGESTIÓN</p>
-              <p>21</p>
-            </div>
-            <div className="flex justify-between">
-              <p>14. INSTALACIÓN ELÉCTRICA</p>
-              <p>22</p>
-            </div>
-            <div className="flex justify-between">
-              <p>15. TUBERÍAS Y AISLAMIENTO</p>
-              <p>23</p>
-            </div>
-            <div className="flex justify-between ml-4">
-              <p>15.1. TUBERÍAS</p>
-              <p>23</p>
-            </div>
-            <div className="flex justify-between ml-4">
-              <p>15.2. SUPORTACIONES</p>
-              <p>23</p>
-            </div>
-            <div className="flex justify-between ml-4">
-              <p>15.3. AISLAMIENTO</p>
-              <p>24</p>
-            </div>
-            <div className="flex justify-between">
-              <p>16. SALAS DE MÁQUINAS</p>
-              <p>24</p>
-            </div>
-            <div className="flex justify-between ml-4">
-              <p>16.1. VENTILACIÓN SALA DE MÁQUINAS</p>
-              <p>24</p>
-            </div>
-            <div className="flex justify-between ml-4">
-              <p>16.2. DETECTOR DE FUGAS EN SALA DE MÁQUINAS</p>
-              <p>25</p>
-            </div>
-            <div className="flex justify-between ml-4">
-              <p>16.3. INTERRUPTOR DE EMERGENCIA</p>
-              <p>25</p>
-            </div>
-            <div className="flex justify-between ml-4">
-              <p>16.4. INTERRUPTOR ACTIVACIÓN VENTILACIÓN FORZADA SALA MÁQUINAS</p>
-              <p>25</p>
-            </div>
-            <div className="flex justify-between ml-4">
-              <p>16.5. EXTINTORES PORTÁTILES</p>
-              <p>26</p>
-            </div>
-            <div className="flex justify-between ml-4">
-              <p>16.6. PLACA DE IDENTIFICACIÓN</p>
-              <p>26</p>
-            </div>
-            <div className="flex justify-between ml-4">
-              <p>16.7. CARTEL DE SEGURIDAD</p>
-              <p>27</p>
-            </div>
-            <div className="flex justify-between">
-              <p>17. EQUIPOS A PRESIÓN</p>
-              <p>28</p>
-            </div>
-            <div className="flex justify-between ml-4">
-              <p>17.1. EQUIPOS A PRESIÓN CENTRAL POSITIVA</p>
-              <p>28</p>
-            </div>
-            <div className="flex justify-between">
-              <p>18. PROTECCIÓN CONTRA SOBREPRESIONES</p>
-              <p>29</p>
-            </div>
-            <div className="flex justify-between ml-4">
-              <p>18.1. VÁLVULAS DE SEGURIDAD</p>
-              <p>29</p>
-            </div>
-            <div className="flex justify-between ml-4">
-              <p>18.2. DESCARGA DE LAS VÁLVULAS DE SEGURIDAD</p>
-              <p>30</p>
-            </div>
-            <div className="flex justify-between ml-4">
-              <p>18.3. LIMITADORES DE PRESIÓN</p>
-              <p>33</p>
-            </div>
-            <div className="flex justify-between ml-4">
-              <p>18.4. PROTECCIÓN INTERNA COMPRESORES</p>
-              <p>33</p>
-            </div>
-            <div className="flex justify-between">
-              <p>19. CARGA MÁXIMA ADMISIBLE DE REFRIGERANTE</p>
-              <p>34</p>
-            </div>
-            <div className="flex justify-between">
-              <p>20. CONTROL DE FUGAS</p>
-              <p>35</p>
-            </div>
-            <div className="flex justify-between">
-              <p>21. REVISIONES E INSPECCIONES PERIÓDICAS</p>
-              <p>38</p>
-            </div>
-            <div className="flex justify-between ml-4">
-              <p>21.1. REVISIONES PERIÓDICAS</p>
-              <p>38</p>
-            </div>
-            <div className="flex justify-between ml-4">
-              <p>21.2. INSPECCIONES PERIÓDICAS</p>
-              <p>40</p>
-            </div>
-            <div className="flex justify-between">
-              <p>22. CONSIDERACIONES FINALES</p>
-              <p>42</p>
-            </div>
-            <div className="flex justify-between">
-              <p>23. ANEXOS</p>
-              <p>43</p>
-            </div>
-            <div className="flex justify-between ml-4">
-              <p>23.1. PLANO DE SITUACIÓN DE LA INSTALACIÓN</p>
-              <p>43</p>
-            </div>
-            <div className="flex justify-between ml-4">
-              <p>23.2. DISTRIBUCIÓN DE TUBERÍAS Y CANALIZACIONES</p>
-              <p>45</p>
-            </div>
-            <div className="flex justify-between ml-4">
-              <p>23.3. ESQUEMAS FRIGORÍFICOS DE PRINCIPIO</p>
-              <p>50</p>
-            </div>
-            <div className="flex justify-between ml-8">
-              <p>23.3.1. ESQUEMA FRIGORÍFICO CENTRAL POSITIVA</p>
-              <p>50</p>
-            </div>
-            <div className="flex justify-between ml-8">
-              <p>23.3.2. ESQUEMA FRIGORÍFICO CENTRAL NEGATIVA</p>
-              <p>50</p>
-            </div>
-            <div className="flex justify-between ml-8">
-              <p>23.3.3. ESQUEMA FRIGORÍFICO SERVICIOS</p>
-              <p>50</p>
-            </div>
-            <div className="flex justify-between ml-4">
-              <p>23.4. FICHA DE SEGURIDAD REFRIGERANTE (FDS)</p>
-              <p>52</p>
             </div>
           </div>
           
@@ -677,6 +481,87 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
                   <p><span className="font-medium">Límite Inferior de Inflamabilidad:</span> {data.limiteInflamabilidad || "NF"}</p>
                   <p><span className="font-medium">Temperatura de autoignición:</span> {data.temperaturaAutoignicion || "ND"}</p>
                   <p><span className="font-medium">Gas Fluorado:</span> {data.gasFluorado || "SI"}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Sección 9.4 - CLASIFICACIÓN DE LA INSTALACIÓN */}
+            <div className="mt-4 mb-6">
+              <h4 className="text-base font-bold">9.4. CLASIFICACIÓN DE LA INSTALACIÓN</h4>
+              <p className="text-sm mt-2">
+                Según lo especificado en el Artículo 8 del Capítulo II del Reglamento de Seguridad de Instalaciones Frigoríficas (RSIF), las instalaciones frigoríficas se clasifican en función del riesgo potencial en las categorías siguientes:
+              </p>
+              
+              <div className="mt-3 text-sm">
+                <p className="font-medium">Nivel 1.</p>
+                <p className="mt-1 text-justify">
+                  Instalaciones formadas por uno o varios sistemas frigoríficos independientes entre sí con una potencia eléctrica instalada en los compresores por cada sistema inferior o igual a 30 kW siempre que la suma total de las potencias eléctricas instaladas en los compresores frigoríficos, de todos los sistemas, no exceda de 100 kW, o por equipos o sistemas compactos de cualquier potencia, con condensador incorporado (no remoto), siempre que se trate de unidades enfriadoras de agua, de fluidos secundarios, bombas de calor, o que formen parte de las mismas y que en ambos casos utilicen refrigerantes de alta seguridad (L1), y que no refrigeren cámaras de atmósfera artificial de cualquier volumen, o conjuntos de las mismas.
+                </p>
+              </div>
+              
+              <div className="mt-3 text-sm">
+                <p className="font-medium">Nivel 2.</p>
+                <p className="mt-1 text-justify">
+                  Instalaciones formadas por uno o varios sistemas frigoríficos independientes entre sí con una potencia eléctrica instalada en los compresores superior a 30 kW en alguno de los sistemas, o que la suma total de las potencias eléctricas instaladas en los compresores frigoríficos exceda de 100 kW, o que enfríen cámaras de atmósfera artificial, o que utilicen refrigerantes de media y baja seguridad (L2 y L3).
+                </p>
+              </div>
+              
+              <div className="mt-3 text-sm">
+                <p className="mt-1 text-justify">
+                  Diferentes sistemas de refrigeración configuran la misma instalación frigorífica cuando tienen en común alguno de los siguientes elementos o componentes:
+                </p>
+                <ul className="list-[lower-latin] pl-8 mt-2 space-y-1">
+                  <li>Equipos ubicados en una misma sala de máquinas o que atienden a un mismo espacio, como cámaras frigoríficas, salas de proceso, etc.</li>
+                  <li>Circuito de condensación</li>
+                </ul>
+              </div>
+            </div>
+            
+            {/* Sección 9.5 - SALA DE MÁQUINAS */}
+            <div className="mt-4 mb-6">
+              <h4 className="text-base font-bold">9.5. SALA DE MÁQUINAS</h4>
+              <p className="text-sm mt-2">
+                Atendiendo la definición que da el Reglamento de Seguridad de Instalaciones Frigoríficas (RSIF), en el apartado 3.2 de su instrucción IF-01, (terminología):
+              </p>
+              
+              <div className="mt-3 text-sm">
+                <p className="font-medium">Sala de Máquinas</p>
+                <p className="mt-1 text-justify">
+                  Espacio o recinto cerrado, ventilado por ventilación mecánica, sellado y aislado respecto a las zonas públicas y no accesible al público, destinado a la instalación de componentes del sistema de refrigeración o del sistema completo. Pueden instalarse otros equipos si son compatibles con los requisitos de seguridad del sistema de refrigeración. No tendrá consideración de espacio, local o recinto habitado a los efectos de establecer la carga máxima de refrigerante en la instalación frigorífica.
+                </p>
+              </div>
+              
+              <div className="mt-3 text-sm">
+                <p className="font-medium">Sala de Máquinas Específica</p>
+                <p className="mt-1 text-justify">
+                  Sala de máquinas prevista exclusivamente para la instalación de componentes, consumibles y herramientas necesarias para partes de los sistemas de refrigeración o de los sistemas completos. Es accesible solamente a personal autorizado para necesidades de mantenimiento y reparación.
+                </p>
+              </div>
+              
+              <div className="mt-3 text-sm">
+                <p className="mt-1 text-justify">
+                  Ambas centrales frigoríficas se encuentran ubicadas en una sala de máquinas no específica. Por lo tanto, la presente instalación dispone de sala de máquinas.
+                </p>
+              </div>
+            </div>
+            
+            {/* Sección 9.6 - RESUMEN */}
+            <div className="mt-4 mb-6">
+              <h4 className="text-base font-bold">9.6. RESUMEN</h4>
+              <div className="mt-3 text-sm">
+                <div className="grid grid-cols-2 gap-2">
+                  <p className="font-medium">Clasificación sistema:</p>
+                  <p>{data.metodoEnfriamiento || "Directo"}</p>
+                  <p className="font-medium">Tipo:</p>
+                  <p>{data.seguridadSistema || "Tipo 2"}</p>
+                  <p className="font-medium">Clasificación del local:</p>
+                  <p>{data.categoriaLocal || "Categoría A"}</p>
+                  <p className="font-medium">Clasificación Refrigerante:</p>
+                  <p>{data.grupoSeguridad || "A1"}</p>
+                  <p className="font-medium">Clasificación Instalación:</p>
+                  <p>{data.nivelInstalacion || "Nivel 1"}</p>
+                  <p className="font-medium">Sala de Máquinas:</p>
+                  <p>Específica</p>
                 </div>
               </div>
             </div>
