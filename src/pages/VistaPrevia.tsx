@@ -7,6 +7,7 @@ import MemoriaTecnicaForm from "@/components/MemoriaTecnicaForm";
 import MemoriaPreview from "@/components/MemoriaPreview";
 import { toast } from "@/hooks/use-toast";
 import html2pdf from "html2pdf.js";
+import { validateMargin } from "@/lib/utils";
 
 const VistaPrevia = () => {
   const navigate = useNavigate();
@@ -104,9 +105,9 @@ const VistaPrevia = () => {
       description: "Espere mientras se genera el PDF...",
     });
 
-    // Configuración para html2pdf
+    // Configuración para html2pdf con márgenes reducidos (aproximadamente 1/3 de los originales)
     const opt = {
-      margin: [10, 10, 10, 10],
+      margin: [validateMargin(3), validateMargin(3), validateMargin(3), validateMargin(3)], // Márgenes reducidos [top, right, bottom, left]
       filename: `Memoria_Técnica_${memoriaData.titular.replace(/\s+/g, '_')}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { 
@@ -188,7 +189,7 @@ const VistaPrevia = () => {
           style={{ height: 'calc(100vh - 72px)' }}
           ref={previewContainerRef}
         >
-          <div ref={previewRef}>
+          <div ref={previewRef} className="pdf-preview-container">
             <MemoriaPreview 
               data={{
                 ...memoriaData,

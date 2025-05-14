@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -97,5 +98,38 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* Estilos para la vista previa del documento */
+.memoria-preview-container {
+  width: 100%;
+  max-width: 210mm;
+  margin: 0 auto;
+}
+
+.memoria-preview-container > div {
+  box-shadow: none;
+  border: none;
+}
+
+/* Asegurar que el texto mantenga su formato al hacer zoom */
+.pdf-preview-container {
+  width: 100%;
+  zoom: 1;
+}
+
+@media print {
+  .memoria-preview-container > div {
+    margin: 0;
+    box-shadow: none;
+    border: none;
+    padding: 0;
+  }
+  
+  .memoria-preview-container {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
   }
 }
