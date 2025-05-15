@@ -9,14 +9,12 @@ import DatosInstalacionSection from "./formSections/DatosInstalacionSection";
 import DatosTecnicosSection from "./formSections/DatosTecnicosSection";
 import NormativaSection from "./formSections/NormativaSection";
 import ClasificacionSection from "./formSections/ClasificacionSection";
-import { FileUpload } from "./FileUpload";
 import { Textarea } from "./ui/textarea";
 import { Label } from "./ui/label";
 
 interface MemoriaTecnicaFormProps {
   onSubmit: () => void;
   onChange?: (field: string, value: any) => void;
-  onLogoUpload?: (file: File) => void;
 }
 
 const defaultDescripcionText = `La instalación está compuesta por varios muebles frigoríficos tipo mural y dos armarios de congelados, así como tres cámaras de conservación, un obrador y dos cámaras de congelados. Los servicios positivos se alimentan desde una central compacta positiva, mientras que los servicios negativos se alimentan desde una central compacta negativa.
@@ -29,7 +27,7 @@ El refrigerante condensado se almacena en su correspondiente recipiente de líqu
 Se ha instalado un evaporador en cada cámara, correctamente dimensionado a sus necesidades. El desescarche de los evaporadores se realiza por resistencias eléctricas.
 El gas utilizado en la instalación es R-448A. La carga de refrigerante para la central compacta positiva es de 50 kg, mientras que la carga de refrigerante para la central compacta negativa es de 35 kg. Por lo que la instalación cuenta con una carga total de 85 kg de refrigerante R-448A repartida en dos sistemas diferentes.`;
 
-const MemoriaTecnicaForm = ({ onSubmit, onChange, onLogoUpload }: MemoriaTecnicaFormProps) => {
+const MemoriaTecnicaForm = ({ onSubmit, onChange }: MemoriaTecnicaFormProps) => {
   const [activeTab, setActiveTab] = useState("titular");
   
   const handleSubmit = (e: React.FormEvent) => {
@@ -65,25 +63,6 @@ const MemoriaTecnicaForm = ({ onSubmit, onChange, onLogoUpload }: MemoriaTecnica
   
   return (
     <form onSubmit={handleSubmit}>
-      <Card className="mb-6">
-        <div className="p-6 border-b border-gray-200">
-          <h3 className="text-base font-medium text-gray-900">Logo del Cliente</h3>
-          <p className="text-sm text-gray-500 mt-1">Subir el logo que aparecerá en la memoria técnica</p>
-          
-          <div className="mt-4">
-            <FileUpload 
-              accept="image/png, image/jpeg"
-              onChange={(file) => {
-                console.log("Logo subido:", file);
-                if (onLogoUpload && file) {
-                  onLogoUpload(file);
-                }
-              }}
-            />
-          </div>
-        </div>
-      </Card>
-      
       <Tabs defaultValue="titular" value={activeTab} onValueChange={setActiveTab} className="mb-6">
         <TabsList className="grid grid-cols-7 w-full">
           <TabsTrigger value="titular">Datos Titular</TabsTrigger>
