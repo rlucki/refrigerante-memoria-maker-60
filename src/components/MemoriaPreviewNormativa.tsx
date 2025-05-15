@@ -30,6 +30,7 @@ interface MemoriaPreviewNormativaProps {
     aplicaLegionela?: string;
     aplicaGasesFluorados?: string;
     rsifAplicable?: string;
+    encabezado?: string;
   };
   pageNumber?: number;
   companyLogo?: string;
@@ -135,11 +136,11 @@ const MemoriaPreviewNormativa: React.FC<MemoriaPreviewNormativaProps> = ({
     if (!category.regulations || category.regulations.length === 0) return null;
     
     return (
-      <div className="mb-4">
-        <h4 className="font-semibold text-base mb-2">{category.title}</h4>
+      <div className="mb-4 avoid-break">
+        <h4 className="font-semibold text-base mb-2 page-break-after">{category.title}</h4>
         <ul className="list-none pl-0 space-y-3">
           {category.regulations.map((reg, index) => (
-            <li key={index} className="flex flex-col">
+            <li key={index} className="flex flex-col avoid-break">
               <div className="flex items-start">
                 <span className="text-xl mr-2">•</span>
                 <div>
@@ -155,12 +156,23 @@ const MemoriaPreviewNormativa: React.FC<MemoriaPreviewNormativaProps> = ({
   };
   
   return (
-    <div className="mb-8 max-w-[595px] mx-auto bg-white min-h-[842px] relative p-10 memory-preview-page">
-      {/* Content container with padding at bottom to prevent overlap with footer */}
-      <div className="pb-32">
+    <div className="mb-8 max-w-[595px] mx-auto bg-white min-h-[842px] relative memory-preview-page">
+      {/* Header */}
+      <div className="header-content">
+        {data.encabezado && (
+          <div className="text-center mb-6">
+            {data.encabezado.split('\n').map((line, i) => (
+              <p key={i} className="font-bold">{line}</p>
+            ))}
+          </div>
+        )}
+      </div>
+      
+      {/* Content container with padding to prevent overlap with header/footer */}
+      <div className="content-container text-content">
         {/* Sección 8 - NORMATIVA DE APLICACIÓN */}
         <div className="mb-6">
-          <h3 className="text-lg font-bold">8. NORMATIVA DE APLICACIÓN</h3>
+          <h3 className="text-lg font-bold page-break-after">8. NORMATIVA DE APLICACIÓN</h3>
           <p className="text-sm mt-3 mb-4">
             Para la elaboración de este documento y para la ejecución de la instalación, se deberán tener en cuenta, 
             entre otras, las siguientes disposiciones:
@@ -179,7 +191,7 @@ const MemoriaPreviewNormativa: React.FC<MemoriaPreviewNormativaProps> = ({
       </div>
 
       {/* Footer with logos and page number */}
-      <div className="absolute bottom-10 left-0 w-full px-10">
+      <div className="footer-content">
         <div className="flex justify-between items-center">
           {companyLogo && (
             <img 

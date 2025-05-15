@@ -25,6 +25,7 @@ const VistaPrevia = () => {
     cpInstalacion: "35610",
     provinciaInstalacion: "SANTA CRUZ DE TENERIFE",
     titulo: "MEMORIA TÉCNICA DESCRIPTIVA",
+    encabezado: "MEMORIA TÉCNICA DESCRIPTIVA INSTALACIÓN FRIGORÍFICA\nSD MERCADO PUERTO DE LA CRUZ TENERIFE",
     
     // Datos de clasificación
     metodoEnfriamiento: "Sistema indirecto",
@@ -124,14 +125,16 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
       description: "Espere mientras se genera el PDF...",
     });
 
-    // Crear una copia del contenido para manipularlo sin afectar la visualización
+    // Tomar una copia para manipular
     const content = previewRef.current.cloneNode(true) as HTMLElement;
     
-    // Aplicar estilos específicos para el PDF
+    // Preparación para la generación correcta del PDF - Agregar clase especial para modo PDF
+    content.classList.add('pdf-export-mode');
+
+    // Estilos específicos para garantizar la generación correcta del PDF
     const pdfStyles = document.createElement('style');
     pdfStyles.textContent = `
       @page {
-        size: A4;
         margin: 0;
       }
       body {
@@ -148,87 +151,70 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
         background-color: white !important;
         margin: 0 !important;
       }
-      .absolute.bottom-10 {
+      .memory-preview-page {
+        page-break-inside: avoid !important;
+      }
+      .header-content {
+        position: absolute !important;
+        top: 20mm !important;
+        left: 0 !important;
+        width: 100% !important;
+        padding: 0 20mm !important;
+      }
+      .footer-content {
         position: absolute !important;
         bottom: 20mm !important;
         left: 0 !important;
         width: 100% !important;
         padding: 0 20mm !important;
       }
-      h3, h4 {
+      .content-container {
         margin-top: 10mm !important;
-        margin-bottom: 5mm !important;
+        margin-bottom: 30mm !important;
+        width: 100% !important;
       }
-      .memory-preview-page {
-        page-break-inside: avoid !important;
-        box-sizing: border-box !important;
-      }
-      ul, li {
-        page-break-inside: avoid !important;
+      .text-content {
+        padding-bottom: 40mm !important;
       }
     `;
     content.prepend(pdfStyles);
-    
-    // Asegurar que cada página tenga el formato correcto
-    const pages = content.querySelectorAll('.memoria-preview-container > div');
-    pages.forEach(page => {
-      const pageElement = page as HTMLElement;
-      pageElement.style.width = '210mm';
-      pageElement.style.height = '297mm';
-      pageElement.style.padding = '20mm';
-      pageElement.style.boxSizing = 'border-box';
-      pageElement.style.position = 'relative';
-      pageElement.style.pageBreakAfter = 'always';
-      pageElement.style.backgroundColor = 'white';
-      pageElement.style.margin = '0';
-      
-      // Asegurar que el contenido interno respete márgenes
-      const contentContainer = pageElement.querySelector('div:first-child') as HTMLElement;
-      if (contentContainer) {
-        contentContainer.style.position = 'relative';
-        contentContainer.style.height = 'calc(100% - 30mm)';
-        contentContainer.style.width = '100%';
-      }
-      
-      // Asegurar que el footer se mantenga en posición correcta
-      const footer = pageElement.querySelector('.absolute.bottom-10, .absolute.bottom-6') as HTMLElement;
-      if (footer) {
-        footer.style.position = 'absolute';
-        footer.style.bottom = '20mm';
-        footer.style.left = '0';
-        footer.style.width = '100%';
-        footer.style.padding = '0 20mm';
-      }
-    });
 
-    // Configuración optimizada para html2pdf con alto nivel de exactitud
+    // Configuración optimizada para html2pdf con fonética mejorada
     const opt = {
       margin: 0,
       filename: `Memoria_Técnica_${memoriaData.titular.replace(/\s+/g, '_')}.pdf`,
-      image: { type: 'jpeg', quality: 1.0 },
+      image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { 
-        scale: 2,
+        scale: 2, 
         useCORS: true,
         letterRendering: true,
-        allowTaint: true,
         scrollX: 0,
         scrollY: 0,
-        windowWidth: 210 * 2.83, // Factor preciso para A4
+        windowWidth: 210 * 3.78, // Factor preciso para A4
         logging: false,
-        removeContainer: true,
-        foreignObjectRendering: false
+        removeContainer: true
       },
-      jsPDF: { 
-        unit: 'mm', 
-        format: 'a4', 
+      jsPDF: {
+        unit: 'mm',
+        format: 'a4',
         orientation: 'portrait',
         compress: true,
-        precision: 16
+        precision: 16,
+        putOnlyUsedFonts: true,
+        floatPrecision: "smart"
       },
-      pagebreak: { mode: 'avoid-all', before: '.page-break', after: '.avoid-break-after' }
+      fontFaces: [
+        { family: 'Arial', source: 'https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Me5Q.ttf' }
+      ],
+      pagebreak: { 
+        mode: ['avoid-all', 'css', 'legacy'],
+        before: '.page-break-before',
+        after: '.page-break-after',
+        avoid: ['.avoid-break', 'img', 'table', 'h3', 'h4', '.memory-preview-page', 'li']
+      }
     };
 
-    // Convertir a PDF y descargar con mayor precisión
+    // Convertir a PDF con manejo especial para que el texto sea seleccionable
     html2pdf()
       .from(content)
       .set(opt)
