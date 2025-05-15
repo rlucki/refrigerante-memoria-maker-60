@@ -1,7 +1,7 @@
 
 import React from "react";
 
-interface MemClasificacionProps {
+interface MemoriaClasificacionProps {
   data: {
     metodoEnfriamiento?: string;
     seguridadSistema?: string;
@@ -23,7 +23,7 @@ interface MemClasificacionProps {
   };
 }
 
-const MemoriaClasificacion: React.FC<MemoriaClasificacionProps> = ({ data }) => {
+const MemClasificacion: React.FC<MemoriaClasificacionProps> = ({ data }) => {
   return (
     <div className="mb-8 max-w-[210mm] mx-auto bg-white min-h-[297mm] relative p-6">
       <div className="pb-20">
