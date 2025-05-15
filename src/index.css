@@ -113,10 +113,14 @@
   position: relative;
   background-color: white;
   width: 210mm;
+  height: 297mm; /* Fixed A4 height */
   min-height: 297mm;
+  max-height: 297mm;
   padding: 20mm;
   box-sizing: border-box;
   margin-bottom: 20px;
+  overflow: hidden; /* Prevent content from overflowing */
+  page-break-after: always;
 }
 
 /* Asegurar que el texto mantenga su formato al hacer zoom */
@@ -129,12 +133,15 @@
 .header-content {
   position: relative;
   margin-bottom: 15mm;
+  height: auto;
 }
 
 .content-container {
   position: relative;
   margin-top: 10mm;
-  margin-bottom: 30mm;
+  margin-bottom: 30mm; /* Space for footer */
+  max-height: 227mm; /* 297mm - 40mm (top+bottom margins) - 30mm (footer space) */
+  overflow: hidden;
 }
 
 .footer-content {
@@ -142,17 +149,33 @@
   bottom: 20mm;
   left: 20mm;
   right: 20mm;
+  height: 20mm;
   z-index: 10;
 }
 
-/* Estilo específico para la página de normativa */
+/* Estilo específico para la página de normativa y clasificación */
 .memory-preview-page {
   page-break-inside: avoid !important;
+  page-break-after: always !important;
   position: relative;
   background-color: white;
+  width: 210mm;
+  height: 297mm;
   min-height: 297mm;
+  max-height: 297mm;
   padding: 20mm;
   box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Ajuste para tablas largas en la sección de clasificación */
+.classification-table {
+  page-break-inside: auto !important;
+}
+
+.classification-table tr {
+  page-break-inside: avoid !important;
+  page-break-after: auto !important;
 }
 
 /* Calibrar estilos específicos para la exportación a PDF */
@@ -163,8 +186,9 @@
     border: none !important;
     padding: 20mm !important;
     page-break-after: always !important;
-    min-height: 297mm !important;
+    height: 297mm !important;
     width: 210mm !important;
+    overflow: hidden !important;
   }
   
   .memoria-preview-container {
@@ -221,35 +245,18 @@
 .pdf-export-mode .memoria-preview-container > div,
 .pdf-export-mode .memory-preview-page {
   width: 210mm !important;
+  height: 297mm !important;
   min-height: 297mm !important;
+  max-height: 297mm !important;
   padding: 20mm !important;
   position: relative !important;
   margin: 0 !important;
   box-shadow: none !important;
   border: none !important;
   background-color: white !important;
-}
-
-.pdf-export-mode .footer-content {
-  position: absolute !important;
-  bottom: 20mm !important;
-  left: 20mm !important;
-  right: 20mm !important;
-  z-index: 10 !important;
-}
-
-.pdf-export-mode .header-content {
-  position: relative !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  margin-bottom: 15mm !important;
-}
-
-.pdf-export-mode .content-container {
-  position: relative !important;
-  margin-top: 10mm !important;
-  margin-bottom: 40mm !important; /* Extra space to prevent overlap with footer */
+  overflow: hidden !important;
+  page-break-after: always !important;
+  page-break-before: auto !important;
 }
 
 /* Clases para controlar los saltos de página en PDF */
@@ -288,4 +295,19 @@ h1, h2, h3, h4, h5, h6, p, span, ul, li {
   -moz-user-select: text !important;
   -ms-user-select: text !important;
   user-select: text !important;
+}
+
+/* Clases para manejar tablas extensas en sección de clasificación */
+.classification-section {
+  page-break-before: auto;
+  page-break-after: auto;
+  page-break-inside: auto;
+}
+
+.classification-section table {
+  page-break-inside: auto;
+}
+
+.classification-section tr {
+  page-break-inside: avoid;
 }

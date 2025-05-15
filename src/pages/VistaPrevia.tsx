@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, FileDown, Printer } from "lucide-react";
@@ -131,17 +132,30 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
     // Preparación para la generación correcta del PDF - Agregar clase especial para modo PDF
     content.classList.add('pdf-export-mode');
 
+    // Forzar cada página a tener tamaño A4 correcto y asegurar saltos de página
+    const pages = content.querySelectorAll('.memoria-preview-container > div, .memory-preview-page');
+    pages.forEach(page => {
+      const pageElement = page as HTMLElement;
+      pageElement.style.width = '210mm';
+      pageElement.style.height = '297mm';
+      pageElement.style.overflow = 'hidden';
+      pageElement.style.position = 'relative';
+      pageElement.style.pageBreakAfter = 'always';
+      pageElement.style.pageBreakInside = 'avoid';
+    });
+
     // Estilos específicos para garantizar la generación correcta del PDF
     const pdfStyles = document.createElement('style');
     pdfStyles.textContent = `
       @page {
+        size: A4;
         margin: 0;
       }
       body {
         margin: 0;
         padding: 0;
       }
-      .memoria-preview-container > div {
+      .memoria-preview-container > div, .memory-preview-page {
         width: 210mm !important;
         height: 297mm !important;
         padding: 20mm !important;
@@ -150,31 +164,44 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
         page-break-after: always !important;
         background-color: white !important;
         margin: 0 !important;
+        overflow: hidden !important;
       }
-      .memory-preview-page {
-        page-break-inside: avoid !important;
+      .content-container {
+        position: relative !important;
+        margin-top: 10mm !important;
+        margin-bottom: 30mm !important;
+        max-height: 227mm !important; /* 297mm - 40mm (top+bottom margins) - 30mm (footer space) */
+        overflow: hidden !important;
       }
       .header-content {
-        position: absolute !important;
-        top: 20mm !important;
+        position: relative !important;
+        top: 0 !important;
         left: 0 !important;
         width: 100% !important;
-        padding: 0 20mm !important;
+        height: auto !important;
+        margin-bottom: 10mm !important;
       }
       .footer-content {
         position: absolute !important;
         bottom: 20mm !important;
-        left: 0 !important;
-        width: 100% !important;
-        padding: 0 20mm !important;
-      }
-      .content-container {
-        margin-top: 10mm !important;
-        margin-bottom: 30mm !important;
-        width: 100% !important;
+        left: 20mm !important;
+        right: 20mm !important;
+        height: 20mm !important;
+        z-index: 10 !important;
       }
       .text-content {
-        padding-bottom: 40mm !important;
+        max-height: 217mm !important; /* Content container minus header space */
+        overflow: hidden !important;
+      }
+      table {
+        page-break-inside: avoid !important;
+      }
+      h1, h2, h3, h4 {
+        page-break-after: avoid !important;
+      }
+      p {
+        orphans: 3 !important;
+        widows: 3 !important;
       }
     `;
     content.prepend(pdfStyles);
@@ -207,7 +234,7 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
         { family: 'Arial', source: 'https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Me5Q.ttf' }
       ],
       pagebreak: { 
-        mode: ['avoid-all', 'css', 'legacy'],
+        mode: ['css', 'avoid-all', 'legacy'],
         before: '.page-break-before',
         after: '.page-break-after',
         avoid: ['.avoid-break', 'img', 'table', 'h3', 'h4', '.memory-preview-page', 'li']

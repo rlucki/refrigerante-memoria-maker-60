@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -573,10 +572,10 @@ const ClasificacionSection = ({ onChange }: ClasificacionSectionProps) => {
       <div className="p-6">
         <h3 className="text-lg font-medium mb-4">CLASIFICACIÓN DEL SISTEMA</h3>
         
-        <div className="space-y-6">
+        <div className="space-y-6 classification-section">
           {/* Clasificación del sistema */}
-          <div className="border-b pb-4">
-            <table className="w-full border-collapse">
+          <div className="border-b pb-4 avoid-break">
+            <table className="w-full border-collapse classification-table">
               <thead>
                 <tr className="bg-gray-100">
                   <th className="text-left p-2 border">Clasificación del sistema</th>
@@ -630,8 +629,8 @@ const ClasificacionSection = ({ onChange }: ClasificacionSectionProps) => {
           </div>
 
           {/* Clasificación del local */}
-          <div className="border-b pb-4">
-            <table className="w-full border-collapse">
+          <div className="border-b pb-4 avoid-break">
+            <table className="w-full border-collapse classification-table">
               <thead>
                 <tr className="bg-gray-100">
                   <th className="text-left p-2 border">Clasificación</th>
@@ -665,8 +664,8 @@ const ClasificacionSection = ({ onChange }: ClasificacionSectionProps) => {
           </div>
 
           {/* Refrigerante */}
-          <div className="border-b pb-4">
-            <table className="w-full border-collapse">
+          <div className="border-b pb-4 classification-section">
+            <table className="w-full border-collapse classification-table">
               <thead>
                 <tr className="bg-gray-100">
                   <th className="text-left p-2 border">Parámetro</th>
@@ -862,8 +861,8 @@ const ClasificacionSection = ({ onChange }: ClasificacionSectionProps) => {
           </div>
 
           {/* Clasificación de la instalación */}
-          <div>
-            <table className="w-full border-collapse">
+          <div className="avoid-break">
+            <table className="w-full border-collapse classification-table">
               <thead>
                 <tr className="bg-gray-100">
                   <th className="text-left p-2 border">Parámetro</th>

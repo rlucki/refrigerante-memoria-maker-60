@@ -1,4 +1,3 @@
-
 import React from "react";
 
 interface RegulationItem {
@@ -156,7 +155,7 @@ const MemoriaPreviewNormativa: React.FC<MemoriaPreviewNormativaProps> = ({
   };
   
   return (
-    <div className="mb-8 max-w-[595px] mx-auto bg-white min-h-[842px] relative memory-preview-page">
+    <div className="mb-8 max-w-[595px] mx-auto bg-white memory-preview-page">
       {/* Header */}
       <div className="header-content">
         {data.encabezado && (
