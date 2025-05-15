@@ -5,9 +5,9 @@ const MemoriaInstalacionElectrica: React.FC = () => {
   return (
     <div className="mb-8 max-w-[210mm] mx-auto bg-white min-h-[297mm] relative p-6">
       <div className="pb-20">
-        {/* Sección 15 - INSTALACIÓN ELÉCTRICA */}
+        {/* Sección 16 - INSTALACIÓN ELÉCTRICA */}
         <div className="mb-6">
-          <h3 className="text-lg font-bold">15. INSTALACIÓN ELÉCTRICA</h3>
+          <h3 className="text-lg font-bold">16. INSTALACIÓN ELÉCTRICA</h3>
           
           <div className="mt-4 text-sm text-justify">
             <p className="mb-3">
