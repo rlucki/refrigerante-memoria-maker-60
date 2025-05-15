@@ -328,6 +328,7 @@ El refrigerante, a alta presión, se expansiona hasta la presión de intermedia 
             </style>
             <MemoriaPreview 
               data={memoriaData} 
+              calculationsData={calculationsData}
             />
           </div>
         </div>

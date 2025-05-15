@@ -60,9 +60,17 @@ interface MemoriaPreviewProps {
     descripcionInstalacion?: string;
   };
   currentPage?: number;
+  calculationsData?: {
+    compresorMT?: string;
+    compresorBT?: string;
+    compresorParalelo?: string;
+    ubicacionGascooler?: string;
+    tieneIHX?: string;
+    tieneDesrecalentador?: string;
+  };
 }
 
-const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }) => {
+const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1, calculationsData }) => {
   
   return (
     <div className="memoria-preview-container continuous-flow">
@@ -73,7 +81,7 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
       <MemoriaClasificacionLocal data={data} />
       <MemoriaClasificacionGas data={data} />
       <MemoriaInstalacion data={data} />
-      <MemoriaDescripcion data={data} />
+      <MemoriaDescripcion data={data} calculationsData={calculationsData} />
       <MemoriaInstalacionElectrica />
       <MemoriaTuberias />
       <MemoriaSoportaciones />
