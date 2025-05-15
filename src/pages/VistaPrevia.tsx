@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, FileDown, Printer } from "lucide-react";
@@ -11,7 +12,7 @@ import ExcelUploader from "@/components/ExcelUploader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // Import only needed elements from docx
-import { Document, Paragraph, TextRun, HeadingLevel } from "docx";
+import { Document, Paragraph, TextRun, HeadingLevel, Packer } from "docx";
 // Import docx-preview for browser rendering
 import { renderAsync } from "docx-preview";
 
@@ -345,8 +346,8 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
         ],
       });
       
-      // Create a blob for browser download
-      const blob = await doc.save();
+      // Use Packer to create a blob from the Document
+      const blob = await Packer.toBlob(doc);
       
       // Create a download link
       const url = URL.createObjectURL(blob);
