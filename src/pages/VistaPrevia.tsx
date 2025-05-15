@@ -98,7 +98,7 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
   const previewContainerRef = useRef<HTMLDivElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
 
-  // Sync scroll between form and preview
+  // Improved scroll synchronization
   useEffect(() => {
     const formContainer = formContainerRef.current;
     const previewContainer = previewContainerRef.current;
@@ -110,7 +110,7 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
         const formScrollPercentage = 
           formContainer.scrollTop / (formContainer.scrollHeight - formContainer.clientHeight);
 
-        // Apply the same scroll percentage to the preview
+        // Apply the same scroll percentage to the preview with smoother behavior
         const previewScrollMax = previewContainer.scrollHeight - previewContainer.clientHeight;
         previewContainer.scrollTop = formScrollPercentage * previewScrollMax;
       }
@@ -122,18 +122,18 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
     };
   }, []);
 
-  // Asegurar que todo el contenido sea visible
+  // Better content visibility handling
   useEffect(() => {
     const checkContentVisibility = () => {
       const previewContainer = previewContainerRef.current;
       if (previewContainer) {
-        // Forzar un reflujo de layout para asegurarnos de que el contenido es visible
+        // Ensure all content is visible by forcing reflow
         previewContainer.style.display = 'none';
         setTimeout(() => {
           if (previewContainer) {
             previewContainer.style.display = 'block';
           }
-        }, 10);
+        }, 50);
       }
     };
     
@@ -209,22 +209,24 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
             <div 
               ref={previewRef} 
               className="pdf-preview-container"
-              style={{
-                "--hide-page-breaks": "none",
-                "--hide-footers": "none"
-              } as React.CSSProperties}
             >
               <style>
                 {`
+                  @media print {
+                    .page-break-before {
+                      page-break-before: always;
+                    }
+                    .page-break-after {
+                      page-break-after: always;
+                    }
+                  }
+                  
+                  .memoria-preview-container {
+                    padding-bottom: 40px;
+                  }
+                  
                   .memory-preview-page {
-                    border: none !important;
-                    box-shadow: none !important;
-                  }
-                  .page-break-before, .page-break-after {
-                    display: none !important;
-                  }
-                  .footer-content {
-                    display: none !important;
+                    margin-bottom: 20px;
                   }
                 `}
               </style>

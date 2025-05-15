@@ -65,37 +65,17 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
   
   return (
     <div className="memoria-preview-container">
-      {/* Página 1: Portada */}
+      {/* Páginas 1-11 */}
       <MemoriaPortada data={data} />
-      
-      {/* Página 2: Secciones 1-9 */}
       <MemoriaSecciones1a9 data={data} />
-      
-      {/* Página 3: Normativa */}
       <MemoriaPreviewNormativa data={data} />
-      
-      {/* Página 4: Clasificación Sistema */}
       <MemClasificacion data={data} />
-      
-      {/* Página 5: Clasificación Local */}
       <MemoriaClasificacionLocal data={data} />
-      
-      {/* Página 6: Clasificación Gas */}
       <MemoriaClasificacionGas data={data} />
-      
-      {/* Página 7: Clasificación Instalación + Sala + Resumen */}
       <MemoriaInstalacion data={data} />
-      
-      {/* Página 8: Descripción Instalación */}
       <MemoriaDescripcion data={data} />
-      
-      {/* Página 9: Instalación Eléctrica */}
       <MemoriaInstalacionElectrica />
-      
-      {/* Página 10: Tuberías */}
       <MemoriaTuberias />
-      
-      {/* Página 11: Soportaciones */}
       <MemoriaSoportaciones />
       
       {/* Página 12: Sobrepresiones */}
