@@ -857,10 +857,10 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
                 </div>
               </div>
               
-              {/* Imagen del croquis */}
+              {/* Imagen del croquis - Actualizado con la nueva imagen */}
               <div className="flex flex-col items-center my-6">
                 <img 
-                  src="/lovable-uploads/02e3622b-d0c6-40a0-be7f-98a573e6c48c.png" 
+                  src="/lovable-uploads/c9b531ec-42e4-48b7-aa8e-a48641c85444.png" 
                   alt="Croquis suportación techo" 
                   className="max-w-full h-auto object-contain" 
                 />
