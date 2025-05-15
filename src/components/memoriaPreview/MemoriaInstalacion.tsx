@@ -12,9 +12,9 @@ const MemoriaInstalacion: React.FC<MemoriaInstalacionProps> = ({ data }) => {
   return (
     <div className="mb-8 max-w-[210mm] mx-auto bg-white min-h-[297mm] relative p-6">
       <div className="pb-20">
-        {/* Sección 10.4 - CLASIFICACIÓN DE LA INSTALACIÓN + 10.5 - SALA DE MÁQUINAS + 10.6 - RESUMEN */}
+        {/* Sección 11.4 - CLASIFICACIÓN DE LA INSTALACIÓN + 10.5 - SALA DE MÁQUINAS + 10.6 - RESUMEN */}
         <div className="mt-4 mb-6">
-          <h4 className="text-base font-bold">10.4. CLASIFICACIÓN DE LA INSTALACIÓN</h4>
+          <h4 className="text-base font-bold">11.4. CLASIFICACIÓN DE LA INSTALACIÓN</h4>
           <p className="text-sm mt-2">
             Según lo especificado en el Artículo 8 del Capítulo II del Reglamento de Seguridad de Instalaciones Frigoríficas (RSIF), las instalaciones frigoríficas se clasifican en función del riesgo potencial en las categorías siguientes:
           </p>
