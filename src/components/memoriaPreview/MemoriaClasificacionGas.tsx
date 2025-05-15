@@ -23,9 +23,9 @@ const MemoriaClasificacionGas: React.FC<MemoriaClasificacionGasProps> = ({ data 
   return (
     <div className="mb-8 max-w-[210mm] mx-auto bg-white min-h-[297mm] relative p-6">
       <div className="pb-20">
-        {/* Sección 10.3 - CLASIFICACIÓN DEL GAS REFRIGERANTE */}
+        {/* Sección 11.3 - CLASIFICACIÓN DEL GAS REFRIGERANTE */}
         <div className="mt-4 mb-6">
-          <h4 className="text-base font-bold">10.3. CLASIFICACIÓN DEL GAS REFRIGERANTE</h4>
+          <h4 className="text-base font-bold">11.3. CLASIFICACIÓN DEL GAS REFRIGERANTE</h4>
           <p className="text-sm mt-2">
             Según el apartado 4 de la IF-02 del RSIF, los refrigerantes se clasifican según el grado de seguridad
             en función de su inflamabilidad y toxicidad, dentro de los siguientes grupos:
