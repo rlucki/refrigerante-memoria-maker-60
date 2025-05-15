@@ -1,3 +1,4 @@
+
 import React from "react";
 
 interface RegulationItem {
@@ -156,18 +157,7 @@ const MemoriaPreviewNormativa: React.FC<MemoriaPreviewNormativaProps> = ({
   
   return (
     <div className="mb-8 max-w-[595px] mx-auto bg-white memory-preview-page">
-      {/* Header */}
-      <div className="header-content">
-        {data.encabezado && (
-          <div className="text-center mb-6">
-            {data.encabezado.split('\n').map((line, i) => (
-              <p key={i} className="font-bold">{line}</p>
-            ))}
-          </div>
-        )}
-      </div>
-      
-      {/* Content container with padding to prevent overlap with header/footer */}
+      {/* Contenido principal */}
       <div className="content-container text-content">
         {/* Sección 8 - NORMATIVA DE APLICACIÓN */}
         <div className="mb-6">
@@ -186,29 +176,6 @@ const MemoriaPreviewNormativa: React.FC<MemoriaPreviewNormativaProps> = ({
             {renderRegulationCategory(normativa.legionela)}
             {renderRegulationCategory(normativa.seguridadSalud)}
           </div>
-        </div>
-      </div>
-
-      {/* Footer with logos and page number */}
-      <div className="footer-content">
-        <div className="flex justify-between items-center">
-          {companyLogo && (
-            <img 
-              src={companyLogo} 
-              alt="Logo Empresa" 
-              className="h-8 object-contain" 
-            />
-          )}
-          {clienteLogo && (
-            <img 
-              src={clienteLogo} 
-              alt="Logo Cliente" 
-              className="h-8 object-contain" 
-            />
-          )}
-        </div>
-        <div className="text-right mt-2">
-          <p className="text-xs text-gray-500">Página {pageNumber} de 64</p>
         </div>
       </div>
     </div>

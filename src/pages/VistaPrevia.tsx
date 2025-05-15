@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, FileDown, Printer } from "lucide-react";
@@ -31,7 +30,7 @@ const VistaPrevia = () => {
     cpInstalacion: "35610",
     provinciaInstalacion: "SANTA CRUZ DE TENERIFE",
     titulo: "MEMORIA TÉCNICA DESCRIPTIVA",
-    encabezado: "MEMORIA TÉCNICA DESCRIPTIVA INSTALACIÓN FRIGORÍFICA\nSD MERCADO PUERTO DE LA CRUZ TENERIFE",
+    encabezado: "",
     
     // Datos de clasificación
     metodoEnfriamiento: "Sistema indirecto",
@@ -611,6 +610,20 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
       });
   };
 
+  // Estilos adicionales para la vista previa
+  const previewStyles = {
+    ".memory-preview-page": {
+      border: "none",
+      boxShadow: "none"
+    },
+    ".page-break-before, .page-break-after": {
+      display: "none"
+    },
+    ".footer-content": {
+      display: "none"
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <header className="bg-white shadow-sm py-4 px-6 md:px-10 border-b sticky top-0 z-10">
@@ -686,10 +699,31 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
           {/* Panel de vista previa (lado derecho) */}
           <div 
             className="w-full lg:w-1/2 p-4 bg-gray-50 overflow-auto"
-            style={{ height: 'calc(100vh - 126px)' }}
+            style={{ 
+              height: 'calc(100vh - 126px)',
+            }}
             ref={previewContainerRef}
           >
-            <div ref={previewRef} className="pdf-preview-container">
+            <div 
+              ref={previewRef} 
+              className="pdf-preview-container"
+              style={{
+                "--hide-page-breaks": "none",
+                "--hide-footers": "none"
+              } as React.CSSProperties}
+            >
+              <style jsx>{`
+                .memory-preview-page {
+                  border: none !important;
+                  box-shadow: none !important;
+                }
+                .page-break-before, .page-break-after {
+                  display: none !important;
+                }
+                .footer-content {
+                  display: none !important;
+                }
+              `}</style>
               <MemoriaPreview 
                 data={memoriaData} 
               />
