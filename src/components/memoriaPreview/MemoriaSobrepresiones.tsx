@@ -11,7 +11,7 @@ const MemoriaSobrepresiones: React.FC = () => {
           
           {/* Subsección 22.4 - VÁLVULAS DE SEGURIDAD */}
           <div className="mt-4 mb-6">
-            <h4 className="text-base font-bold">22.4. VÁLVULAS DE SEGURIDAD</h4>
+            <h4 className="text-base font-bold">22.4.	VÁLVULAS DE SEGURIDAD - CAPACIDAD DE DESCARGA</h4>
             <div className="mt-3 text-sm text-justify">
               <p className="mb-3">
                 Los recipientes que puedan contener refrigerante líquido en condiciones normales de funcionamiento y puedan ser 
