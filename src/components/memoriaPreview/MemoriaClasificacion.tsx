@@ -23,7 +23,7 @@ interface MemoriaClasificacionProps {
   };
 }
 
-const MemoriaClasificacion: React.FC<MemoriaClasificacionProps> = ({ data }) => {
+const MemClasificacion: React.FC<MemoriaClasificacionProps> = ({ data }) => {
   return (
     <div className="mb-8 max-w-[210mm] mx-auto bg-white min-h-[297mm] relative p-6">
       <div className="pb-20">
@@ -101,4 +101,4 @@ const MemoriaClasificacion: React.FC<MemoriaClasificacionProps> = ({ data }) => 
   );
 };
 
-export default MemoriaClasificacion;
+export default MemClasificacion;

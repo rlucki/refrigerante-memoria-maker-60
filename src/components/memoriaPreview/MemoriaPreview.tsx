@@ -3,7 +3,7 @@ import React from "react";
 import MemoriaPortada from "./MemoriaPortada";
 import MemoriaSecciones1a9 from "./MemoriaSecciones1a9";
 import MemoriaPreviewNormativa from "../MemoriaPreviewNormativa";
-import MemoriaClasificacion from "./MemoriaClasificacion";
+import MemClasificacion from "./MemoriaClasificacion";
 import MemoriaClasificacionLocal from "./MemoriaClasificacionLocal";
 import MemoriaClasificacionGas from "./MemoriaClasificacionGas";
 import MemoriaInstalacion from "./MemoriaInstalacion";
@@ -71,7 +71,7 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
       <MemoriaPreviewNormativa data={data} />
       
       {/* Página 4: Clasificación Sistema */}
-      <MemoriaClasificacion data={data} />
+      <MemClasificacion data={data} />
       
       {/* Página 5: Clasificación Local */}
       <MemoriaClasificacionLocal data={data} />
