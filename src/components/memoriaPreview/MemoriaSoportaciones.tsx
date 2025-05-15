@@ -5,9 +5,9 @@ const MemoriaSoportaciones: React.FC = () => {
   return (
     <div className="mb-8 max-w-[210mm] mx-auto bg-white min-h-[297mm] relative p-6">
       <div className="pb-20">
-        {/* Sección 16.2 - SUPORTACIONES */}
+        {/* Sección 17.3 - SUPORTACIONES */}
         <div className="mb-6">
-          <h3 className="text-lg font-bold">16.2. SUPORTACIONES</h3>
+          <h3 className="text-lg font-bold">17.3. SUPORTACIONES</h3>
           
           <div className="mt-4 text-sm text-justify space-y-4">
             <p>
