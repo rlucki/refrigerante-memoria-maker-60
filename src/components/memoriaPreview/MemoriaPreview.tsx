@@ -28,6 +28,10 @@ interface MemoriaPreviewProps {
     provinciaInstalacion?: string;
     titulo?: string;
     
+    // Datos del proyecto
+    tipoInstalacion?: string;
+    nombreProyecto?: string;
+    
     // Datos de clasificación
     metodoEnfriamiento?: string;
     seguridadSistema?: string;

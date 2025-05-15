@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import MemoriaTecnicaForm from "@/components/MemoriaTecnicaForm";
-import MemoriaPreview from "@/components/MemoriaPreview";
+import MemoriaPreview from "@/components/memoriaPreview/MemoriaPreview";
 import { toast } from "@/hooks/use-toast";
 import { validateMargin } from "@/lib/utils";
 import ExcelUploader from "@/components/ExcelUploader";
@@ -26,6 +26,10 @@ const VistaPrevia = () => {
     provinciaInstalacion: "SANTA CRUZ DE TENERIFE",
     titulo: "MEMORIA TÉCNICA DESCRIPTIVA",
     encabezado: "",
+    
+    // Datos del proyecto
+    tipoInstalacion: "Supermercado",
+    nombreProyecto: "Costa del Silencio (Arona)",
     
     // Datos de clasificación
     metodoEnfriamiento: "Sistema indirecto",

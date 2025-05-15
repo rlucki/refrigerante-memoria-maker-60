@@ -11,6 +11,7 @@ import NormativaSection from "./formSections/NormativaSection";
 import ClasificacionSection from "./formSections/ClasificacionSection";
 import { Textarea } from "./ui/textarea";
 import { Label } from "./ui/label";
+import { Input } from "./ui/input";
 
 interface MemoriaTecnicaFormProps {
   onSubmit: () => void;
@@ -68,7 +69,7 @@ const MemoriaTecnicaForm = ({ onSubmit, onChange }: MemoriaTecnicaFormProps) => 
           <TabsTrigger value="titular">Datos Titular</TabsTrigger>
           <TabsTrigger value="instalador">Datos Instalador</TabsTrigger>
           <TabsTrigger value="instalacion">Datos Instalación</TabsTrigger>
-          <TabsTrigger value="tecnicos">Datos Técnicos</TabsTrigger>
+          <TabsTrigger value="datos_proyecto">Datos Proyecto</TabsTrigger>
           <TabsTrigger value="clasificacion">Clasificación</TabsTrigger>
           <TabsTrigger value="normativa">Normativa</TabsTrigger>
           <TabsTrigger value="descripcion">Descripción</TabsTrigger>
@@ -86,8 +87,34 @@ const MemoriaTecnicaForm = ({ onSubmit, onChange }: MemoriaTecnicaFormProps) => 
           <DatosInstalacionSection onChange={handleInputChange} />
         </TabsContent>
         
-        <TabsContent value="tecnicos" className="mt-6">
-          <DatosTecnicosSection onChange={handleComplexChange} />
+        <TabsContent value="datos_proyecto" className="mt-6">
+          <Card>
+            <div className="p-6">
+              <h3 className="text-lg font-medium mb-4">Datos del Proyecto</h3>
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="tipoInstalacion">Tipo de instalación</Label>
+                  <Input 
+                    id="tipoInstalacion"
+                    className="mt-2"
+                    placeholder="Ej: Supermercado"
+                    onChange={handleInputChange}
+                    defaultValue="Supermercado"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="nombreProyecto">Nombre del proyecto</Label>
+                  <Input 
+                    id="nombreProyecto"
+                    className="mt-2"
+                    placeholder="Ej: Costa del Silencio (Arona)"
+                    onChange={handleInputChange}
+                    defaultValue="Costa del Silencio (Arona)"
+                  />
+                </div>
+              </div>
+            </div>
+          </Card>
         </TabsContent>
         
         <TabsContent value="clasificacion" className="mt-6">
@@ -128,8 +155,8 @@ const MemoriaTecnicaForm = ({ onSubmit, onChange }: MemoriaTecnicaFormProps) => 
               "titular": "titular",
               "instalador": "titular",
               "instalacion": "instalador",
-              "tecnicos": "instalacion",
-              "clasificacion": "tecnicos",
+              "datos_proyecto": "instalacion",
+              "clasificacion": "datos_proyecto",
               "normativa": "clasificacion",
               "descripcion": "normativa"
             }[activeTab];
@@ -147,8 +174,8 @@ const MemoriaTecnicaForm = ({ onSubmit, onChange }: MemoriaTecnicaFormProps) => 
               const nextTab = {
                 "titular": "instalador",
                 "instalador": "instalacion",
-                "instalacion": "tecnicos",
-                "tecnicos": "clasificacion",
+                "instalacion": "datos_proyecto",
+                "datos_proyecto": "clasificacion",
                 "clasificacion": "normativa",
                 "normativa": "descripcion",
                 "descripcion": "descripcion"

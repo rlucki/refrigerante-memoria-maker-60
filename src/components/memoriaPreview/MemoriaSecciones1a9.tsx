@@ -1,3 +1,4 @@
+
 import React from "react";
 
 interface MemoriaSecciones1a9Props {
@@ -13,6 +14,8 @@ interface MemoriaSecciones1a9Props {
     cpInstalacion?: string;
     provinciaInstalacion?: string;
     instalador?: string;
+    tipoInstalacion?: string;
+    nombreProyecto?: string;
   };
 }
 
@@ -25,8 +28,8 @@ const MemoriaSecciones1a9: React.FC<MemoriaSecciones1a9Props> = ({ data }) => {
           <h3 className="text-lg font-bold">1. OBJETO</h3>
           <p className="text-sm mt-2 text-justify">
             El objeto de este proyecto es el de describir la instalación frigorífica dedicada a la conservación
-            de productos perecederos en un supermercado, del que es su titular <span className="bg-yellow-100">{data.titular || "DINOSOL SUPERMERCADOS, S.L."}</span>,
-            y que está situada en la localidad de <span className="bg-green-100">Costa del Silencio (Arona)</span>, de modo que quede
+            de productos perecederos en un <span className="bg-green-100">{data.tipoInstalacion || "supermercado"}</span>, del que es su titular <span className="bg-yellow-100">{data.titular || "DINOSOL SUPERMERCADOS, S.L."}</span>,
+            y que está situada en la localidad de <span className="bg-green-100">{data.nombreProyecto || "Costa del Silencio (Arona)"}</span>, de modo que quede
             incorporada en el Registro de Instalaciones Frigoríficas del Gobierno de Canarias.
           </p>
         </div>
