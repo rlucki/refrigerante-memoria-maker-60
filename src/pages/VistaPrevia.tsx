@@ -122,6 +122,26 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
     };
   }, []);
 
+  // Asegurar que todo el contenido sea visible
+  useEffect(() => {
+    const checkContentVisibility = () => {
+      const previewContainer = previewContainerRef.current;
+      if (previewContainer) {
+        // Forzar un reflujo de layout para asegurarnos de que el contenido es visible
+        previewContainer.style.display = 'none';
+        setTimeout(() => {
+          if (previewContainer) {
+            previewContainer.style.display = 'block';
+          }
+        }, 10);
+      }
+    };
+    
+    if (activeTab === "form") {
+      checkContentVisibility();
+    }
+  }, [activeTab, memoriaData]);
+
   const handleFormChange = (field: string, value: any) => {
     console.log(`Field changed: ${field}`, value);
     setMemoriaData(prev => ({ ...prev, [field]: value }));
