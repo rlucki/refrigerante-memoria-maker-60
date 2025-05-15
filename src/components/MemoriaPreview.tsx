@@ -1,7 +1,7 @@
+
 import React from "react";
 import { Card } from "@/components/ui/card";
 import MemoriaPreviewNormativa from "./MemoriaPreviewNormativa";
-import MemoriaSobrepresiones from "./memoriaPreview/MemoriaSobrepresiones";
 
 interface MemoriaPreviewProps {
   data: {
@@ -813,11 +813,9 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
           </div>
         </div>
       </div>
-
-      {/* Sección 22: PROTECCIÓN CONTRA SOBREPRESIONES - DETALLE AVANZADO */}
-      <MemoriaSobrepresiones />
     </div>
   );
 };
 
 export default MemoriaPreview;
+

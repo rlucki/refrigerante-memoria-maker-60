@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
@@ -97,20 +98,14 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
   const previewContainerRef = useRef<HTMLDivElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
 
-  // Modificamos la sincronización de scroll para que sea más suave
+  // Sync scroll between form and preview
   useEffect(() => {
     const formContainer = formContainerRef.current;
     const previewContainer = previewContainerRef.current;
 
     if (!formContainer || !previewContainer) return;
 
-    let isScrolling = false;
-
     const handleScroll = () => {
-      if (isScrolling) return;
-      
-      isScrolling = true;
-      
       if (formContainer && previewContainer) {
         const formScrollPercentage = 
           formContainer.scrollTop / (formContainer.scrollHeight - formContainer.clientHeight);
@@ -119,11 +114,6 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
         const previewScrollMax = previewContainer.scrollHeight - previewContainer.clientHeight;
         previewContainer.scrollTop = formScrollPercentage * previewScrollMax;
       }
-      
-      // Permitir nuevos eventos de scroll después de un pequeño retraso
-      setTimeout(() => {
-        isScrolling = false;
-      }, 50);
     };
 
     formContainer.addEventListener("scroll", handleScroll);
@@ -204,6 +194,20 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
                 "--hide-footers": "none"
               } as React.CSSProperties}
             >
+              <style>
+                {`
+                  .memory-preview-page {
+                    border: none !important;
+                    box-shadow: none !important;
+                  }
+                  .page-break-before, .page-break-after {
+                    display: none !important;
+                  }
+                  .footer-content {
+                    display: none !important;
+                  }
+                `}
+              </style>
               <MemoriaPreview 
                 data={memoriaData} 
               />
