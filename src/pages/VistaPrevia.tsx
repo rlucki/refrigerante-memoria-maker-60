@@ -127,7 +127,7 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
     // Crear una copia del contenido para manipularlo sin afectar la visualización
     const content = previewRef.current.cloneNode(true) as HTMLElement;
     
-    // Aplicar estilos específicos para el PDF que aseguren formato consistente
+    // Aplicar estilos específicos para el PDF
     const pdfStyles = document.createElement('style');
     pdfStyles.textContent = `
       @page {
@@ -148,12 +148,23 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
         background-color: white !important;
         margin: 0 !important;
       }
-      .absolute.bottom-6 {
+      .absolute.bottom-10 {
         position: absolute !important;
         bottom: 20mm !important;
         left: 0 !important;
         width: 100% !important;
         padding: 0 20mm !important;
+      }
+      h3, h4 {
+        margin-top: 10mm !important;
+        margin-bottom: 5mm !important;
+      }
+      .memory-preview-page {
+        page-break-inside: avoid !important;
+        box-sizing: border-box !important;
+      }
+      ul, li {
+        page-break-inside: avoid !important;
       }
     `;
     content.prepend(pdfStyles);
@@ -180,7 +191,7 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
       }
       
       // Asegurar que el footer se mantenga en posición correcta
-      const footer = pageElement.querySelector('.absolute.bottom-6') as HTMLElement;
+      const footer = pageElement.querySelector('.absolute.bottom-10, .absolute.bottom-6') as HTMLElement;
       if (footer) {
         footer.style.position = 'absolute';
         footer.style.bottom = '20mm';
@@ -203,9 +214,9 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
         scrollX: 0,
         scrollY: 0,
         windowWidth: 210 * 2.83, // Factor preciso para A4
-        logging: true, // Activar logging para debug
+        logging: false,
         removeContainer: true,
-        foreignObjectRendering: false // Usar renderer nativo para mejor precisión
+        foreignObjectRendering: false
       },
       jsPDF: { 
         unit: 'mm', 
@@ -214,11 +225,26 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
         compress: true,
         precision: 16
       },
-      pagebreak: { mode: 'avoid-all', before: '.page-break' }
+      pagebreak: { mode: 'avoid-all', before: '.page-break', after: '.avoid-break-after' }
     };
 
     // Convertir a PDF y descargar con mayor precisión
-    html2pdf().from(content).set(opt).save()
+    html2pdf()
+      .from(content)
+      .set(opt)
+      .toPdf()
+      .get('pdf')
+      .then((pdf) => {
+        // Asegurar que todas las páginas tengan el tamaño A4
+        const totalPages = pdf.internal.getNumberOfPages();
+        for (let i = 1; i <= totalPages; i++) {
+          pdf.setPage(i);
+          pdf.internal.pageSize.width = 210;
+          pdf.internal.pageSize.height = 297;
+        }
+        return pdf;
+      })
+      .save()
       .then(() => {
         toast({
           title: "Documento generado",

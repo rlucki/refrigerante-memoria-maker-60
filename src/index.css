@@ -109,8 +109,8 @@
 }
 
 .memoria-preview-container > div {
-  box-shadow: none;
-  border: none;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+  border: 1px solid #f3f3f3;
   position: relative;
   background-color: white;
   width: 210mm;
@@ -124,6 +124,11 @@
 .pdf-preview-container {
   width: 100%;
   zoom: 1;
+}
+
+/* Estilo específico para la página de normativa */
+.memory-preview-page {
+  page-break-inside: avoid !important;
 }
 
 /* Calibrar estilos específicos para la exportación a PDF */
@@ -163,7 +168,8 @@
   }
   
   /* Garantizar que el footer siempre esté en la misma posición */
-  .absolute.bottom-6 {
+  .absolute.bottom-6,
+  .absolute.bottom-10 {
     position: absolute !important;
     bottom: 20mm !important;
     left: 0 !important;
@@ -181,6 +187,10 @@
   page-break-inside: avoid !important;
 }
 
+.avoid-break-after {
+  page-break-after: avoid !important;
+}
+
 /* Estilos específicos para exportación precisa a PDF */
 .pdf-export-mode .memoria-preview-container > div {
   width: 210mm !important;
@@ -190,7 +200,17 @@
   position: relative !important;
 }
 
-.pdf-export-mode .absolute.bottom-6 {
+.pdf-export-mode .absolute.bottom-6,
+.pdf-export-mode .absolute.bottom-10 {
   position: absolute !important;
   bottom: 20mm !important;
+}
+
+/* Estilos específicos para la sección de normativa */
+.memory-preview-page ul {
+  page-break-inside: avoid !important;
+}
+
+.memory-preview-page li {
+  page-break-inside: avoid !important;
 }
