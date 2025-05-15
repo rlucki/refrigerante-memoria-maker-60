@@ -124,17 +124,14 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
       description: "Espere mientras se genera el PDF...",
     });
 
-    // Agregar clase especial para el modo de exportación PDF
-    document.body.classList.add('pdf-export-mode');
-    
     // Crear una copia del contenido para manipularlo sin afectar la visualización
     const content = previewRef.current.cloneNode(true) as HTMLElement;
     
-    // Forzar estilos específicos para el PDF que garantizan la exactitud
-    const styleElement = document.createElement('style');
-    styleElement.textContent = `
+    // Aplicar estilos específicos para el PDF
+    const pdfStyles = document.createElement('style');
+    pdfStyles.textContent = `
       @page {
-        size: 210mm 297mm;
+        size: A4;
         margin: 0;
       }
       body {
@@ -144,54 +141,71 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
       .memoria-preview-container > div {
         width: 210mm !important;
         height: 297mm !important;
-        min-height: 297mm !important;
         padding: 20mm !important;
+        box-sizing: border-box !important;
         position: relative !important;
         page-break-after: always !important;
-        box-sizing: border-box !important;
         background-color: white !important;
         margin: 0 !important;
-        border: none !important;
-        overflow: hidden !important;
       }
-      .absolute.bottom-10,
-      .absolute.bottom-6 {
+      .absolute.bottom-10 {
         position: absolute !important;
         bottom: 20mm !important;
         left: 0 !important;
-        right: 0 !important;
         width: 100% !important;
         padding: 0 20mm !important;
-        box-sizing: border-box !important;
-        z-index: 100 !important;
       }
       h3, h4 {
         margin-top: 10mm !important;
         margin-bottom: 5mm !important;
-        page-break-after: avoid !important;
       }
       .memory-preview-page {
         page-break-inside: avoid !important;
+        box-sizing: border-box !important;
       }
       ul, li {
         page-break-inside: avoid !important;
       }
-      p {
-        orphans: 3 !important;
-        widows: 3 !important;
-      }
-      img {
-        max-width: 100% !important;
-      }
     `;
-    content.appendChild(styleElement);
+    content.prepend(pdfStyles);
     
-    // Configurar opciones avanzadas para html2pdf utilizando una configuración que preserve el texto como texto
+    // Asegurar que cada página tenga el formato correcto
+    const pages = content.querySelectorAll('.memoria-preview-container > div');
+    pages.forEach(page => {
+      const pageElement = page as HTMLElement;
+      pageElement.style.width = '210mm';
+      pageElement.style.height = '297mm';
+      pageElement.style.padding = '20mm';
+      pageElement.style.boxSizing = 'border-box';
+      pageElement.style.position = 'relative';
+      pageElement.style.pageBreakAfter = 'always';
+      pageElement.style.backgroundColor = 'white';
+      pageElement.style.margin = '0';
+      
+      // Asegurar que el contenido interno respete márgenes
+      const contentContainer = pageElement.querySelector('div:first-child') as HTMLElement;
+      if (contentContainer) {
+        contentContainer.style.position = 'relative';
+        contentContainer.style.height = 'calc(100% - 30mm)';
+        contentContainer.style.width = '100%';
+      }
+      
+      // Asegurar que el footer se mantenga en posición correcta
+      const footer = pageElement.querySelector('.absolute.bottom-10, .absolute.bottom-6') as HTMLElement;
+      if (footer) {
+        footer.style.position = 'absolute';
+        footer.style.bottom = '20mm';
+        footer.style.left = '0';
+        footer.style.width = '100%';
+        footer.style.padding = '0 20mm';
+      }
+    });
+
+    // Configuración optimizada para html2pdf con alto nivel de exactitud
     const opt = {
       margin: 0,
       filename: `Memoria_Técnica_${memoriaData.titular.replace(/\s+/g, '_')}.pdf`,
-      image: { type: 'jpeg', quality: 0.98 },
-      enableLinks: true,
+      image: { type: 'jpeg', quality: 1.0 },
       html2canvas: { 
         scale: 2,
         useCORS: true,
@@ -199,31 +213,29 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
         allowTaint: true,
         scrollX: 0,
         scrollY: 0,
-        windowWidth: 210 * 3, // Mayor factor para mejor precisión
+        windowWidth: 210 * 2.83, // Factor preciso para A4
         logging: false,
         removeContainer: true,
-        foreignObjectRendering: true, // Intentar renderizar texto como texto
+        foreignObjectRendering: false
       },
       jsPDF: { 
         unit: 'mm', 
         format: 'a4', 
         orientation: 'portrait',
         compress: true,
-        precision: 16,
-        putOnlyUsedFonts: true,
-        floatPrecision: "smart"
+        precision: 16
       },
       pagebreak: { mode: 'avoid-all', before: '.page-break', after: '.avoid-break-after' }
     };
 
-    // Convertir a PDF con configuración para preservar texto
+    // Convertir a PDF y descargar con mayor precisión
     html2pdf()
       .from(content)
       .set(opt)
       .toPdf()
       .get('pdf')
       .then((pdf) => {
-        // Verificar y ajustar todas las páginas para tener tamaño A4 exacto
+        // Asegurar que todas las páginas tengan el tamaño A4
         const totalPages = pdf.internal.getNumberOfPages();
         for (let i = 1; i <= totalPages; i++) {
           pdf.setPage(i);
@@ -234,18 +246,12 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
       })
       .save()
       .then(() => {
-        // Remover la clase de exportación PDF
-        document.body.classList.remove('pdf-export-mode');
-        
         toast({
           title: "Documento generado",
           description: "Se ha generado el documento correctamente",
         });
       })
       .catch((error) => {
-        // Remover la clase de exportación PDF en caso de error
-        document.body.classList.remove('pdf-export-mode');
-        
         console.error("Error al generar PDF:", error);
         toast({
           title: "Error al generar documento",

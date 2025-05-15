@@ -135,11 +135,11 @@ const MemoriaPreviewNormativa: React.FC<MemoriaPreviewNormativaProps> = ({
     if (!category.regulations || category.regulations.length === 0) return null;
     
     return (
-      <div className="mb-4 avoid-break">
+      <div className="mb-4">
         <h4 className="font-semibold text-base mb-2">{category.title}</h4>
         <ul className="list-none pl-0 space-y-3">
           {category.regulations.map((reg, index) => (
-            <li key={index} className="flex flex-col avoid-break">
+            <li key={index} className="flex flex-col">
               <div className="flex items-start">
                 <span className="text-xl mr-2">•</span>
                 <div>
@@ -160,7 +160,7 @@ const MemoriaPreviewNormativa: React.FC<MemoriaPreviewNormativaProps> = ({
       <div className="pb-32">
         {/* Sección 8 - NORMATIVA DE APLICACIÓN */}
         <div className="mb-6">
-          <h3 className="text-lg font-bold avoid-break-after">8. NORMATIVA DE APLICACIÓN</h3>
+          <h3 className="text-lg font-bold">8. NORMATIVA DE APLICACIÓN</h3>
           <p className="text-sm mt-3 mb-4">
             Para la elaboración de este documento y para la ejecución de la instalación, se deberán tener en cuenta, 
             entre otras, las siguientes disposiciones:
