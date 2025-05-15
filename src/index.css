@@ -119,12 +119,15 @@
   zoom: 1;
 }
 
+/* Estilos específicos para la exportación a PDF */
 @media print {
   .memoria-preview-container > div {
     margin: 0;
     box-shadow: none;
     border: none;
     padding: 0;
+    page-break-after: always;
+    min-height: 297mm;
   }
   
   .memoria-preview-container {
@@ -132,4 +135,31 @@
     max-width: 100%;
     margin: 0;
   }
+
+  /* Asegurar posicionamiento correcto de contenido en el PDF */
+  .memoria-preview-container h1, 
+  .memoria-preview-container h2, 
+  .memoria-preview-container h3, 
+  .memoria-preview-container h4 {
+    page-break-after: avoid;
+    page-break-inside: avoid;
+  }
+  
+  .memoria-preview-container table {
+    page-break-inside: avoid;
+  }
+  
+  .memoria-preview-container p {
+    orphans: 3;
+    widows: 3;
+  }
+}
+
+/* Clases para controlar los saltos de página en PDF */
+.page-break {
+  page-break-before: always;
+}
+
+.avoid-break {
+  page-break-inside: avoid;
 }

@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, FileDown, Printer } from "lucide-react";
@@ -125,23 +124,68 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
       description: "Espere mientras se genera el PDF...",
     });
 
-    // Configuración para html2pdf con márgenes reducidos (aproximadamente 1/3 de los originales)
+    // Crear una copia del contenido para manipularlo sin afectar la visualización
+    const content = previewRef.current.cloneNode(true) as HTMLElement;
+    
+    // Asegurar que todos los estilos se apliquen correctamente
+    const styles = document.querySelectorAll('style, link[rel="stylesheet"]');
+    const stylesForPdf = document.createElement('div');
+    styles.forEach(style => stylesForPdf.appendChild(style.cloneNode(true)));
+    content.prepend(stylesForPdf);
+    
+    // Agregar estilos inline para garantizar formato correcto en el PDF
+    const pages = content.querySelectorAll('.memoria-preview-container > div');
+    pages.forEach(page => {
+      const pageElement = page as HTMLElement;
+      pageElement.style.width = '210mm';
+      pageElement.style.minHeight = '297mm';
+      pageElement.style.padding = '20mm';
+      pageElement.style.boxSizing = 'border-box';
+      pageElement.style.position = 'relative';
+      pageElement.style.pageBreakAfter = 'always';
+      pageElement.style.backgroundColor = 'white';
+      
+      // Asegurar que el contenido interno respete márgenes
+      const contentContainer = pageElement.querySelector('div:first-child') as HTMLElement;
+      if (contentContainer) {
+        contentContainer.style.paddingBottom = '30mm'; // Espacio para el footer
+      }
+      
+      // Asegurar que el footer se mantenga en posición correcta
+      const footer = pageElement.querySelector('.absolute.bottom-6') as HTMLElement;
+      if (footer) {
+        footer.style.position = 'absolute';
+        footer.style.bottom = '20mm';
+        footer.style.left = '0';
+        footer.style.width = '100%';
+        footer.style.padding = '0 20mm';
+      }
+    });
+
+    // Configuración mejorada para html2pdf
     const opt = {
-      margin: [validateMargin(3), validateMargin(3), validateMargin(3), validateMargin(3)], // Márgenes reducidos [top, right, bottom, left]
+      margin: [10, 10, 10, 10], // Márgenes en mm [top, right, bottom, left]
       filename: `Memoria_Técnica_${memoriaData.titular.replace(/\s+/g, '_')}.pdf`,
-      image: { type: 'jpeg', quality: 0.98 },
+      image: { type: 'jpeg', quality: 1.0 },
       html2canvas: { 
         scale: 2,
         useCORS: true,
         letterRendering: true,
-        allowTaint: true
+        allowTaint: true,
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: 210 * 3, // Asegurar ancho adecuado para captura
+        logging: false
       },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      jsPDF: { 
+        unit: 'mm', 
+        format: 'a4', 
+        orientation: 'portrait',
+        compress: true
+      },
+      pagebreak: { mode: 'avoid-all', before: '.page-break' }
     };
 
-    // Crear una copia del contenido para manipularlo sin afectar la visualización
-    const content = previewRef.current.cloneNode(true) as HTMLElement;
-    
     // Convertir a PDF y descargar
     html2pdf().from(content).set(opt).save()
       .then(() => {
