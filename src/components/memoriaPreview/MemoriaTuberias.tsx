@@ -7,7 +7,7 @@ const MemoriaTuberias: React.FC = () => {
       <div className="pb-20">
         {/* Sección 17 - TUBERÍAS Y AISLAMIENTO */}
         <div className="mb-6">
-          <h3 className="text-lg font-bold">16. TUBERÍAS Y AISLAMIENTO</h3>
+          <h3 className="text-lg font-bold">17. TUBERÍAS Y AISLAMIENTO</h3>
           
           {/* Subsección 17.1 - TUBERÍAS */}
           <div className="mt-4 mb-6">
