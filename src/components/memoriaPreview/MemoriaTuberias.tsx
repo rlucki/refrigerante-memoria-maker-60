@@ -5,13 +5,13 @@ const MemoriaTuberias: React.FC = () => {
   return (
     <div className="mb-8 max-w-[210mm] mx-auto bg-white min-h-[297mm] relative p-6">
       <div className="pb-20">
-        {/* Sección 16 - TUBERÍAS Y AISLAMIENTO */}
+        {/* Sección 17 - TUBERÍAS Y AISLAMIENTO */}
         <div className="mb-6">
           <h3 className="text-lg font-bold">16. TUBERÍAS Y AISLAMIENTO</h3>
           
-          {/* Subsección 16.1 - TUBERÍAS */}
+          {/* Subsección 17.1 - TUBERÍAS */}
           <div className="mt-4 mb-6">
-            <h4 className="text-base font-bold">16.1. TUBERÍAS</h4>
+            <h4 className="text-base font-bold">17.1. TUBERÍAS</h4>
             <div className="mt-3 text-sm text-justify">
               <p className="mb-3">
                 Se ha instalado la tubería de interconexión necesaria entre las centrales y los demás componentes de la instalación. 
