@@ -9,9 +9,11 @@ import html2pdf from "html2pdf.js";
 import { validateMargin } from "@/lib/utils";
 import ExcelUploader from "@/components/ExcelUploader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Document, Packer, Paragraph, TextRun, HeadingLevel, Footer, Header, 
-  ImageRun, AlignmentType, PageNumber, NumberFormat, HorizontalPositionAlign, 
-  VerticalPositionAlign, HorizontalPositionRelativeFrom, VerticalPositionRelativeFrom } from "docx";
+
+// Import only needed elements from docx
+import { Document, Paragraph, TextRun, HeadingLevel } from "docx";
+// Import docx-preview for browser rendering
+import { renderAsync } from "docx-preview";
 
 const VistaPrevia = () => {
   const navigate = useNavigate();
@@ -71,6 +73,7 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
   const formContainerRef = useRef<HTMLDivElement>(null);
   const previewContainerRef = useRef<HTMLDivElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
+  const wordContainerRef = useRef<HTMLDivElement>(null);
 
   // Sync scroll between form and preview
   useEffect(() => {
@@ -112,7 +115,7 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
     setExcelData(data);
   };
 
-  // New function to generate Word document
+  // Updated function to generate Word document using browser-compatible approach
   const handleGenerarDocumentoWord = async () => {
     if (!previewRef.current) {
       toast({
@@ -130,74 +133,10 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
     });
 
     try {
-      // Crear un nuevo documento Word
+      // Crear un nuevo documento Word con estructura más simple
       const doc = new Document({
         sections: [
           {
-            properties: {
-              page: {
-                size: {
-                  width: 595 * 20, // A4 width in twentieths of a point
-                  height: 842 * 20, // A4 height in twentieths of a point
-                },
-                margin: {
-                  top: 1000, // Margins in twentieths of a point (aprox 1.4 cm)
-                  right: 1000,
-                  bottom: 1000,
-                  left: 1000,
-                },
-              },
-            },
-            headers: {
-              default: new Header({
-                children: [
-                  new Paragraph({
-                    alignment: AlignmentType.CENTER,
-                    children: memoriaData.encabezado?.split('\n').map(line => 
-                      new TextRun({
-                        text: line,
-                        bold: true,
-                        size: 24,
-                      })
-                    ) || [new TextRun({ text: "MEMORIA TÉCNICA DESCRIPTIVA", bold: true, size: 24 })],
-                  }),
-                  new Paragraph({
-                    text: "",
-                    spacing: {
-                      after: 200,
-                    },
-                  }),
-                ],
-              }),
-            },
-            footers: {
-              default: new Footer({
-                children: [
-                  new Paragraph({
-                    alignment: AlignmentType.JUSTIFIED,
-                    children: [
-                      // Aquí iría la imagen de logo si la tuviéramos en formato compatible
-                      new TextRun({
-                        text: "Página ",
-                        size: 18,
-                      }),
-                      new TextRun({
-                        children: [PageNumber.CURRENT],
-                        size: 18,
-                      }),
-                      new TextRun({
-                        text: " de ",
-                        size: 18,
-                      }),
-                      new TextRun({
-                        children: [PageNumber.TOTAL_PAGES],
-                        size: 18,
-                      }),
-                    ],
-                  }),
-                ],
-              }),
-            },
             children: [
               // Sección de datos del titular
               new Paragraph({
@@ -206,7 +145,6 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
                   new TextRun({
                     text: "1. DATOS DEL TITULAR",
                     bold: true,
-                    size: 28,
                   }),
                 ],
               }),
@@ -214,7 +152,6 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
                 children: [
                   new TextRun({
                     text: `Titular: ${memoriaData.titular}`,
-                    size: 24,
                   }),
                 ],
               }),
@@ -222,7 +159,6 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
                 children: [
                   new TextRun({
                     text: `NIF: ${memoriaData.nif}`,
-                    size: 24,
                   }),
                 ],
               }),
@@ -230,7 +166,6 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
                 children: [
                   new TextRun({
                     text: `Dirección: ${memoriaData.direccion}`,
-                    size: 24,
                   }),
                 ],
               }),
@@ -238,7 +173,6 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
                 children: [
                   new TextRun({
                     text: `Población: ${memoriaData.poblacion}`,
-                    size: 24,
                   }),
                 ],
               }),
@@ -246,7 +180,6 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
                 children: [
                   new TextRun({
                     text: `Provincia: ${memoriaData.provincia}`,
-                    size: 24,
                   }),
                 ],
               }),
@@ -254,7 +187,6 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
                 children: [
                   new TextRun({
                     text: `CP: ${memoriaData.cp}`,
-                    size: 24,
                   }),
                 ],
               }),
@@ -266,8 +198,6 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
                   new TextRun({
                     text: "2. DATOS DEL INSTALADOR",
                     bold: true,
-                    size: 28,
-                    break: 1,
                   }),
                 ],
               }),
@@ -275,7 +205,6 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
                 children: [
                   new TextRun({
                     text: `Instalador: ${memoriaData.instalador}`,
-                    size: 24,
                   }),
                 ],
               }),
@@ -287,8 +216,6 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
                   new TextRun({
                     text: "3. DATOS DE LA INSTALACIÓN",
                     bold: true,
-                    size: 28,
-                    break: 1,
                   }),
                 ],
               }),
@@ -296,7 +223,6 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
                 children: [
                   new TextRun({
                     text: `Dirección: ${memoriaData.direccionInstalacion}`,
-                    size: 24,
                   }),
                 ],
               }),
@@ -304,7 +230,6 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
                 children: [
                   new TextRun({
                     text: `Población: ${memoriaData.poblacionInstalacion}`,
-                    size: 24,
                   }),
                 ],
               }),
@@ -312,7 +237,6 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
                 children: [
                   new TextRun({
                     text: `Provincia: ${memoriaData.provinciaInstalacion}`,
-                    size: 24,
                   }),
                 ],
               }),
@@ -320,7 +244,6 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
                 children: [
                   new TextRun({
                     text: `CP: ${memoriaData.cpInstalacion}`,
-                    size: 24,
                   }),
                 ],
               }),
@@ -332,8 +255,6 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
                   new TextRun({
                     text: "4. CLASIFICACIÓN DE LA INSTALACIÓN",
                     bold: true,
-                    size: 28,
-                    break: 1,
                   }),
                 ],
               }),
@@ -341,7 +262,6 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
                 children: [
                   new TextRun({
                     text: `Método de enfriamiento: ${memoriaData.metodoEnfriamiento}`,
-                    size: 24,
                   }),
                 ],
               }),
@@ -349,7 +269,6 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
                 children: [
                   new TextRun({
                     text: `Seguridad del sistema: ${memoriaData.seguridadSistema}`,
-                    size: 24,
                   }),
                 ],
               }),
@@ -357,7 +276,6 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
                 children: [
                   new TextRun({
                     text: `Categoría local: ${memoriaData.categoriaLocal}`,
-                    size: 24,
                   }),
                 ],
               }),
@@ -365,7 +283,6 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
                 children: [
                   new TextRun({
                     text: `Refrigerante: ${memoriaData.refrigerante}`,
-                    size: 24,
                   }),
                 ],
               }),
@@ -377,8 +294,6 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
                   new TextRun({
                     text: "5. DESCRIPCIÓN DE LA INSTALACIÓN",
                     bold: true,
-                    size: 28,
-                    break: 1,
                   }),
                 ],
               }),
@@ -387,7 +302,6 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
                   children: [
                     new TextRun({
                       text: line,
-                      size: 24,
                     }),
                   ],
                 })
@@ -400,8 +314,6 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
                   new TextRun({
                     text: "6. NORMATIVA DE APLICACIÓN",
                     bold: true,
-                    size: 28,
-                    break: 1,
                   }),
                 ],
               }),
@@ -409,7 +321,6 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
                 children: [
                   new TextRun({
                     text: "Para la elaboración de este documento y para la ejecución de la instalación, se deberán tener en cuenta, entre otras, las siguientes disposiciones:",
-                    size: 24,
                   }),
                 ],
               }),
@@ -419,7 +330,6 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
                   new TextRun({
                     text: "REGLAMENTOS DE INSTALACIONES FRIGORÍFICAS",
                     bold: true,
-                    size: 24,
                   }),
                 ],
               }),
@@ -427,7 +337,6 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
                 children: [
                   new TextRun({
                     text: "RD 552/2019: Real Decreto 552/2019, de 27 de septiembre, por el que se aprueban el Reglamento de seguridad para instalaciones frigoríficas y sus instrucciones técnicas complementarias. Es el Reglamento que se encuentra en vigor desde el 2 de enero de 2020.",
-                    size: 24,
                   }),
                 ],
               }),
@@ -435,21 +344,22 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
           },
         ],
       });
+      
+      // Usar la biblioteca JSZip para convertir el documento a un blob
+      const buffer = await doc.generateAsync({ type: "blob" });
+      
+      // Crear un enlace de descarga y descargarlo automáticamente
+      const url = URL.createObjectURL(buffer);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `Memoria_${memoriaData.titular.replace(/\s+/g, '_')}.docx`;
+      document.body.appendChild(link);
+      link.click();
+      
+      // Limpiar
+      URL.revokeObjectURL(url);
+      document.body.removeChild(link);
 
-      // Generar el archivo DOCX
-      const buffer = await Packer.toBuffer(doc);
-      
-      // Crear un Blob y descargarlo
-      const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `Memoria_Técnica_${memoriaData.titular.replace(/\s+/g, '_')}.docx`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-      
       toast({
         title: "Documento Word generado",
         description: "Se ha generado el documento Word correctamente",
@@ -459,6 +369,78 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
       toast({
         title: "Error al generar documento",
         description: "Ocurrió un error al generar el documento Word. Inténtelo nuevamente.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  // Updated function to generate Word document using HTML content
+  const handleGenerarDocumentoWordHtml = async () => {
+    if (!previewRef.current) {
+      toast({
+        title: "Error al generar documento",
+        description: "No se pudo generar el documento Word. Inténtelo nuevamente.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    toast({
+      title: "Generando documento Word",
+      description: "Convirtiendo el contenido a formato Word...",
+    });
+    
+    try {
+      // Clone the preview content
+      const contentHtml = previewRef.current.innerHTML;
+      
+      // Create a blob with HTML content that can be opened in Word
+      const htmlContent = `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="UTF-8">
+            <title>Memoria Técnica - ${memoriaData.titular}</title>
+            <style>
+              body { font-family: Arial, sans-serif; }
+              .header { text-align: center; font-weight: bold; margin-bottom: 20px; }
+              .section { margin-bottom: 20px; }
+              h1, h2, h3 { page-break-after: avoid; }
+              table { width: 100%; border-collapse: collapse; }
+              td, th { border: 1px solid #ddd; padding: 8px; }
+              .page-break { page-break-before: always; }
+              .footer { position: fixed; bottom: 0; width: 100%; text-align: center; }
+            </style>
+          </head>
+          <body>
+            ${contentHtml}
+          </body>
+        </html>
+      `;
+      
+      // Create a Blob with the HTML content
+      const blob = new Blob([htmlContent], { type: "application/msword" });
+      
+      // Create a download link and trigger the download
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `Memoria_Técnica_${memoriaData.titular.replace(/\s+/g, '_')}.doc`;
+      document.body.appendChild(link);
+      link.click();
+      
+      // Clean up
+      URL.revokeObjectURL(link.href);
+      document.body.removeChild(link);
+      
+      toast({
+        title: "Documento Word generado",
+        description: "Se ha generado el documento Word correctamente",
+      });
+    } catch (error) {
+      console.error("Error al generar documento Word:", error);
+      toast({
+        title: "Error al generar documento",
+        description: "Se produjo un error al generar el documento Word.",
         variant: "destructive"
       });
     }
@@ -647,7 +629,7 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
             <Button 
               variant="outline" 
               className="flex items-center gap-2" 
-              onClick={handleGenerarDocumentoWord}
+              onClick={handleGenerarDocumentoWordHtml}
             >
               <FileDown size={18} />
               <span>Descargar Word</span>
@@ -667,6 +649,9 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
           </div>
         </div>
       </header>
+      
+      {/* Hidden container for Word document preview */}
+      <div ref={wordContainerRef} style={{ display: 'none' }}></div>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1">
         <div className="border-b bg-white">
