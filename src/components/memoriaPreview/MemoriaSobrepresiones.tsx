@@ -108,7 +108,7 @@ const MemoriaSobrepresiones: React.FC = () => {
                     </tr>
                     <tr>
                       <td className="border border-gray-300 p-2 font-medium">Capacidad descarga válvula seleccionada:</td>
-                      <td className="border border-gray-300 p-2">725 kg/h &gt; Capacidad mínima</td>
+                      <td className="border border-gray-300 p-2">725 kg/h {'>'}{'>'} Capacidad mínima</td>
                     </tr>
                     <tr>
                       <td className="border border-gray-300 p-2 font-medium">Capacidad descarga ajustada:</td>
@@ -172,7 +172,7 @@ const MemoriaSobrepresiones: React.FC = () => {
               
               <div className="pl-6 mb-4">
                 <p className="mb-2">Flujo crítico si: P<sub>b</sub>/P<sub>o</sub> ≤ (2/(K+1))<sup>K/(K-1)</sup></p>
-                <p className="mb-2">Flujo subcrítico si: P<sub>b</sub>/P<sub>o</sub> > (2/(K+1))<sup>K/(K-1)</sup></p>
+                <p className="mb-2">Flujo subcrítico si: P<sub>b</sub>/P<sub>o</sub> {'>'}{'>'} (2/(K+1))<sup>K/(K-1)</sup></p>
                 
                 <p className="mb-2">En donde:</p>
                 <table className="border-collapse border border-gray-300 w-full">
