@@ -28,8 +28,8 @@ const MemoriaSecciones1a9: React.FC<MemoriaSecciones1a9Props> = ({ data }) => {
           <h3 className="text-lg font-bold">1. OBJETO</h3>
           <p className="text-sm mt-2 text-justify">
             El objeto de este proyecto es el de describir la instalación frigorífica dedicada a la conservación
-            de productos perecederos en un <span className="bg-green-100">{data.tipoInstalacion || "supermercado"}</span>, del que es su titular <span className="bg-yellow-100">{data.titular || "DINOSOL SUPERMERCADOS, S.L."}</span>,
-            y que está situada en la localidad de <span className="bg-green-100">{data.nombreProyecto || "Costa del Silencio (Arona)"}</span>, de modo que quede
+            de productos perecederos en un {data.tipoInstalacion || "supermercado"}, del que es su titular {data.titular || "DINOSOL SUPERMERCADOS, S.L."},
+            y que está situada en la localidad de {data.nombreProyecto || "Costa del Silencio (Arona)"}, de modo que quede
             incorporada en el Registro de Instalaciones Frigoríficas del Gobierno de Canarias.
           </p>
         </div>
@@ -65,18 +65,18 @@ const MemoriaSecciones1a9: React.FC<MemoriaSecciones1a9Props> = ({ data }) => {
               <tbody>
                 <tr>
                   <td className="pr-4 align-top whitespace-nowrap">Titular:</td>
-                  <td className="bg-yellow-100">{data.titular || "DINOSOL SUPERMERCADOS, S.L."}</td>
+                  <td>{data.titular || "DINOSOL SUPERMERCADOS, S.L."}</td>
                 </tr>
                 <tr>
                   <td className="pr-4 align-top whitespace-nowrap">CIF:</td>
-                  <td className="bg-yellow-100">{data.nif || "B61742565"}</td>
+                  <td>{data.nif || "B61742565"}</td>
                 </tr>
                 <tr>
                   <td className="pr-4 align-top whitespace-nowrap">Domicilio social:</td>
                   <td>
-                    <div className="bg-yellow-100">{data.direccion || "Carretera del Rincón, s/n, 4ª Planta"}</div>
-                    <div className="bg-yellow-100">Edif. Anexo C.C. Las Arenas</div>
-                    <div className="bg-yellow-100">{data.cp || "35010"} {data.poblacion || "LAS PALMAS DE GRAN CANARIA"} ({data.provincia || "LAS PALMAS"})</div>
+                    <div>{data.direccion || "Carretera del Rincón, s/n, 4ª Planta"}</div>
+                    <div>Edif. Anexo C.C. Las Arenas</div>
+                    <div>{data.cp || "35010"} {data.poblacion || "LAS PALMAS DE GRAN CANARIA"} ({data.provincia || "LAS PALMAS"})</div>
                   </td>
                 </tr>
               </tbody>
@@ -93,13 +93,13 @@ const MemoriaSecciones1a9: React.FC<MemoriaSecciones1a9Props> = ({ data }) => {
                 <tr>
                   <td className="pr-4 align-top whitespace-nowrap">Dirección:</td>
                   <td>
-                    <div className="bg-green-100">C/ Luis Correa Medina, 9</div>
-                    <div className="bg-green-100">35013 LAS PALMAS DE GRAN CANARIA (LAS PALMAS)</div>
+                    <div>C/ Luis Correa Medina, 9</div>
+                    <div>35013 LAS PALMAS DE GRAN CANARIA (LAS PALMAS)</div>
                   </td>
                 </tr>
                 <tr>
                   <td className="pr-4 align-top whitespace-nowrap">Teléfono:</td>
-                  <td className="bg-green-100">928303600</td>
+                  <td>928303600</td>
                 </tr>
               </tbody>
             </table>
@@ -115,14 +115,14 @@ const MemoriaSecciones1a9: React.FC<MemoriaSecciones1a9Props> = ({ data }) => {
                 <tr>
                   <td className="pr-4 align-top whitespace-nowrap">Dirección:</td>
                   <td>
-                    <div className="bg-green-100">Avda. José Antonio Tavío, 2</div>
-                    <div className="bg-green-100">Costa del Silencio</div>
-                    <div className="bg-green-100">38630 ARONA (SANTA CRUZ DE TENERIFE)</div>
+                    <div>Avda. José Antonio Tavío, 2</div>
+                    <div>Costa del Silencio</div>
+                    <div>38630 ARONA (SANTA CRUZ DE TENERIFE)</div>
                   </td>
                 </tr>
                 <tr>
                   <td className="pr-4 align-top whitespace-nowrap">Teléfono:</td>
-                  <td className="bg-green-100">666666666</td>
+                  <td>666666666</td>
                 </tr>
               </tbody>
             </table>
@@ -137,35 +137,35 @@ const MemoriaSecciones1a9: React.FC<MemoriaSecciones1a9Props> = ({ data }) => {
               <tbody>
                 <tr>
                   <td className="pr-4 align-top whitespace-nowrap">Ingeniero:</td>
-                  <td className="bg-green-100">JUAN MUNNÉ MANSÓ</td>
+                  <td>JUAN MUNNÉ MANSÓ</td>
                 </tr>
                 <tr>
                   <td className="pr-4 align-top whitespace-nowrap">DNI:</td>
-                  <td className="bg-green-100">52405996C</td>
+                  <td>52405996C</td>
                 </tr>
                 <tr>
                   <td className="pr-4 align-top whitespace-nowrap">N.º de colegiado:</td>
-                  <td className="bg-green-100">24.033</td>
+                  <td>24.033</td>
                 </tr>
                 <tr>
                   <td className="pr-4 align-top whitespace-nowrap">Colegio:</td>
-                  <td className="bg-green-100">Colegio de Ingenieros Técnicos Industriales de Barcelona (CETIB)</td>
+                  <td>Colegio de Ingenieros Técnicos Industriales de Barcelona (CETIB)</td>
                 </tr>
                 <tr>
                   <td className="pr-4 align-top whitespace-nowrap">Domicilio profes.:</td>
                   <td>
-                    <div className="bg-green-100">C/ Pablo Iglesias, 63, Planta 1ª, Local 13</div>
-                    <div className="bg-green-100">Pol. Ind. Pla d'en Boet</div>
-                    <div className="bg-green-100">08302 MATARÓ (BARCELONA)</div>
+                    <div>C/ Pablo Iglesias, 63, Planta 1ª, Local 13</div>
+                    <div>Pol. Ind. Pla d'en Boet</div>
+                    <div>08302 MATARÓ (BARCELONA)</div>
                   </td>
                 </tr>
                 <tr>
                   <td className="pr-4 align-top whitespace-nowrap">Teléfono:</td>
-                  <td className="bg-green-100">649341169</td>
+                  <td>649341169</td>
                 </tr>
                 <tr>
                   <td className="pr-4 align-top whitespace-nowrap">Email:</td>
-                  <td className="bg-green-100">jmunne@coldsulting.com</td>
+                  <td>jmunne@coldsulting.com</td>
                 </tr>
               </tbody>
             </table>
@@ -180,30 +180,30 @@ const MemoriaSecciones1a9: React.FC<MemoriaSecciones1a9Props> = ({ data }) => {
               <tbody>
                 <tr>
                   <td className="pr-4 align-top whitespace-nowrap">Nombre:</td>
-                  <td className="bg-green-100">{data.instalador || "GESTÉCNICA INTEGRAL 10, S.L."}</td>
+                  <td>{data.instalador || "GESTÉCNICA INTEGRAL 10, S.L."}</td>
                 </tr>
                 <tr>
                   <td className="pr-4 align-top whitespace-nowrap">NIF:</td>
-                  <td className="bg-green-100">B76501931</td>
+                  <td>B76501931</td>
                 </tr>
                 <tr>
                   <td className="pr-4 align-top whitespace-nowrap">Domicilio Social:</td>
                   <td>
-                    <div className="bg-green-100">C/ Isaac Peral, 3, Nave 5</div>
-                    <div className="bg-green-100">38109 EL ROSARIO (SANTA CRUZ DE TENERIFE)</div>
+                    <div>C/ Isaac Peral, 3, Nave 5</div>
+                    <div>38109 EL ROSARIO (SANTA CRUZ DE TENERIFE)</div>
                   </td>
                 </tr>
                 <tr>
                   <td className="pr-4 align-top whitespace-nowrap">Teléfono:</td>
-                  <td className="bg-green-100">922618202</td>
+                  <td>922618202</td>
                 </tr>
                 <tr>
                   <td className="pr-4 align-top whitespace-nowrap">Email:</td>
-                  <td className="bg-green-100">gestecnicaintegral10@gestecnicaintegral10.es</td>
+                  <td>gestecnicaintegral10@gestecnicaintegral10.es</td>
                 </tr>
                 <tr>
                   <td className="pr-4 align-top whitespace-nowrap">N.º REIF:</td>
-                  <td className="bg-green-100">38020755</td>
+                  <td>38020755</td>
                 </tr>
               </tbody>
             </table>
