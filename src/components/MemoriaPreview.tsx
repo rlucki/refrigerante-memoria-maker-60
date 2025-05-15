@@ -932,17 +932,17 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
         </div>
       </div>
 
-      {/* Décima página - Sección 16: PROTECCIÓN CONTRA SOBREPRESIONES */}
+      {/* Décima página - Sección 18: PROTECCIÓN CONTRA SOBREPRESIONES */}
       <div className="mb-8 max-w-[210mm] mx-auto bg-white min-h-[297mm] relative p-6">
         {/* Content container with padding at bottom to prevent overlap with footer */}
         <div className="pb-20">
-          {/* Sección 16 - PROTECCIÓN CONTRA SOBREPRESIONES */}
+          {/* Sección 18 - PROTECCIÓN CONTRA SOBREPRESIONES */}
           <div className="mb-6">
-            <h3 className="text-lg font-bold">16. PROTECCIÓN CONTRA SOBREPRESIONES</h3>
+            <h3 className="text-lg font-bold">18. PROTECCIÓN CONTRA SOBREPRESIONES</h3>
             
-            {/* Subsección 16.1 - VÁLVULAS DE SEGURIDAD */}
+            {/* Subsección 18.1 - VÁLVULAS DE SEGURIDAD */}
             <div className="mt-4 mb-6">
-              <h4 className="text-base font-bold">16.1. VÁLVULAS DE SEGURIDAD</h4>
+              <h4 className="text-base font-bold">18.1. VÁLVULAS DE SEGURIDAD</h4>
               <div className="mt-3 text-sm text-justify">
                 <p className="mb-3">
                   Los recipientes que puedan contener refrigerante líquido en condiciones normales de funcionamiento y puedan ser 
@@ -1068,19 +1068,4 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
             />
             {data.clienteLogo && (
               <img 
-                src={data.clienteLogo} 
-                alt="Logo Cliente" 
-                className="h-8 object-contain" 
-              />
-            )}
-          </div>
-          <div className="text-right mt-2">
-            <p className="text-xs text-gray-500">Página {currentPage + 9} de 64</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default MemoriaPreview;
+                src={
