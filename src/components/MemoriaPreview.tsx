@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Card } from "@/components/ui/card";
 import MemoriaPreviewNormativa from "./MemoriaPreviewNormativa";
@@ -519,6 +520,20 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
             </div>
           </div>
         </div>
+
+        {/* Footer with logos and page number */}
+        <div className="absolute bottom-6 left-0 w-full px-6">
+          <div className="flex justify-between items-center">
+            <img 
+              src={companyLogo} 
+              alt="Logo Empresa" 
+              className="h-8 object-contain" 
+            />
+          </div>
+          <div className="text-right mt-2">
+            <p className="text-xs text-gray-500">Página {currentPage + 4} de 64</p>
+          </div>
+        </div>
       </div>
 
       {/* Sexta página - Sección 10: DESCRIPCIÓN DE LA INSTALACIÓN FRIGORÍFICA */}
@@ -543,13 +558,6 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
               alt="Logo Empresa" 
               className="h-8 object-contain" 
             />
-            {data.clienteLogo && (
-              <img 
-                src={data.clienteLogo} 
-                alt="Logo Cliente" 
-                className="h-8 object-contain" 
-              />
-            )}
           </div>
           <div className="text-right mt-2">
             <p className="text-xs text-gray-500">Página {currentPage + 5} de 64</p>
@@ -618,13 +626,6 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
               alt="Logo Empresa" 
               className="h-8 object-contain" 
             />
-            {data.clienteLogo && (
-              <img 
-                src={data.clienteLogo} 
-                alt="Logo Cliente" 
-                className="h-8 object-contain" 
-              />
-            )}
           </div>
           <div className="text-right mt-2">
             <p className="text-xs text-gray-500">Página {currentPage + 6} de 64</p>
@@ -705,13 +706,6 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
               alt="Logo Empresa" 
               className="h-8 object-contain" 
             />
-            {data.clienteLogo && (
-              <img 
-                src={data.clienteLogo} 
-                alt="Logo Cliente" 
-                className="h-8 object-contain" 
-              />
-            )}
           </div>
           <div className="text-right mt-2">
             <p className="text-xs text-gray-500">Página {currentPage + 7} de 64</p>
@@ -830,13 +824,6 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
               alt="Logo Empresa" 
               className="h-8 object-contain" 
             />
-            {data.clienteLogo && (
-              <img 
-                src={data.clienteLogo} 
-                alt="Logo Cliente" 
-                className="h-8 object-contain" 
-              />
-            )}
           </div>
           <div className="text-right mt-2">
             <p className="text-xs text-gray-500">Página {currentPage + 8} de 64</p>
@@ -978,13 +965,6 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
               alt="Logo Empresa" 
               className="h-8 object-contain" 
             />
-            {data.clienteLogo && (
-              <img 
-                src={data.clienteLogo} 
-                alt="Logo Cliente" 
-                className="h-8 object-contain" 
-              />
-            )}
           </div>
           <div className="text-right mt-2">
             <p className="text-xs text-gray-500">Página {currentPage + 9} de 64</p>
