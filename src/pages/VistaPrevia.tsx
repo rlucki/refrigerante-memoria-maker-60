@@ -345,18 +345,18 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
         ],
       });
       
-      // Usar la biblioteca JSZip para convertir el documento a un blob
-      const buffer = await doc.generateAsync({ type: "blob" });
+      // Create a blob for browser download
+      const blob = await doc.save();
       
-      // Crear un enlace de descarga y descargarlo automáticamente
-      const url = URL.createObjectURL(buffer);
+      // Create a download link
+      const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
       link.download = `Memoria_${memoriaData.titular.replace(/\s+/g, '_')}.docx`;
       document.body.appendChild(link);
       link.click();
       
-      // Limpiar
+      // Clean up
       URL.revokeObjectURL(url);
       document.body.removeChild(link);
 
@@ -408,8 +408,7 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
               h1, h2, h3 { page-break-after: avoid; }
               table { width: 100%; border-collapse: collapse; }
               td, th { border: 1px solid #ddd; padding: 8px; }
-              .page-break { page-break-before: always; }
-              .footer { position: fixed; bottom: 0; width: 100%; text-align: center; }
+              .page-break { position: fixed; bottom: 0; width: 100%; text-align: center; }
             </style>
           </head>
           <body>
