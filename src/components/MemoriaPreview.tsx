@@ -48,8 +48,6 @@ interface MemoriaPreviewProps {
 }
 
 const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }) => {
-  // Use the correct COLDsulting logo
-  const companyLogo = "/lovable-uploads/02dc6811-1655-4701-81f9-bad03d948d87.png";
   
   return (
     <div className="memoria-preview-container">
@@ -451,20 +449,6 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
             </div>
           </div>
         </div>
-
-        {/* Footer with logos and page number */}
-        <div className="absolute bottom-6 left-0 w-full px-6">
-          <div className="flex justify-between items-center">
-            <img 
-              src={companyLogo} 
-              alt="Logo Empresa" 
-              className="h-8 object-contain" 
-            />
-          </div>
-          <div className="text-right mt-2">
-            <p className="text-xs text-gray-500">Página {currentPage + 4} de 64</p>
-          </div>
-        </div>
       </div>
 
       {/* Sexta página - Sección 10: DESCRIPCIÓN DE LA INSTALACIÓN FRIGORÍFICA */}
@@ -478,20 +462,6 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
             <div className="mt-4 text-sm text-justify">
               <p className="whitespace-pre-line">{data.descripcionInstalacion}</p>
             </div>
-          </div>
-        </div>
-
-        {/* Footer with logos and page number */}
-        <div className="absolute bottom-6 left-0 w-full px-6">
-          <div className="flex justify-between items-center">
-            <img 
-              src={companyLogo} 
-              alt="Logo Empresa" 
-              className="h-8 object-contain" 
-            />
-          </div>
-          <div className="text-right mt-2">
-            <p className="text-xs text-gray-500">Página {currentPage + 5} de 64</p>
           </div>
         </div>
       </div>
@@ -546,20 +516,6 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
                 Además de lo indicado anteriormente, para las instalaciones con cámaras a una temperatura inferior a -20ºC (cámaras negativas), se ha aplicado lo que exige al respecto el REBT y el apartado 6 de la Instrucción técnica complementaria BT-30.
               </p>
             </div>
-          </div>
-        </div>
-
-        {/* Footer with logos and page number */}
-        <div className="absolute bottom-6 left-0 w-full px-6">
-          <div className="flex justify-between items-center">
-            <img 
-              src={companyLogo} 
-              alt="Logo Empresa" 
-              className="h-8 object-contain" 
-            />
-          </div>
-          <div className="text-right mt-2">
-            <p className="text-xs text-gray-500">Página {currentPage + 6} de 64</p>
           </div>
         </div>
       </div>
@@ -626,20 +582,6 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* Footer with logos and page number */}
-        <div className="absolute bottom-6 left-0 w-full px-6">
-          <div className="flex justify-between items-center">
-            <img 
-              src={companyLogo} 
-              alt="Logo Empresa" 
-              className="h-8 object-contain" 
-            />
-          </div>
-          <div className="text-right mt-2">
-            <p className="text-xs text-gray-500">Página {currentPage + 7} de 64</p>
           </div>
         </div>
       </div>
@@ -744,20 +686,6 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
                 verificación de uniones de las tuberías y reparación de fugas.
               </p>
             </div>
-          </div>
-        </div>
-
-        {/* Footer with logos and page number */}
-        <div className="absolute bottom-6 left-0 w-full px-6">
-          <div className="flex justify-between items-center">
-            <img 
-              src={companyLogo} 
-              alt="Logo Empresa" 
-              className="h-8 object-contain" 
-            />
-          </div>
-          <div className="text-right mt-2">
-            <p className="text-xs text-gray-500">Página {currentPage + 8} de 64</p>
           </div>
         </div>
       </div>
@@ -884,23 +812,10 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
             </div>
           </div>
         </div>
-
-        {/* Footer with logos and page number */}
-        <div className="absolute bottom-6 left-0 w-full px-6">
-          <div className="flex justify-between items-center">
-            <img 
-              src={companyLogo} 
-              alt="Logo Empresa" 
-              className="h-8 object-contain" 
-            />
-          </div>
-          <div className="text-right mt-2">
-            <p className="text-xs text-gray-500">Página {currentPage + 9} de 64</p>
-          </div>
-        </div>
       </div>
     </div>
   );
 };
 
 export default MemoriaPreview;
+
