@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, FileDown, Printer } from "lucide-react";
@@ -10,6 +9,9 @@ import html2pdf from "html2pdf.js";
 import { validateMargin } from "@/lib/utils";
 import ExcelUploader from "@/components/ExcelUploader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Document, Packer, Paragraph, TextRun, HeadingLevel, Footer, Header, 
+  ImageRun, AlignmentType, PageNumber, NumberFormat, HorizontalPositionAlign, 
+  VerticalPositionAlign, HorizontalPositionRelativeFrom, VerticalPositionRelativeFrom } from "docx";
 
 const VistaPrevia = () => {
   const navigate = useNavigate();
@@ -110,6 +112,359 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
     setExcelData(data);
   };
 
+  // New function to generate Word document
+  const handleGenerarDocumentoWord = async () => {
+    if (!previewRef.current) {
+      toast({
+        title: "Error al generar documento",
+        description: "No se pudo generar el documento Word. Inténtelo nuevamente.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Mostrar toast generando documento
+    toast({
+      title: "Generando documento Word",
+      description: "Espere mientras se genera el documento DOCX...",
+    });
+
+    try {
+      // Crear un nuevo documento Word
+      const doc = new Document({
+        sections: [
+          {
+            properties: {
+              page: {
+                size: {
+                  width: 595 * 20, // A4 width in twentieths of a point
+                  height: 842 * 20, // A4 height in twentieths of a point
+                },
+                margin: {
+                  top: 1000, // Margins in twentieths of a point (aprox 1.4 cm)
+                  right: 1000,
+                  bottom: 1000,
+                  left: 1000,
+                },
+              },
+            },
+            headers: {
+              default: new Header({
+                children: [
+                  new Paragraph({
+                    alignment: AlignmentType.CENTER,
+                    children: memoriaData.encabezado?.split('\n').map(line => 
+                      new TextRun({
+                        text: line,
+                        bold: true,
+                        size: 24,
+                      })
+                    ) || [new TextRun({ text: "MEMORIA TÉCNICA DESCRIPTIVA", bold: true, size: 24 })],
+                  }),
+                  new Paragraph({
+                    text: "",
+                    spacing: {
+                      after: 200,
+                    },
+                  }),
+                ],
+              }),
+            },
+            footers: {
+              default: new Footer({
+                children: [
+                  new Paragraph({
+                    alignment: AlignmentType.JUSTIFIED,
+                    children: [
+                      // Aquí iría la imagen de logo si la tuviéramos en formato compatible
+                      new TextRun({
+                        text: "Página ",
+                        size: 18,
+                      }),
+                      new TextRun({
+                        children: [PageNumber.CURRENT],
+                        size: 18,
+                      }),
+                      new TextRun({
+                        text: " de ",
+                        size: 18,
+                      }),
+                      new TextRun({
+                        children: [PageNumber.TOTAL_PAGES],
+                        size: 18,
+                      }),
+                    ],
+                  }),
+                ],
+              }),
+            },
+            children: [
+              // Sección de datos del titular
+              new Paragraph({
+                heading: HeadingLevel.HEADING_1,
+                children: [
+                  new TextRun({
+                    text: "1. DATOS DEL TITULAR",
+                    bold: true,
+                    size: 28,
+                  }),
+                ],
+              }),
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: `Titular: ${memoriaData.titular}`,
+                    size: 24,
+                  }),
+                ],
+              }),
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: `NIF: ${memoriaData.nif}`,
+                    size: 24,
+                  }),
+                ],
+              }),
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: `Dirección: ${memoriaData.direccion}`,
+                    size: 24,
+                  }),
+                ],
+              }),
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: `Población: ${memoriaData.poblacion}`,
+                    size: 24,
+                  }),
+                ],
+              }),
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: `Provincia: ${memoriaData.provincia}`,
+                    size: 24,
+                  }),
+                ],
+              }),
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: `CP: ${memoriaData.cp}`,
+                    size: 24,
+                  }),
+                ],
+              }),
+              
+              // Sección de datos del instalador
+              new Paragraph({
+                heading: HeadingLevel.HEADING_1,
+                children: [
+                  new TextRun({
+                    text: "2. DATOS DEL INSTALADOR",
+                    bold: true,
+                    size: 28,
+                    break: 1,
+                  }),
+                ],
+              }),
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: `Instalador: ${memoriaData.instalador}`,
+                    size: 24,
+                  }),
+                ],
+              }),
+              
+              // Sección de datos de la instalación
+              new Paragraph({
+                heading: HeadingLevel.HEADING_1,
+                children: [
+                  new TextRun({
+                    text: "3. DATOS DE LA INSTALACIÓN",
+                    bold: true,
+                    size: 28,
+                    break: 1,
+                  }),
+                ],
+              }),
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: `Dirección: ${memoriaData.direccionInstalacion}`,
+                    size: 24,
+                  }),
+                ],
+              }),
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: `Población: ${memoriaData.poblacionInstalacion}`,
+                    size: 24,
+                  }),
+                ],
+              }),
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: `Provincia: ${memoriaData.provinciaInstalacion}`,
+                    size: 24,
+                  }),
+                ],
+              }),
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: `CP: ${memoriaData.cpInstalacion}`,
+                    size: 24,
+                  }),
+                ],
+              }),
+
+              // Sección de clasificación de la instalación
+              new Paragraph({
+                heading: HeadingLevel.HEADING_1,
+                children: [
+                  new TextRun({
+                    text: "4. CLASIFICACIÓN DE LA INSTALACIÓN",
+                    bold: true,
+                    size: 28,
+                    break: 1,
+                  }),
+                ],
+              }),
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: `Método de enfriamiento: ${memoriaData.metodoEnfriamiento}`,
+                    size: 24,
+                  }),
+                ],
+              }),
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: `Seguridad del sistema: ${memoriaData.seguridadSistema}`,
+                    size: 24,
+                  }),
+                ],
+              }),
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: `Categoría local: ${memoriaData.categoriaLocal}`,
+                    size: 24,
+                  }),
+                ],
+              }),
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: `Refrigerante: ${memoriaData.refrigerante}`,
+                    size: 24,
+                  }),
+                ],
+              }),
+              
+              // Descripción de la instalación
+              new Paragraph({
+                heading: HeadingLevel.HEADING_1,
+                children: [
+                  new TextRun({
+                    text: "5. DESCRIPCIÓN DE LA INSTALACIÓN",
+                    bold: true,
+                    size: 28,
+                    break: 1,
+                  }),
+                ],
+              }),
+              ...memoriaData.descripcionInstalacion?.split('\n').map(line => 
+                new Paragraph({
+                  children: [
+                    new TextRun({
+                      text: line,
+                      size: 24,
+                    }),
+                  ],
+                })
+              ) || [],
+              
+              // Sección de normativa de aplicación
+              new Paragraph({
+                heading: HeadingLevel.HEADING_1,
+                children: [
+                  new TextRun({
+                    text: "6. NORMATIVA DE APLICACIÓN",
+                    bold: true,
+                    size: 28,
+                    break: 1,
+                  }),
+                ],
+              }),
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: "Para la elaboración de este documento y para la ejecución de la instalación, se deberán tener en cuenta, entre otras, las siguientes disposiciones:",
+                    size: 24,
+                  }),
+                ],
+              }),
+              new Paragraph({
+                heading: HeadingLevel.HEADING_2,
+                children: [
+                  new TextRun({
+                    text: "REGLAMENTOS DE INSTALACIONES FRIGORÍFICAS",
+                    bold: true,
+                    size: 24,
+                  }),
+                ],
+              }),
+              new Paragraph({
+                children: [
+                  new TextRun({
+                    text: "RD 552/2019: Real Decreto 552/2019, de 27 de septiembre, por el que se aprueban el Reglamento de seguridad para instalaciones frigoríficas y sus instrucciones técnicas complementarias. Es el Reglamento que se encuentra en vigor desde el 2 de enero de 2020.",
+                    size: 24,
+                  }),
+                ],
+              }),
+            ],
+          },
+        ],
+      });
+
+      // Generar el archivo DOCX
+      const buffer = await Packer.toBuffer(doc);
+      
+      // Crear un Blob y descargarlo
+      const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `Memoria_Técnica_${memoriaData.titular.replace(/\s+/g, '_')}.docx`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      
+      toast({
+        title: "Documento Word generado",
+        description: "Se ha generado el documento Word correctamente",
+      });
+    } catch (error) {
+      console.error("Error al generar DOCX:", error);
+      toast({
+        title: "Error al generar documento",
+        description: "Ocurrió un error al generar el documento Word. Inténtelo nuevamente.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  // Original PDF generation function - keeping it as optional method
   const handleGenerarDocumento = () => {
     if (!previewRef.current) {
       toast({
@@ -289,9 +644,21 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
             <h1 className="text-2xl font-bold text-gray-800">Vista Previa de Memoria Técnica</h1>
           </div>
           <div className="flex gap-3">
-            <Button variant="outline" className="flex items-center gap-2" onClick={handleGenerarDocumento}>
+            <Button 
+              variant="outline" 
+              className="flex items-center gap-2" 
+              onClick={handleGenerarDocumentoWord}
+            >
               <FileDown size={18} />
-              <span>Descargar</span>
+              <span>Descargar Word</span>
+            </Button>
+            <Button 
+              variant="outline" 
+              className="flex items-center gap-2" 
+              onClick={handleGenerarDocumento}
+            >
+              <FileDown size={18} />
+              <span>Descargar PDF</span>
             </Button>
             <Button variant="outline" className="flex items-center gap-2">
               <Printer size={18} />
