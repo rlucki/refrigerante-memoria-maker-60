@@ -1,7 +1,7 @@
 
 import React from "react";
 
-interface MemoriaClasificacionProps {
+interface MemClasificacionProps {
   data: {
     metodoEnfriamiento?: string;
     seguridadSistema?: string;
