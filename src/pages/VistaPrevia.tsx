@@ -712,18 +712,20 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
                 "--hide-footers": "none"
               } as React.CSSProperties}
             >
-              <style jsx>{`
-                .memory-preview-page {
-                  border: none !important;
-                  box-shadow: none !important;
-                }
-                .page-break-before, .page-break-after {
-                  display: none !important;
-                }
-                .footer-content {
-                  display: none !important;
-                }
-              `}</style>
+              <style>
+                {`
+                  .memory-preview-page {
+                    border: none !important;
+                    box-shadow: none !important;
+                  }
+                  .page-break-before, .page-break-after {
+                    display: none !important;
+                  }
+                  .footer-content {
+                    display: none !important;
+                  }
+                `}
+              </style>
               <MemoriaPreview 
                 data={memoriaData} 
               />
