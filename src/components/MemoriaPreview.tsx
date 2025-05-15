@@ -95,75 +95,6 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
           </div>
         </div>
       </div>
-      
-      {/* Segunda página - Índice */}
-      <div className="mb-8 max-w-[210mm] mx-auto bg-white min-h-[297mm] relative p-6">
-        {/* Content container with padding at bottom to prevent overlap with footer */}
-        <div className="pb-20">
-          {/* Título de índice */}
-          <h2 className="text-2xl font-bold mb-8 text-center">ÍNDICE</h2>
-          
-          {/* Contenido del índice */}
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <p>1. OBJETO</p>
-              <p>3</p>
-            </div>
-            <div className="flex justify-between">
-              <p>2. ANTECEDENTES</p>
-              <p>3</p>
-            </div>
-            <div className="flex justify-between">
-              <p>3. TITULAR</p>
-              <p>3</p>
-            </div>
-            <div className="flex justify-between">
-              <p>4. DOMICILIO A EFECTOS DE NOTIFICACIONES</p>
-              <p>3</p>
-            </div>
-            <div className="flex justify-between">
-              <p>5. UBICACIÓN DE LA INSTALACIÓN</p>
-              <p>3</p>
-            </div>
-            <div className="flex justify-between">
-              <p>6. EMPRESA INSTALADORA</p>
-              <p>4</p>
-            </div>
-            <div className="flex justify-between">
-              <p>7. ACTIVIDAD</p>
-              <p>4</p>
-            </div>
-            <div className="flex justify-between">
-              <p>8. NORMATIVA DE APLICACIÓN</p>
-              <p>5</p>
-            </div>
-            <div className="flex justify-between">
-              <p>9. CLASIFICACIÓN DE LA INSTALACIÓN</p>
-              <p>7</p>
-            </div>
-            <div className="flex justify-between">
-              <p>10. DESCRIPCIÓN DE LA INSTALACIÓN FRIGORÍFICA</p>
-              <p>12</p>
-            </div>
-            <div className="flex justify-between">
-              <p>14. INSTALACIÓN ELÉCTRICA</p>
-              <p>15</p>
-            </div>
-            <div className="flex justify-between">
-              <p>15. TUBERÍAS Y AISLAMIENTO</p>
-              <p>16</p>
-            </div>
-            <div className="flex justify-between">
-              <p>15.1. TUBERÍAS</p>
-              <p>16</p>
-            </div>
-            <div className="flex justify-between">
-              <p>15.2. SUPORTACIONES</p>
-              <p>17</p>
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* Tercera página - Contenido de secciones 1-7 */}
       <div className="mb-8 max-w-[210mm] mx-auto bg-white min-h-[297mm] relative p-6">
@@ -862,16 +793,13 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
                   ser determinada por la ecuación:
                 </p>
                 
-                {/* Fórmula matemática con estilos para mejorar aspecto */}
+                {/* Fórmula matemática como imagen */}
                 <div className="flex justify-center my-4">
-                  <div className="bg-gray-100 px-6 py-3 rounded-md shadow-sm text-lg">
-                    <span>Q<sub>m</sub> = </span>
-                    <span className="inline-flex flex-col items-center mx-1">
-                      <span className="border-b border-black">δ × A</span>
-                      <span>h<sub>vap</sub></span>
-                    </span>
-                    <span> × 3600</span>
-                  </div>
+                  <img 
+                    src="/lovable-uploads/22f1b9d5-b37c-412e-89b4-8f2570bc2372.png" 
+                    alt="Fórmula para calcular la capacidad mínima de descarga"
+                    className="bg-gray-100 px-6 py-3 rounded-md shadow-sm max-h-20 object-contain"
+                  />
                 </div>
                 
                 <p className="mb-2">En dónde:</p>
