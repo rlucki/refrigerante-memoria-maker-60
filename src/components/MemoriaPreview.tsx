@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Card } from "@/components/ui/card";
 import MemoriaPreviewNormativa from "./MemoriaPreviewNormativa";
@@ -1068,4 +1069,19 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
             />
             {data.clienteLogo && (
               <img 
-                src={
+                src={data.clienteLogo} 
+                alt="Logo Cliente" 
+                className="h-8 object-contain" 
+              />
+            )}
+          </div>
+          <div className="text-right mt-2">
+            <p className="text-xs text-gray-500">Página {currentPage + 9} de 64</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default MemoriaPreview;
