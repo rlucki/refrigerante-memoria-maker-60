@@ -2,6 +2,7 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 
 interface DatosTitularSectionProps {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -91,6 +92,61 @@ const DatosTitularSection = ({ onChange }: DatosTitularSectionProps) => {
               placeholder="Email" 
               type="email"
               defaultValue="info.supermercado@dinosol.es"
+              onChange={onChange}
+            />
+          </div>
+        </div>
+        
+        <Separator className="my-6" />
+        
+        <h3 className="text-lg font-medium mb-4">5. DOMICILIO A EFECTOS DE NOTIFICACIONES</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2 md:col-span-2">
+            <Label htmlFor="direccionNotif">Dirección</Label>
+            <Input 
+              id="direccionNotif" 
+              placeholder="Dirección para notificaciones" 
+              defaultValue="C/ Luis Correa Medina, 9"
+              onChange={onChange}
+            />
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="poblacionNotif">Población</Label>
+            <Input 
+              id="poblacionNotif" 
+              placeholder="Población" 
+              defaultValue="LAS PALMAS DE GRAN CANARIA"
+              onChange={onChange}
+            />
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="provinciaNotif">Provincia</Label>
+            <Input 
+              id="provinciaNotif" 
+              placeholder="Provincia" 
+              defaultValue="LAS PALMAS"
+              onChange={onChange}
+            />
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="cpNotif">C.P.</Label>
+            <Input 
+              id="cpNotif" 
+              placeholder="Código postal" 
+              defaultValue="35013"
+              onChange={onChange}
+            />
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="telefonoNotif">Teléfono</Label>
+            <Input 
+              id="telefonoNotif" 
+              placeholder="Teléfono" 
+              defaultValue="928303600"
               onChange={onChange}
             />
           </div>

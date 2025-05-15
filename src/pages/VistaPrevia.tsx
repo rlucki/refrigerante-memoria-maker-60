@@ -13,17 +13,43 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 const VistaPrevia = () => {
   const navigate = useNavigate();
   const [memoriaData, setMemoriaData] = useState({
+    // Datos titular
     titular: "DINOSOL SUPERMERCADOS S.L.",
     nif: "B61742565",
     direccion: "CTRA. DEL RINCÓN, S/N, 4ª PLANTA Edif. Anexo C.C. Las Arenas",
     poblacion: "LAS PALMAS DE GRAN CANARIA",
     provincia: "LAS PALMAS",
     cp: "35010",
+    telefono: "928303600",
+    email: "info.supermercado@dinosol.es",
+    
+    // Datos notificaciones
+    direccionNotif: "C/ Luis Correa Medina, 9",
+    poblacionNotif: "LAS PALMAS DE GRAN CANARIA",
+    provinciaNotif: "LAS PALMAS",
+    cpNotif: "35013",
+    telefonoNotif: "928303600",
+    
+    // Datos instalador
     instalador: "GESTÉCNICA INTEGRAL 10. S.L.",
+    cif_instalacion: "B76501931",
+    n_registro_instalacion: "38020755",
+    direccion_instalador: "C/ ISAAC PERAL, Nº 3, NAVE 5",
+    poblacion_instalacion: "EL ROSARIO",
+    cp_instalacion: "38109",
+    telefono_instalacion: "922618202",
+    mail_instalacion: "gestecnicaintegral10@gestecnicaintegral10.es",
+    
+    // Datos instalación
     direccionInstalacion: "AVDA. BLAS PÉREZ GONZÁLEZ, 4",
     poblacionInstalacion: "PUERTO DE LA CRUZ",
     cpInstalacion: "35610",
     provinciaInstalacion: "SANTA CRUZ DE TENERIFE",
+    telefonoInstalacion: "922443768",
+    num_inscripcion: "IF202400127",
+    fecha_inscripcion: "2024-09-23",
+    
+    // Encabezados
     titulo: "MEMORIA TÉCNICA DESCRIPTIVA",
     encabezado: "",
     

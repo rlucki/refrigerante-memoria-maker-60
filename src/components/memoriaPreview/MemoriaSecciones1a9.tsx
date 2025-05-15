@@ -16,6 +16,17 @@ interface MemoriaSecciones1a9Props {
     instalador?: string;
     tipoInstalacion?: string;
     nombreProyecto?: string;
+    
+    // Datos para notificaciones
+    direccionNotif?: string;
+    poblacionNotif?: string;
+    provinciaNotif?: string;
+    cpNotif?: string;
+    telefonoNotif?: string;
+    
+    // Teléfonos
+    telefono?: string;
+    telefonoInstalacion?: string;
   };
 }
 
@@ -93,13 +104,13 @@ const MemoriaSecciones1a9: React.FC<MemoriaSecciones1a9Props> = ({ data }) => {
                 <tr>
                   <td className="pr-4 align-top whitespace-nowrap">Dirección:</td>
                   <td>
-                    <div>C/ Luis Correa Medina, 9</div>
-                    <div>35013 LAS PALMAS DE GRAN CANARIA (LAS PALMAS)</div>
+                    <div>{data.direccionNotif || "C/ Luis Correa Medina, 9"}</div>
+                    <div>{data.cpNotif || "35013"} {data.poblacionNotif || "LAS PALMAS DE GRAN CANARIA"} ({data.provinciaNotif || "LAS PALMAS"})</div>
                   </td>
                 </tr>
                 <tr>
                   <td className="pr-4 align-top whitespace-nowrap">Teléfono:</td>
-                  <td>928303600</td>
+                  <td>{data.telefonoNotif || "928303600"}</td>
                 </tr>
               </tbody>
             </table>
@@ -115,14 +126,14 @@ const MemoriaSecciones1a9: React.FC<MemoriaSecciones1a9Props> = ({ data }) => {
                 <tr>
                   <td className="pr-4 align-top whitespace-nowrap">Dirección:</td>
                   <td>
-                    <div>Avda. José Antonio Tavío, 2</div>
+                    <div>{data.direccionInstalacion || "Avda. José Antonio Tavío, 2"}</div>
                     <div>Costa del Silencio</div>
-                    <div>38630 ARONA (SANTA CRUZ DE TENERIFE)</div>
+                    <div>{data.cpInstalacion || "38630"} {data.poblacionInstalacion || "ARONA"} ({data.provinciaInstalacion || "SANTA CRUZ DE TENERIFE"})</div>
                   </td>
                 </tr>
                 <tr>
                   <td className="pr-4 align-top whitespace-nowrap">Teléfono:</td>
-                  <td>666666666</td>
+                  <td>{data.telefonoInstalacion || "666666666"}</td>
                 </tr>
               </tbody>
             </table>
