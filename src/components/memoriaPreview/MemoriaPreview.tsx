@@ -65,8 +65,7 @@ interface MemoriaPreviewProps {
 const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }) => {
   
   return (
-    <div className="memoria-preview-container">
-      {/* Páginas 1-11 */}
+    <div className="memoria-preview-container continuous-flow">
       <MemoriaPortada data={data} />
       <MemoriaSecciones1a9 data={data} />
       <MemoriaPreviewNormativa data={data} />
@@ -78,11 +77,7 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
       <MemoriaInstalacionElectrica />
       <MemoriaTuberias />
       <MemoriaSoportaciones />
-      
-      {/* Página 12: Sobrepresiones */}
       <MemoriaSobrepresiones />
-      
-      {/* Página 13: Carga Refrigerante */}
       <MemoriaCargaRefrigerante />
     </div>
   );

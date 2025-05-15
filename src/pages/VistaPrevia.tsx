@@ -232,13 +232,11 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
             >
               <style>
                 {`
-                  @media print {
-                    .page-break-before {
-                      page-break-before: always;
-                    }
-                    .page-break-after {
-                      page-break-after: always;
-                    }
+                  .memoria-preview-container.continuous-flow > div {
+                    min-height: auto;
+                    max-height: none;
+                    height: auto;
+                    page-break-after: auto;
                   }
                   
                   .memoria-preview-container {
