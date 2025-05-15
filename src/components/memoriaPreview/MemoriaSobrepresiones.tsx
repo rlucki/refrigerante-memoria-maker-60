@@ -5,13 +5,13 @@ const MemoriaSobrepresiones: React.FC = () => {
   return (
     <div className="mb-8 max-w-[210mm] mx-auto bg-white min-h-[297mm] relative p-6">
       <div className="pb-20">
-        {/* Sección 19 - PROTECCIÓN CONTRA SOBREPRESIONES */}
+        {/* Sección 22 - PROTECCIÓN CONTRA SOBREPRESIONES */}
         <div className="mb-6">
-          <h3 className="text-lg font-bold">19. PROTECCIÓN CONTRA SOBREPRESIONES</h3>
+          <h3 className="text-lg font-bold">22. PROTECCIÓN CONTRA SOBREPRESIONES</h3>
           
-          {/* Subsección 19.1 - VÁLVULAS DE SEGURIDAD */}
+          {/* Subsección 22.1 - VÁLVULAS DE SEGURIDAD */}
           <div className="mt-4 mb-6">
-            <h4 className="text-base font-bold">19.1. VÁLVULAS DE SEGURIDAD</h4>
+            <h4 className="text-base font-bold">22.1. VÁLVULAS DE SEGURIDAD</h4>
             <div className="mt-3 text-sm text-justify">
               <p className="mb-3">
                 Los recipientes que puedan contener refrigerante líquido en condiciones normales de funcionamiento y puedan ser 
