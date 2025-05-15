@@ -1,4 +1,3 @@
-
 import React from "react";
 
 interface MemoriaSecciones1a9Props {
