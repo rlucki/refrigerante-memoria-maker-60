@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
@@ -98,42 +97,63 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
   const previewContainerRef = useRef<HTMLDivElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
 
-  // Improved scroll synchronization
+  // Enhanced scroll synchronization with debouncing
   useEffect(() => {
     const formContainer = formContainerRef.current;
     const previewContainer = previewContainerRef.current;
 
     if (!formContainer || !previewContainer) return;
 
+    let scrollTimeout: NodeJS.Timeout;
+    
     const handleScroll = () => {
-      if (formContainer && previewContainer) {
-        const formScrollPercentage = 
-          formContainer.scrollTop / (formContainer.scrollHeight - formContainer.clientHeight);
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        if (formContainer && previewContainer) {
+          const formScrollPercentage = 
+            formContainer.scrollTop / (formContainer.scrollHeight - formContainer.clientHeight);
 
-        // Apply the same scroll percentage to the preview with smoother behavior
-        const previewScrollMax = previewContainer.scrollHeight - previewContainer.clientHeight;
-        previewContainer.scrollTop = formScrollPercentage * previewScrollMax;
-      }
+          // Apply the same scroll percentage to the preview with smoother behavior
+          const previewScrollMax = previewContainer.scrollHeight - previewContainer.clientHeight;
+          previewContainer.scrollTop = formScrollPercentage * previewScrollMax;
+        }
+      }, 10); // Small timeout for better performance
     };
 
     formContainer.addEventListener("scroll", handleScroll);
     return () => {
       formContainer.removeEventListener("scroll", handleScroll);
+      clearTimeout(scrollTimeout);
     };
   }, []);
 
-  // Better content visibility handling
+  // Improved content visibility handling
   useEffect(() => {
     const checkContentVisibility = () => {
       const previewContainer = previewContainerRef.current;
       if (previewContainer) {
-        // Ensure all content is visible by forcing reflow
+        // Force DOM reflow to ensure content is properly rendered
         previewContainer.style.display = 'none';
+        
+        // Use a longer timeout to ensure complete rendering
         setTimeout(() => {
           if (previewContainer) {
             previewContainer.style.display = 'block';
+            
+            // Force scroll to reveal any hidden content
+            setTimeout(() => {
+              if (previewContainer) {
+                const currentScroll = previewContainer.scrollTop;
+                previewContainer.scrollTop = currentScroll + 1;
+                setTimeout(() => {
+                  if (previewContainer) {
+                    previewContainer.scrollTop = currentScroll;
+                  }
+                }, 50);
+              }
+            }, 100);
           }
-        }, 50);
+        }, 100);
       }
     };
     
@@ -227,6 +247,16 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
                   
                   .memory-preview-page {
                     margin-bottom: 20px;
+                  }
+                  
+                  /* Ensure content is always visible */
+                  .mb-8 {
+                    margin-bottom: 2rem !important;
+                  }
+                  
+                  /* Better spacing between sections */
+                  h3, h4 {
+                    margin-top: 1.5rem !important;
                   }
                 `}
               </style>

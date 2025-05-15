@@ -12,6 +12,7 @@ import MemoriaInstalacionElectrica from "./MemoriaInstalacionElectrica";
 import MemoriaTuberias from "./MemoriaTuberias";
 import MemoriaSoportaciones from "./MemoriaSoportaciones";
 import MemoriaSobrepresiones from "./MemoriaSobrepresiones";
+import MemoriaCargaRefrigerante from "./MemoriaCargaRefrigerante";
 
 interface MemoriaPreviewProps {
   data: {
@@ -80,6 +81,9 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
       
       {/* Página 12: Sobrepresiones */}
       <MemoriaSobrepresiones />
+      
+      {/* Página 13: Carga Refrigerante */}
+      <MemoriaCargaRefrigerante />
     </div>
   );
 };
