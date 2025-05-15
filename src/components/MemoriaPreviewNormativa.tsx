@@ -153,9 +153,9 @@ const MemoriaPreviewNormativa: React.FC<MemoriaPreviewNormativaProps> = ({
     <div className="mb-8 max-w-[595px] mx-auto bg-white memory-preview-page">
       {/* Contenido principal */}
       <div className="content-container text-content">
-        {/* Sección 8 - NORMATIVA DE APLICACIÓN */}
+        {/* Sección 10 - REGLAMENTOS DE APLICACIÓN */}
         <div className="mb-6">
-          <h3 className="text-lg font-bold page-break-after">8. NORMATIVA DE APLICACIÓN</h3>
+          <h3 className="text-lg font-bold page-break-after">10. REGLAMENTOS DE APLICACIÓN</h3>
           <p className="text-sm mt-3 mb-4">
             Para la elaboración de este documento y para la ejecución de la instalación, se deberán tener en cuenta, 
             entre otras, las siguientes disposiciones:
