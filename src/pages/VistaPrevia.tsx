@@ -127,28 +127,56 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
     // Crear una copia del contenido para manipularlo sin afectar la visualización
     const content = previewRef.current.cloneNode(true) as HTMLElement;
     
-    // Asegurar que todos los estilos se apliquen correctamente
-    const styles = document.querySelectorAll('style, link[rel="stylesheet"]');
-    const stylesForPdf = document.createElement('div');
-    styles.forEach(style => stylesForPdf.appendChild(style.cloneNode(true)));
-    content.prepend(stylesForPdf);
+    // Aplicar estilos específicos para el PDF que aseguren formato consistente
+    const pdfStyles = document.createElement('style');
+    pdfStyles.textContent = `
+      @page {
+        size: A4;
+        margin: 0;
+      }
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      .memoria-preview-container > div {
+        width: 210mm !important;
+        height: 297mm !important;
+        padding: 20mm !important;
+        box-sizing: border-box !important;
+        position: relative !important;
+        page-break-after: always !important;
+        background-color: white !important;
+        margin: 0 !important;
+      }
+      .absolute.bottom-6 {
+        position: absolute !important;
+        bottom: 20mm !important;
+        left: 0 !important;
+        width: 100% !important;
+        padding: 0 20mm !important;
+      }
+    `;
+    content.prepend(pdfStyles);
     
-    // Agregar estilos inline para garantizar formato correcto en el PDF
+    // Asegurar que cada página tenga el formato correcto
     const pages = content.querySelectorAll('.memoria-preview-container > div');
     pages.forEach(page => {
       const pageElement = page as HTMLElement;
       pageElement.style.width = '210mm';
-      pageElement.style.minHeight = '297mm';
+      pageElement.style.height = '297mm';
       pageElement.style.padding = '20mm';
       pageElement.style.boxSizing = 'border-box';
       pageElement.style.position = 'relative';
       pageElement.style.pageBreakAfter = 'always';
       pageElement.style.backgroundColor = 'white';
+      pageElement.style.margin = '0';
       
       // Asegurar que el contenido interno respete márgenes
       const contentContainer = pageElement.querySelector('div:first-child') as HTMLElement;
       if (contentContainer) {
-        contentContainer.style.paddingBottom = '30mm'; // Espacio para el footer
+        contentContainer.style.position = 'relative';
+        contentContainer.style.height = 'calc(100% - 30mm)';
+        contentContainer.style.width = '100%';
       }
       
       // Asegurar que el footer se mantenga en posición correcta
@@ -162,9 +190,9 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
       }
     });
 
-    // Configuración mejorada para html2pdf
+    // Configuración optimizada para html2pdf con alto nivel de exactitud
     const opt = {
-      margin: [10, 10, 10, 10], // Márgenes en mm [top, right, bottom, left]
+      margin: 0,
       filename: `Memoria_Técnica_${memoriaData.titular.replace(/\s+/g, '_')}.pdf`,
       image: { type: 'jpeg', quality: 1.0 },
       html2canvas: { 
@@ -174,19 +202,22 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
         allowTaint: true,
         scrollX: 0,
         scrollY: 0,
-        windowWidth: 210 * 3, // Asegurar ancho adecuado para captura
-        logging: false
+        windowWidth: 210 * 2.83, // Factor preciso para A4
+        logging: true, // Activar logging para debug
+        removeContainer: true,
+        foreignObjectRendering: false // Usar renderer nativo para mejor precisión
       },
       jsPDF: { 
         unit: 'mm', 
         format: 'a4', 
         orientation: 'portrait',
-        compress: true
+        compress: true,
+        precision: 16
       },
       pagebreak: { mode: 'avoid-all', before: '.page-break' }
     };
 
-    // Convertir a PDF y descargar
+    // Convertir a PDF y descargar con mayor precisión
     html2pdf().from(content).set(opt).save()
       .then(() => {
         toast({
