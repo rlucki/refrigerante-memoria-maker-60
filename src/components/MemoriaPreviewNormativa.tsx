@@ -1,4 +1,3 @@
-
 import React from "react";
 
 interface RegulationItem {
@@ -32,16 +31,10 @@ interface MemoriaPreviewNormativaProps {
     rsifAplicable?: string;
     encabezado?: string;
   };
-  pageNumber?: number;
-  companyLogo?: string;
-  clienteLogo?: string;
 }
 
 const MemoriaPreviewNormativa: React.FC<MemoriaPreviewNormativaProps> = ({ 
-  data,
-  pageNumber = 4,
-  companyLogo,
-  clienteLogo
+  data
 }) => {
   // Si no hay datos de normativa, mostrar un conjunto predeterminado
   const defaultNormativa = {
