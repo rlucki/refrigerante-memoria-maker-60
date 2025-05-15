@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Card } from "@/components/ui/card";
 import MemoriaPreviewNormativa from "./MemoriaPreviewNormativa";
@@ -765,7 +766,7 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
                       <tr>
                         <td className="border border-gray-300 p-2">Líquido</td>
                         <td className="border border-gray-300 p-2">0,5 – 1,0 m/s</td>
-                        <td className="border border-gray-300 p-2"></td>
+                        <td className="border border-gray-300 p-2">0,5 K</td>
                       </tr>
                       <tr>
                         <td className="border border-gray-300 p-2">Caída Líquido</td>
