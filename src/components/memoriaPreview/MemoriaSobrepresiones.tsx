@@ -3,8 +3,9 @@ import React from "react";
 
 const MemoriaSobrepresiones: React.FC = () => {
   return (
-    <div className="mb-8 max-w-[210mm] mx-auto bg-white min-h-[297mm] relative p-6">
-      <div className="pb-20">
+    <div className="mb-8 max-w-[210mm] mx-auto bg-white memory-preview-page">
+      {/* Contenido principal */}
+      <div className="content-container text-content p-6">
         {/* Sección 22 - PROTECCIÓN CONTRA SOBREPRESIONES */}
         <div className="mb-6">
           <h3 className="text-lg font-bold">22. PROTECCIÓN CONTRA SOBREPRESIONES</h3>
