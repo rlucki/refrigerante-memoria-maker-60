@@ -44,9 +44,9 @@ const MemoriaInstalacion: React.FC<MemoriaInstalacionProps> = ({ data }) => {
           </div>
         </div>
         
-        {/* Sección 10.5 - SALA DE MÁQUINAS */}
+        {/* Sección 11.5 - SALA DE MÁQUINAS */}
         <div className="mt-4 mb-6">
-          <h4 className="text-base font-bold">10.5. SALA DE MÁQUINAS</h4>
+          <h4 className="text-base font-bold">11.5. SALA DE MÁQUINAS</h4>
           <p className="text-sm mt-2">
             Atendiendo la definición que da el Reglamento de Seguridad de Instalaciones Frigoríficas (RSIF), en el apartado 3.2 de su instrucción IF-01, (terminología):
           </p>
@@ -72,9 +72,9 @@ const MemoriaInstalacion: React.FC<MemoriaInstalacionProps> = ({ data }) => {
           </div>
         </div>
         
-        {/* Sección 10.6 - RESUMEN */}
+        {/* Sección 11.6 - RESUMEN */}
         <div className="mt-4 mb-6">
-          <h4 className="text-base font-bold">10.6. RESUMEN</h4>
+          <h4 className="text-base font-bold">11.6. RESUMEN</h4>
           <div className="mt-3 text-sm">
             <div className="grid grid-cols-2 gap-2">
               <p className="font-medium">Clasificación sistema:</p>
