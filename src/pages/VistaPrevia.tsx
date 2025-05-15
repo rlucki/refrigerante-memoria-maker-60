@@ -174,6 +174,22 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
   const handleFormChange = (field: string, value: any) => {
     console.log(`Field changed: ${field}`, value);
     setMemoriaData(prev => ({ ...prev, [field]: value }));
+    
+    // Check if we need to update description based on compresor paralelo and nivelInstalacion
+    if (field === "nivelInstalacion" && calculationsData.compresorParalelo === "0" && value === "Nivel 2") {
+      const boosterDescription = `Esta instalación se ha diseñado para cubrir las necesidades frigoríficas de diferentes muebles y cámaras de un hipermercado. Para ello se han instalado dos centrales frigoríficas: una de régimen positivo para los servicios que trabajan a temperaturas que oscilan entre los 0/+10 °C, y otra de régimen negativo para los servicios de congelados que trabajan con temperaturas entre -22/-25 °C.
+
+Tanto los servicios positivos como los negativos se alimentan con refrigerante R-744 (CO₂). Para garantizar las condiciones mencionadas se ha instalado un grupo "booster" de compresión, dotado de dos centrales frigoríficas, trabajando una con una temperatura de evaporación de -8 °C (central positiva), y la otra a -33 °C (central negativa).  La central positiva trabaja en modo transcrítico, mientras que la central negativa lo hace en modo subcrítico, descargando sobre la aspiración de la central positiva. Ambas centrales están en la misma bancada "booster".
+
+Los gases de descarga generados por los compresores de la central positiva que salen a +124,8 °C y 93,7 bar, se envían a un separador de aceite, donde este se separa del refrigerante y se redirige a un acumulador desde el que se alimentará el circuito de aceite de todos los compresores de la bancada. El aceite ingresará a cada compresor a través de un nivel electrónico, el cual está dotado de una electroválvula que gestiona su apertura o cierre.  
+
+Los gases de descarga, ya prácticamente sin aceite y a la temperatura y presión indicada anteriormente, son conducidos a un "gas cooler" (enfriador), situado en cubierta y dotado de ventiladores helicoidales, donde ceden parte del calor sensible al aire que circula por su batería y se produce un decremento de la temperatura del fluido frigorífico hasta alcanzar +38 °C. 
+RADIAL SALA DE MÁQUINAS / HELICOIDAL CUBIERTA
+
+El refrigerante, a alta presión, se expansiona hasta la presión de intermedia mediante una válvula de expansión electrónica transcrítica y se conduce al recipiente de líquido vertical de las centrales, a una temperatura superior a los +5,3 °C, donde una parte llega en fase líquida y la otra en fase gas (flash gas). Estos gases flash sobrecalentados se reconducen hasta el colector de aspiración de la central positiva, provocándoles una pequeña caída de presión mediante otra válvula de expansión electrónica, denominada válvula de flash gas bypass`;
+      
+      setMemoriaData(prev => ({ ...prev, descripcionInstalacion: boosterDescription }));
+    }
   };
 
   const handleExcelUpload = (data: any) => {
@@ -183,7 +199,27 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
 
   const handleCalculationsChange = (field: string, value: string) => {
     console.log(`Calculations field changed: ${field}`, value);
-    setCalculationsData(prev => ({ ...prev, [field]: value }));
+    setCalculationsData(prev => {
+      const newData = { ...prev, [field]: value };
+      
+      // Check if compresorParalelo is 0 and nivelInstalacion is Nivel 2 to update the description
+      if (field === "compresorParalelo" && value === "0" && memoriaData.nivelInstalacion === "Nivel 2") {
+        const boosterDescription = `Esta instalación se ha diseñado para cubrir las necesidades frigoríficas de diferentes muebles y cámaras de un hipermercado. Para ello se han instalado dos centrales frigoríficas: una de régimen positivo para los servicios que trabajan a temperaturas que oscilan entre los 0/+10 °C, y otra de régimen negativo para los servicios de congelados que trabajan con temperaturas entre -22/-25 °C.
+
+Tanto los servicios positivos como los negativos se alimentan con refrigerante R-744 (CO₂). Para garantizar las condiciones mencionadas se ha instalado un grupo "booster" de compresión, dotado de dos centrales frigoríficas, trabajando una con una temperatura de evaporación de -8 °C (central positiva), y la otra a -33 °C (central negativa).  La central positiva trabaja en modo transcrítico, mientras que la central negativa lo hace en modo subcrítico, descargando sobre la aspiración de la central positiva. Ambas centrales están en la misma bancada "booster".
+
+Los gases de descarga generados por los compresores de la central positiva que salen a +124,8 °C y 93,7 bar, se envían a un separador de aceite, donde este se separa del refrigerante y se redirige a un acumulador desde el que se alimentará el circuito de aceite de todos los compresores de la bancada. El aceite ingresará a cada compresor a través de un nivel electrónico, el cual está dotado de una electroválvula que gestiona su apertura o cierre.  
+
+Los gases de descarga, ya prácticamente sin aceite y a la temperatura y presión indicada anteriormente, son conducidos a un "gas cooler" (enfriador), situado en cubierta y dotado de ventiladores helicoidales, donde ceden parte del calor sensible al aire que circula por su batería y se produce un decremento de la temperatura del fluido frigorífico hasta alcanzar +38 °C. 
+RADIAL SALA DE MÁQUINAS / HELICOIDAL CUBIERTA
+
+El refrigerante, a alta presión, se expansiona hasta la presión de intermedia mediante una válvula de expansión electrónica transcrítica y se conduce al recipiente de líquido vertical de las centrales, a una temperatura superior a los +5,3 °C, donde una parte llega en fase líquida y la otra en fase gas (flash gas). Estos gases flash sobrecalentados se reconducen hasta el colector de aspiración de la central positiva, provocándoles una pequeña caída de presión mediante otra válvula de expansión electrónica, denominada válvula de flash gas bypass`;
+        
+        setMemoriaData(prev => ({ ...prev, descripcionInstalacion: boosterDescription }));
+      }
+      
+      return newData;
+    });
   };
 
   return (
@@ -203,109 +239,99 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
         </div>
       </header>
       
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1">
-        <div className="border-b bg-white">
-          <div className="max-w-7xl mx-auto">
-            <TabsList className="h-12">
-              <TabsTrigger value="form" className="data-[state=active]:border-b-2 data-[state=active]:border-primary">
-                Formulario
-              </TabsTrigger>
-              <TabsTrigger value="excel" className="data-[state=active]:border-b-2 data-[state=active]:border-primary">
-                Cálculos Excel
-              </TabsTrigger>
-            </TabsList>
+      <div className="flex-1 flex flex-col lg:flex-row">
+        {/* Left side - Form */}
+        <div className="w-full lg:w-1/2 p-4 overflow-auto border-r" style={{ height: 'calc(100vh - 126px)' }} ref={formContainerRef}>
+          <div className="max-w-2xl mx-auto">
+            <Tabs value={activeTab} onValueChange={setActiveTab}>
+              <TabsList className="h-12 mb-6">
+                <TabsTrigger value="form" className="data-[state=active]:border-b-2 data-[state=active]:border-primary">
+                  Formulario
+                </TabsTrigger>
+                <TabsTrigger value="excel" className="data-[state=active]:border-b-2 data-[state=active]:border-primary">
+                  Cálculos Excel
+                </TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="form" className="mt-6">
+                <MemoriaTecnicaForm 
+                  onSubmit={() => {}} 
+                  onChange={handleFormChange}
+                />
+              </TabsContent>
+              
+              <TabsContent value="excel" className="mt-6">
+                <div className="space-y-8">
+                  {/* Formulario de cálculos */}
+                  <ExcelCalculationsForm onChange={handleCalculationsChange} />
+                  
+                  {/* Uploader de Excel existente */}
+                  <div className="mt-8">
+                    <h3 className="text-lg font-bold mb-4">Cargar archivo Excel</h3>
+                    <ExcelUploader onDataLoaded={handleExcelUpload} />
+                  </div>
+                  
+                  {/* Mostrar datos del Excel si existen */}
+                  {excelData && (
+                    <div className="mt-6">
+                      <h2 className="text-xl font-bold mb-4">Datos de la hoja "RESUM LEGA"</h2>
+                      <pre className="bg-gray-100 p-4 rounded-md overflow-auto max-h-96">
+                        {JSON.stringify(excelData, null, 2)}
+                      </pre>
+                    </div>
+                  )}
+                </div>
+              </TabsContent>
+            </Tabs>
           </div>
         </div>
         
-        <TabsContent value="form" className="flex-1 flex flex-col lg:flex-row">
-          {/* Panel de formulario (lado izquierdo) */}
+        {/* Right side - Preview always visible */}
+        <div 
+          className="w-full lg:w-1/2 p-4 bg-gray-50 overflow-auto"
+          style={{ 
+            height: 'calc(100vh - 126px)',
+          }}
+          ref={previewContainerRef}
+        >
           <div 
-            className="w-full lg:w-1/2 p-4 overflow-auto border-r" 
-            style={{ height: 'calc(100vh - 126px)' }}
-            ref={formContainerRef}
+            ref={previewRef} 
+            className="pdf-preview-container"
           >
-            <div className="max-w-2xl mx-auto">
-              <MemoriaTecnicaForm 
-                onSubmit={() => {}} 
-                onChange={handleFormChange}
-              />
-            </div>
-          </div>
-          
-          {/* Panel de vista previa (lado derecho) */}
-          <div 
-            className="w-full lg:w-1/2 p-4 bg-gray-50 overflow-auto"
-            style={{ 
-              height: 'calc(100vh - 126px)',
-            }}
-            ref={previewContainerRef}
-          >
-            <div 
-              ref={previewRef} 
-              className="pdf-preview-container"
-            >
-              <style>
-                {`
-                  .memoria-preview-container.continuous-flow > div {
-                    min-height: auto;
-                    max-height: none;
-                    height: auto;
-                    page-break-after: auto;
-                  }
-                  
-                  .memoria-preview-container {
-                    padding-bottom: 40px;
-                  }
-                  
-                  .memory-preview-page {
-                    margin-bottom: 20px;
-                  }
-                  
-                  /* Ensure content is always visible */
-                  .mb-8 {
-                    margin-bottom: 2rem !important;
-                  }
-                  
-                  /* Better spacing between sections */
-                  h3, h4 {
-                    margin-top: 1.5rem !important;
-                  }
-                `}
-              </style>
-              <MemoriaPreview 
-                data={memoriaData} 
-              />
-            </div>
-          </div>
-        </TabsContent>
-        
-        <TabsContent value="excel" className="flex-1 flex flex-col lg:flex-row">
-          <div className="w-full p-4 overflow-auto">
-            <div className="max-w-4xl mx-auto">
-              <div className="space-y-8">
-                {/* Formulario de cálculos */}
-                <ExcelCalculationsForm onChange={handleCalculationsChange} />
+            <style>
+              {`
+                .memoria-preview-container.continuous-flow > div {
+                  min-height: auto;
+                  max-height: none;
+                  height: auto;
+                  page-break-after: auto;
+                }
                 
-                {/* Uploader de Excel existente */}
-                <div className="mt-8">
-                  <h3 className="text-lg font-bold mb-4">Cargar archivo Excel</h3>
-                  <ExcelUploader onDataLoaded={handleExcelUpload} />
-                </div>
+                .memoria-preview-container {
+                  padding-bottom: 40px;
+                }
                 
-                {/* Mostrar datos del Excel si existen */}
-                {excelData && (
-                  <div className="mt-6">
-                    <h2 className="text-xl font-bold mb-4">Datos de la hoja "RESUM LEGA"</h2>
-                    <pre className="bg-gray-100 p-4 rounded-md overflow-auto max-h-96">
-                      {JSON.stringify(excelData, null, 2)}
-                    </pre>
-                  </div>
-                )}
-              </div>
-            </div>
+                .memory-preview-page {
+                  margin-bottom: 20px;
+                }
+                
+                /* Ensure content is always visible */
+                .mb-8 {
+                  margin-bottom: 2rem !important;
+                }
+                
+                /* Better spacing between sections */
+                h3, h4 {
+                  margin-top: 1.5rem !important;
+                }
+              `}
+            </style>
+            <MemoriaPreview 
+              data={memoriaData} 
+            />
           </div>
-        </TabsContent>
-      </Tabs>
+        </div>
+      </div>
     </div>
   );
 };
