@@ -14,15 +14,11 @@ const MemoriaSobrepresiones: React.FC = () => {
             <h4 className="text-base font-bold">22.4.	VÁLVULAS DE SEGURIDAD - CAPACIDAD DE DESCARGA</h4>
             <div className="mt-3 text-sm text-justify">
               <p className="mb-3">
-                Los recipientes que puedan contener refrigerante líquido en condiciones normales de funcionamiento y puedan ser 
-                independizados de otras partes del sistema de refrigeración, excepto aquellos cuyo diámetro interior sea inferior a 152 mm, 
-                deberán estar protegidos mediante un dispositivo de alivio (por ejemplo, válvula de seguridad).
+                Los recipientes....
               </p>
               
               <p className="mb-3">
-                Los equipos a presión con un volumen interior bruto inferior a 100 dm³ deberán tener, como mínimo, 
-                un dispositivo de alivio, bien descargando al sector de baja (véase el apartado 3.4.1.4. del RSIF), 
-                o a un recipiente receptor independiente o a la atmósfera.
+                Los equipos...
               </p>
               
               <p className="mb-3">
@@ -125,11 +121,7 @@ const MemoriaSobrepresiones: React.FC = () => {
             <h4 className="text-base font-bold">22.6. DESCARGA DE LAS VÁLVULAS DE SEGURIDAD</h4>
             <div className="mt-3 text-sm text-justify">
               <p className="mb-4">
-                Las tuberías de descarga de las diferentes válvulas de seguridad han sido calculadas según norma UNE-EN 13136:2014 
-                "Sistemas de refrigeración y bombas de calor. Dispositivos de alivio de presión y sus tuberías de conexión. Métodos de Cálculo", 
-                así como indicaciones del Reglamento de Seguridad para Instalaciones Frigoríficas, no representando un peligro 
-                para las personas en caso de fuga. Las válvulas han sido conducidas al exterior mediante tubería de cobre, 
-                del mismo tipo que el empleado para el resto de tuberías de refrigerante.
+                Las tuberías de descarga....
               </p>
               
               <p className="font-medium mt-5 mb-3">Determinación de la capacidad de descarga</p>
