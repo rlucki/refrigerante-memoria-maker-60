@@ -12,9 +12,9 @@ const MemoriaClasificacionLocal: React.FC<MemoriaClasificacionLocalProps> = ({ d
     <div className="mb-8 max-w-[210mm] mx-auto bg-white min-h-[297mm] relative p-6">
       <div className="pb-20">
         <div className="mb-6">
-          {/* Sección 10.2 - CLASIFICACIÓN DEL LOCAL */}
+          {/* Sección 11.2 - CLASIFICACIÓN DEL LOCAL */}
           <div className="mt-4 mb-6">
-            <h4 className="text-base font-bold">10.2. CLASIFICACIÓN DEL LOCAL</h4>
+            <h4 className="text-base font-bold">11.2. CLASIFICACIÓN DEL LOCAL</h4>
             <p className="text-sm mt-2">
               Los locales están clasificados según el acceso público y la seguridad de las personas, según lo establecido en la IF-01 del R.S.I.F.
             </p>

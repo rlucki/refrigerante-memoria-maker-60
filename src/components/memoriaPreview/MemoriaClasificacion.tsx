@@ -27,13 +27,13 @@ const MemoriaClasificacion: React.FC<MemoriaClasificacionProps> = ({ data }) => 
   return (
     <div className="mb-8 max-w-[210mm] mx-auto bg-white min-h-[297mm] relative p-6">
       <div className="pb-20">
-        {/* Sección 10 - CLASIFICACIÓN DE LA INSTALACIÓN */}
+        {/* Sección 11 - CLASIFICACIÓN DE LA INSTALACIÓN */}
         <div className="mb-6">
-          <h3 className="text-lg font-bold">10. CLASIFICACIÓN DE LA INSTALACIÓN</h3>
+          <h3 className="text-lg font-bold">11. CLASIFICACIÓN DE LA INSTALACIÓN</h3>
           
-          {/* Sección 10.1 - CLASIFICACIÓN DEL SISTEMA */}
+          {/* Sección 11.1 - CLASIFICACIÓN DEL SISTEMA */}
           <div className="mt-4 mb-6">
-            <h4 className="text-base font-bold">10.1. CLASIFICACIÓN DEL SISTEMA</h4>
+            <h4 className="text-base font-bold">11.1. CLASIFICACIÓN DEL SISTEMA</h4>
             <p className="text-sm mt-2">
               Según lo especificado en el Artículo 6 del Capítulo II del Reglamento de Seguridad de Instalaciones 
               Frigoríficas (RSIF), existen dos grupos de clasificación:
