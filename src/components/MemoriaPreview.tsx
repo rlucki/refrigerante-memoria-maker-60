@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card } from "@/components/ui/card";
 import MemoriaPreviewNormativa from "./MemoriaPreviewNormativa";
@@ -17,7 +16,6 @@ interface MemoriaPreviewProps {
     cpInstalacion?: string;
     provinciaInstalacion?: string;
     titulo?: string;
-    clienteLogo?: string;
     
     // Datos de clasificación
     metodoEnfriamiento?: string;
@@ -95,27 +93,6 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
             </div>
           </div>
         </div>
-        
-        {/* Footer with logos and page number */}
-        <div className="absolute bottom-6 left-0 w-full px-6">
-          <div className="flex justify-between items-center">
-            <img 
-              src={companyLogo} 
-              alt="Logo Empresa" 
-              className="h-8 object-contain" 
-            />
-            {data.clienteLogo && (
-              <img 
-                src={data.clienteLogo} 
-                alt="Logo Cliente" 
-                className="h-8 object-contain" 
-              />
-            )}
-          </div>
-          <div className="text-right mt-2">
-            <p className="text-xs text-gray-500">Página {currentPage} de 64</p>
-          </div>
-        </div>
       </div>
       
       {/* Segunda página - Índice */}
@@ -182,27 +159,6 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
             <div className="flex justify-between">
               <p>15.2. SUPORTACIONES</p>
               <p>17</p>
-            </div>
-          </div>
-          
-          {/* Footer with logos and page number */}
-          <div className="absolute bottom-6 left-0 w-full px-6">
-            <div className="flex justify-between items-center">
-              <img 
-                src={companyLogo} 
-                alt="Logo Empresa" 
-                className="h-8 object-contain" 
-              />
-              {data.clienteLogo && (
-                <img 
-                  src={data.clienteLogo} 
-                  alt="Logo Cliente" 
-                  className="h-8 object-contain" 
-                />
-              )}
-            </div>
-            <div className="text-right mt-2">
-              <p className="text-xs text-gray-500">Página {currentPage + 1} de 64</p>
             </div>
           </div>
         </div>
@@ -288,35 +244,11 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
             </p>
           </div>
         </div>
-
-        {/* Footer with logos and page number */}
-        <div className="absolute bottom-6 left-0 w-full px-6">
-          <div className="flex justify-between items-center">
-            <img 
-              src={companyLogo} 
-              alt="Logo Empresa" 
-              className="h-8 object-contain" 
-            />
-            {data.clienteLogo && (
-              <img 
-                src={data.clienteLogo} 
-                alt="Logo Cliente" 
-                className="h-8 object-contain" 
-              />
-            )}
-          </div>
-          <div className="text-right mt-2">
-            <p className="text-xs text-gray-500">Página {currentPage + 2} de 64</p>
-          </div>
-        </div>
       </div>
 
       {/* Cuarta página - NORMATIVA DE APLICACIÓN */}
       <MemoriaPreviewNormativa 
         data={data}
-        pageNumber={currentPage + 3}
-        companyLogo={companyLogo}
-        clienteLogo={data.clienteLogo}
       />
       
       {/* Quinta página - Sección 9: CLASIFICACIÓN DE LA INSTALACIÓN */}
@@ -585,27 +517,6 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1 }
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* Footer with logos and page number */}
-        <div className="absolute bottom-6 left-0 w-full px-6">
-          <div className="flex justify-between items-center">
-            <img 
-              src={companyLogo} 
-              alt="Logo Empresa" 
-              className="h-8 object-contain" 
-            />
-            {data.clienteLogo && (
-              <img 
-                src={data.clienteLogo} 
-                alt="Logo Cliente" 
-                className="h-8 object-contain" 
-              />
-            )}
-          </div>
-          <div className="text-right mt-2">
-            <p className="text-xs text-gray-500">Página {currentPage + 4} de 64</p>
           </div>
         </div>
       </div>
