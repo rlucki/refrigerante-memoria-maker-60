@@ -8,6 +8,7 @@ import { toast } from "@/hooks/use-toast";
 import { validateMargin } from "@/lib/utils";
 import ExcelUploader from "@/components/ExcelUploader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import ExcelCalculationsForm from "@/components/ExcelCalculationsForm";
 
 const VistaPrevia = () => {
   const navigate = useNavigate();
@@ -96,6 +97,14 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
   const formContainerRef = useRef<HTMLDivElement>(null);
   const previewContainerRef = useRef<HTMLDivElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
+  const [calculationsData, setCalculationsData] = useState({
+    compresorMT: "0",
+    compresorBT: "0",
+    compresorParalelo: "0",
+    ubicacionGascooler: "",
+    tieneIHX: "no",
+    tieneDesrecalentador: "no"
+  });
 
   // Enhanced scroll synchronization with debouncing
   useEffect(() => {
@@ -170,6 +179,11 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
   const handleExcelUpload = (data: any) => {
     console.log("Excel data loaded:", data);
     setExcelData(data);
+  };
+
+  const handleCalculationsChange = (field: string, value: string) => {
+    console.log(`Calculations field changed: ${field}`, value);
+    setCalculationsData(prev => ({ ...prev, [field]: value }));
   };
 
   return (
@@ -268,16 +282,26 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
         <TabsContent value="excel" className="flex-1 flex flex-col lg:flex-row">
           <div className="w-full p-4 overflow-auto">
             <div className="max-w-4xl mx-auto">
-              <ExcelUploader onDataLoaded={handleExcelUpload} />
-              
-              {excelData && (
-                <div className="mt-6">
-                  <h2 className="text-xl font-bold mb-4">Datos de la hoja "RESUM LEGA"</h2>
-                  <pre className="bg-gray-100 p-4 rounded-md overflow-auto max-h-96">
-                    {JSON.stringify(excelData, null, 2)}
-                  </pre>
+              <div className="space-y-8">
+                {/* Formulario de cálculos */}
+                <ExcelCalculationsForm onChange={handleCalculationsChange} />
+                
+                {/* Uploader de Excel existente */}
+                <div className="mt-8">
+                  <h3 className="text-lg font-bold mb-4">Cargar archivo Excel</h3>
+                  <ExcelUploader onDataLoaded={handleExcelUpload} />
                 </div>
-              )}
+                
+                {/* Mostrar datos del Excel si existen */}
+                {excelData && (
+                  <div className="mt-6">
+                    <h2 className="text-xl font-bold mb-4">Datos de la hoja "RESUM LEGA"</h2>
+                    <pre className="bg-gray-100 p-4 rounded-md overflow-auto max-h-96">
+                      {JSON.stringify(excelData, null, 2)}
+                    </pre>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </TabsContent>
