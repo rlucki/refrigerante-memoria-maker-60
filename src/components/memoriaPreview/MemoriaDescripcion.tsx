@@ -19,6 +19,33 @@ Tanto los servicios positivos como los negativos se alimentan con refrigerante R
 
 Los gases de descarga generados por los compresores de la central positiva junto a los al compresor paralelo, que salen a +124,8 °C y 93,7 bar, se envían a un separador de aceite, donde este se separa del refrigerante y se redirige a un acumulador desde el que se alimentará el circuito de aceite de todos los compresores de la bancada. El aceite ingresará a cada compresor a través de un nivel electrónico, el cual está dotado de una electroválvula que gestiona su apertura o cierre.`;
 
+  // Additional sections for the description
+  const regimenTrabajoPositiva = `
+12.1. RÈGIMEN TRABAJO MUEBLES Y CÁMARAS TEMPERATURA POSITIVA
+Compresores del tipo semi-hermético alternativo, ubicados en sala de máquinas accionados por medio de motores trifásicos con doble devanado 50%-50% lo que permitirá el arranque según sistema Part Winding, minimizando así los picos de intensidad. El primer compresor contará con un Variador de Frecuencia.
+
+Régimen de trabajo: -8 °C`;
+
+  const regimenTrabajoNegativa = `
+12.2. RÈGIMEN TRABAJO MUEBLES Y CÁMARAS TEMPERATURA NEGATIVA
+Compresores del tipo semi-hermético alternativo, ubicados en sala de máquinas accionados por medio de motores trifásicos. El primer compresor contará con un Variador de Frecuencia.
+
+Régimen de trabajo: -33 °C`;
+
+  const sistemaDesescarche = `
+12.4. SISTEMA DE DESESCARCHE
+El sistema utilizado para cada Mueble o cámara se realiza como sigue:
+
+Obradores:           Aire
+Servicios Positivos 0/+4 °C:  Aire en muebles y eléctrico en cámaras
+Servicios Negativos:    Eléctrico en muebles y cámaras`;
+
+  const regimenTrabajoParalelo = `
+12.3. RÈGIMEN TRABAJO COMPRESION PARALELA
+Compresor del tipo semi-hermético alternativo, ubicado en sala de máquinas accionado por medio de motores trifásicos con doble devanado 50%-50% lo que permitirá el arranque según sistema Part Winding, minimizando así los picos de intensidad. El compresor contará con un Variador de Frecuencia.
+
+Régimen de trabajo: +5ºC`;
+
   // Determine which description to show
   const getDescription = () => {
     if (data.nivelInstalacion === "Nivel 2") {
@@ -34,6 +61,9 @@ Los gases de descarga generados por los compresores de la central positiva junto
     return data.descripcionInstalacion || "";
   };
 
+  // Check if parallel compressor exists
+  const hasParallelCompressor = calculationsData?.compresorParalelo && calculationsData.compresorParalelo !== "0";
+
   return (
     <div className="mb-8 max-w-[210mm] mx-auto bg-white min-h-[297mm] relative p-6">
       <div className="pb-20">
@@ -43,6 +73,17 @@ Los gases de descarga generados por los compresores de la central positiva junto
           
           <div className="mt-4 text-sm text-justify">
             <p className="whitespace-pre-line">{getDescription()}</p>
+            
+            {/* Additional sections */}
+            <p className="whitespace-pre-line">{regimenTrabajoPositiva}</p>
+            <p className="whitespace-pre-line">{regimenTrabajoNegativa}</p>
+            
+            {/* Conditionally render parallel compressor section */}
+            {hasParallelCompressor && (
+              <p className="whitespace-pre-line">{regimenTrabajoParalelo}</p>
+            )}
+            
+            <p className="whitespace-pre-line">{sistemaDesescarche}</p>
           </div>
         </div>
       </div>
