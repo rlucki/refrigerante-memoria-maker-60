@@ -9,6 +9,7 @@ import DatosInstalacionSection from "./formSections/DatosInstalacionSection";
 import DatosTecnicosSection from "./formSections/DatosTecnicosSection";
 import NormativaSection from "./formSections/NormativaSection";
 import ClasificacionSection from "./formSections/ClasificacionSection";
+import DescripcionInstalacionSection from "./formSections/DescripcionInstalaciónSection";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 
@@ -20,13 +21,15 @@ interface MemoriaTecnicaFormProps {
   hasWordTemplate?: boolean;
   activeTab?: string;
   setActiveTab?: (tab: string) => void;
+  formData?: any;
 }
 
 const MemoriaTecnicaForm = ({ 
   onSubmit, 
   onChange, 
   activeTab = "titular",
-  setActiveTab
+  setActiveTab,
+  formData = {}
 }: MemoriaTecnicaFormProps) => {
   const [internalActiveTab, setInternalActiveTab] = useState(activeTab);
   
@@ -61,12 +64,13 @@ const MemoriaTecnicaForm = ({
   return (
     <form onSubmit={handleSubmit}>
       <Tabs defaultValue={currentTab} value={currentTab} onValueChange={updateTab} className="mb-6">
-        <TabsList className="grid grid-cols-6 w-full">
+        <TabsList className="grid grid-cols-7 w-full">
           <TabsTrigger value="titular">Datos Titular</TabsTrigger>
           <TabsTrigger value="instalador">Datos Instalador</TabsTrigger>
           <TabsTrigger value="instalacion">Datos Instalación</TabsTrigger>
           <TabsTrigger value="datos_proyecto">Datos Proyecto</TabsTrigger>
           <TabsTrigger value="clasificacion">Clasificación</TabsTrigger>
+          <TabsTrigger value="descripcion">Descripción</TabsTrigger>
           <TabsTrigger value="normativa">Normativa</TabsTrigger>
         </TabsList>
         
@@ -116,6 +120,13 @@ const MemoriaTecnicaForm = ({
           <ClasificacionSection onChange={handleInputChange} />
         </TabsContent>
         
+        <TabsContent value="descripcion" className="mt-6">
+          <DescripcionInstalacionSection 
+            onChange={handleComplexChange} 
+            formData={formData}
+          />
+        </TabsContent>
+        
         <TabsContent value="normativa" className="mt-6">
           <NormativaSection onChange={handleComplexChange} />
         </TabsContent>
@@ -132,7 +143,8 @@ const MemoriaTecnicaForm = ({
               "instalacion": "instalador",
               "datos_proyecto": "instalacion",
               "clasificacion": "datos_proyecto",
-              "normativa": "clasificacion",
+              "descripcion": "clasificacion",
+              "normativa": "descripcion",
             }[currentTab];
             updateTab(prevTab);
           }}
@@ -149,7 +161,8 @@ const MemoriaTecnicaForm = ({
               "instalador": "instalacion",
               "instalacion": "datos_proyecto",
               "datos_proyecto": "clasificacion",
-              "clasificacion": "normativa",
+              "clasificacion": "descripcion",
+              "descripcion": "normativa",
               "normativa": "normativa",
             }[currentTab];
             updateTab(nextTab);
