@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 
@@ -174,17 +173,18 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
         console.log("Filas procesadas para compresores paralelos:", compresoresParalelos);
         return compresoresParalelos;
       }
-      // Para la tabla de Central Negativa (AB-AF)
-      else if (range.startCol === 'AB' && range.endCol === 'AF') {
+      // Para la tabla de Central Negativa (AD-AH) - ACTUALIZADO DE AB-AF A AD-AH
+      else if (range.startCol === 'AD' && range.endCol === 'AH') {
         const centralNegativa = [];
         
-        // Buscar datos en el área AB-AF
+        // Buscar datos en el área AD-AH
         for (const row of data) {
           if (row) {
             // Intentar extraer los datos usando diferentes posibles nombres de columnas
-            const caracteristica = row["__EMPTY_27"] || row["Unnamed: 27"] || row["CENTRAL NEGATIVA"] || row["CARACTERÍSTICA"] || "";
-            const medidas = row["__EMPTY_28"] || row["Unnamed: 28"] || row["MEDIDAS"] || "";
-            const observaciones = row["__EMPTY_31"] || row["Unnamed: 31"] || row["OBSERVACIONES"] || row["__EMPTY_32"] || "";
+            // Actualizado para usar columnas AD, AE, AF, AG, AH (en lugar de AB, AC, AD, AE, AF)
+            const caracteristica = row["__EMPTY_29"] || row["Unnamed: 29"] || row["CENTRAL NEGATIVA"] || row["CARACTERÍSTICA"] || "";
+            const medidas = row["__EMPTY_30"] || row["Unnamed: 30"] || row["MEDIDAS"] || "";
+            const observaciones = row["__EMPTY_33"] || row["Unnamed: 33"] || row["OBSERVACIONES"] || row["__EMPTY_34"] || "";
             
             // Solo agregar filas no vacías y no encabezados
             if (caracteristica && 
@@ -192,7 +192,7 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
                 caracteristica !== "CARACTERÍSTICA") {
               
               // Añadir la presión en la columna de observaciones si está disponible
-              const obsColumn = row["__EMPTY_29"] ? `${row["__EMPTY_29"]} / ${observaciones}`.trim() : observaciones;
+              const obsColumn = row["__EMPTY_31"] ? `${row["__EMPTY_31"]} / ${observaciones}`.trim() : observaciones;
               
               centralNegativa.push({
                 caracteristica,
@@ -328,18 +328,18 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
           }
         }
       }
-      else if (range.startCol === 'AB' && range.endCol === 'AF') {
-        // Para la tabla de central negativa
+      else if (range.startCol === 'AD' && range.endCol === 'AH') {
+        // Para la tabla de central negativa con el rango actualizado (AD-AH)
         for (let i = range.startIndex; i <= range.endIndex; i++) {
-          const caracteristicaKey = `AB${i}`;
+          const caracteristicaKey = `AD${i}`;
           
           if (sheet[caracteristicaKey] && sheet[caracteristicaKey].v && 
               sheet[caracteristicaKey].v !== "CENTRAL NEGATIVA" &&
               sheet[caracteristicaKey].v !== "CARACTERÍSTICA") {
             
-            const medidas = sheet[`AC${i}`]?.v || "";
-            const presion = sheet[`AD${i}`]?.v || "";
-            const observaciones = sheet[`AF${i}`]?.v || "";
+            const medidas = sheet[`AE${i}`]?.v || "";
+            const presion = sheet[`AF${i}`]?.v || "";
+            const observaciones = sheet[`AH${i}`]?.v || "";
             
             // Combinar presión con observaciones si existe
             const obsColumn = presion ? `${presion} / ${observaciones}`.trim() : observaciones;
@@ -377,7 +377,8 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
   const maquinariaData = extractTableData(excelData, { startCol: 'G', endCol: 'H', startIndex: 1, endIndex: 9 });
   const centralPositivaData = extractTableData(excelData, { startCol: 'J', endCol: 'O', startIndex: 1, endIndex: 20 });
   const compresoresParalelosData = extractTableData(excelData, { startCol: 'W', endCol: 'Z', startIndex: 1, endIndex: 20 });
-  const centralNegativaData = extractTableData(excelData, { startCol: 'AB', endCol: 'AF', startIndex: 1, endIndex: 20 });
+  // Actualizado el rango para central negativa de AB-AF a AD-AH
+  const centralNegativaData = extractTableData(excelData, { startCol: 'AD', endCol: 'AH', startIndex: 1, endIndex: 20 });
   
   // Calcular sumatorios
   const sumPositivos = calculateSum(positivosData);
