@@ -49,20 +49,34 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
         console.log("Filas procesadas para servicios positivos:", formattedRows);
         return formattedRows;
       } 
-      // Para la segunda tabla (Q-U)
+      // Para la segunda tabla (Q-U) - SERVICIOS NEGATIVOS
       else if (range.startCol === 'Q' && range.endCol === 'U') {
         const serviciosNegativos = [];
         
-        // Buscar datos en el área Q-U
+        // Buscar datos en el área Q-U usando las columnas correctas
         for (const row of data) {
-          if (row && row["__EMPTY_16"] && row["__EMPTY_16"] !== "DENOMINACIÓN") {
-            serviciosNegativos.push({
-              denominacion: row["__EMPTY_16"] || "",
-              modulos: row["__EMPTY_17"] || "",
-              modVol: row["__EMPTY_18"] || "",
-              temperatura: row["__EMPTY_19"] || "",
-              cargaT: row["__EMPTY_20"] || ""
-            });
+          // Verificar columnas específicas para datos de servicios negativos
+          if (row && 
+              ((row["DENOMINACIÓN"] && row["MÓDULOS"] && row["Tª INT."]) || 
+               (row["__EMPTY_16"] && row["__EMPTY_17"] && row["__EMPTY_19"]))) {
+            
+            // Extraer los datos usando las columnas correctas según el formato
+            const denominacion = row["DENOMINACIÓN"] || row["__EMPTY_16"] || "";
+            const modulos = row["MÓDULOS"] || row["__EMPTY_17"] || "";
+            const modVol = row["MOD./PUERTAS"] || row["__EMPTY_18"] || "";
+            const temperatura = row["Tª INT."] || row["__EMPTY_19"] || "";
+            const cargaT = row["CARGA Tª"] || row["__EMPTY_20"] || "";
+            
+            // Filtrar filas de encabezado o totales
+            if (denominacion !== "DENOMINACIÓN" && denominacion) {
+              serviciosNegativos.push({
+                denominacion,
+                modulos,
+                modVol,
+                temperatura,
+                cargaT
+              });
+            }
           }
         }
         
