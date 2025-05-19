@@ -83,6 +83,51 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
         console.log("Filas procesadas para servicios negativos:", serviciosNegativos);
         return serviciosNegativos;
       }
+      // Para la tabla de Maquinaria Instalada (G-H)
+      else if (range.startCol === 'G' && range.endCol === 'H') {
+        const maquinaria = [];
+        
+        // Buscar datos en el área G-H
+        for (const row of data) {
+          if (row && 
+             (row["__EMPTY_6"] || row["Unnamed: 6"]) && 
+             (row["__EMPTY_6"] !== "MAQUINARIA INSTALADA" && 
+              row["__EMPTY_6"] !== "ELEMENTO" && 
+              row["__EMPTY_6"] !== "CENTRAL FRIGORÍFICA")) {
+            
+            maquinaria.push({
+              elemento: row["__EMPTY_6"] || row["Unnamed: 6"] || "",
+              detalles: row["__EMPTY_7"] || row["Unnamed: 7"] || ""
+            });
+          }
+        }
+        
+        console.log("Filas procesadas para maquinaria instalada:", maquinaria);
+        return maquinaria;
+      }
+      // Para la tabla de Central Positiva (J-O)
+      else if (range.startCol === 'J' && range.endCol === 'O') {
+        const centralPositiva = [];
+        
+        // Buscar datos en el área J-O
+        for (const row of data) {
+          if (row && 
+             (row["__EMPTY_9"] || row["Unnamed: 9"] || row["CENTRAL POSITIVA"]) && 
+             (row["__EMPTY_9"] !== "CENTRAL POSITIVA" && 
+              row["__EMPTY_9"] !== "CARACTERÍSTICA" && 
+              row["__EMPTY_9"] !== undefined)) {
+            
+            centralPositiva.push({
+              caracteristica: row["__EMPTY_9"] || row["CENTRAL POSITIVA"] || row["Unnamed: 9"] || "",
+              medidas: row["__EMPTY_10"] || row["Unnamed: 10"] || row["__EMPTY_11"] || row["Unnamed: 11"] || "",
+              observaciones: row["__EMPTY_14"] || row["Unnamed: 14"] || ""
+            });
+          }
+        }
+        
+        console.log("Filas procesadas para central positiva:", centralPositiva);
+        return centralPositiva;
+      }
     }
     
     // Para datos en formato de hoja de cálculo
@@ -93,29 +138,80 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
       const rows = [];
       
       // Determinar las columnas según el rango
-      const colMapping = range.startCol === 'A' ? 
-        { denom: 'A', modulos: 'B', modVol: 'C', temp: 'D', carga: 'E' } :
-        { denom: 'Q', modulos: 'R', modVol: 'S', temp: 'T', carga: 'U' };
-      
-      // Iterar sobre las filas potenciales
-      for (let i = range.startIndex; i <= range.endIndex; i++) {
-        const denomKey = `${colMapping.denom}${i}`;
-        const modulosKey = `${colMapping.modulos}${i}`;
-        const modVolKey = `${colMapping.modVol}${i}`;
-        const tempKey = `${colMapping.temp}${i}`;
-        const cargaKey = `${colMapping.carga}${i}`;
+      if (range.startCol === 'A' && range.endCol === 'E') {
+        const colMapping = { denom: 'A', modulos: 'B', modVol: 'C', temp: 'D', carga: 'E' };
         
-        // Verificar si hay valor en la columna de denominación
-        if (sheet[denomKey] && sheet[denomKey].v && sheet[denomKey].v !== "DENOMINACIÓN") {
-          const row = {
-            denominacion: sheet[denomKey].v || "",
-            modulos: sheet[modulosKey]?.v || "",
-            modVol: sheet[modVolKey]?.v || "",
-            temperatura: sheet[tempKey]?.v || "",
-            cargaT: sheet[cargaKey]?.v || ""
-          };
+        // Iterar sobre las filas potenciales
+        for (let i = range.startIndex; i <= range.endIndex; i++) {
+          const denomKey = `${colMapping.denom}${i}`;
           
-          rows.push(row);
+          // Verificar si hay valor en la columna de denominación
+          if (sheet[denomKey] && sheet[denomKey].v && 
+              sheet[denomKey].v !== "DENOMINACIÓN" &&
+              sheet[denomKey].v !== "CENTRAL FRIGORÍFICA") {
+            const row = {
+              denominacion: sheet[denomKey].v || "",
+              modulos: sheet[`${colMapping.modulos}${i}`]?.v || "",
+              modVol: sheet[`${colMapping.modVol}${i}`]?.v || "",
+              temperatura: sheet[`${colMapping.temp}${i}`]?.v || "",
+              cargaT: sheet[`${colMapping.carga}${i}`]?.v || ""
+            };
+            
+            rows.push(row);
+          }
+        }
+      } 
+      else if (range.startCol === 'Q' && range.endCol === 'U') {
+        const colMapping = { denom: 'Q', modulos: 'R', modVol: 'S', temp: 'T', carga: 'U' };
+        
+        for (let i = range.startIndex; i <= range.endIndex; i++) {
+          const denomKey = `${colMapping.denom}${i}`;
+          
+          if (sheet[denomKey] && sheet[denomKey].v && sheet[denomKey].v !== "DENOMINACIÓN") {
+            const row = {
+              denominacion: sheet[denomKey].v || "",
+              modulos: sheet[`${colMapping.modulos}${i}`]?.v || "",
+              modVol: sheet[`${colMapping.modVol}${i}`]?.v || "",
+              temperatura: sheet[`${colMapping.temp}${i}`]?.v || "",
+              cargaT: sheet[`${colMapping.carga}${i}`]?.v || ""
+            };
+            
+            rows.push(row);
+          }
+        }
+      }
+      else if (range.startCol === 'G' && range.endCol === 'H') {
+        // Para la tabla de maquinaria instalada
+        for (let i = range.startIndex; i <= range.endIndex; i++) {
+          const elementoKey = `G${i}`;
+          
+          if (sheet[elementoKey] && sheet[elementoKey].v && 
+              sheet[elementoKey].v !== "MAQUINARIA INSTALADA" &&
+              sheet[elementoKey].v !== "ELEMENTO" &&
+              sheet[elementoKey].v !== "CENTRAL FRIGORÍFICA") {
+            
+            rows.push({
+              elemento: sheet[elementoKey].v || "",
+              detalles: sheet[`H${i}`]?.v || ""
+            });
+          }
+        }
+      }
+      else if (range.startCol === 'J' && range.endCol === 'O') {
+        // Para la tabla de central positiva
+        for (let i = range.startIndex; i <= range.endIndex; i++) {
+          const caracteristicaKey = `J${i}`;
+          
+          if (sheet[caracteristicaKey] && sheet[caracteristicaKey].v && 
+              sheet[caracteristicaKey].v !== "CENTRAL POSITIVA" &&
+              sheet[caracteristicaKey].v !== "CARACTERÍSTICA") {
+            
+            rows.push({
+              caracteristica: sheet[caracteristicaKey].v || "",
+              medidas: sheet[`K${i}`]?.v || sheet[`L${i}`]?.v || "",
+              observaciones: sheet[`O${i}`]?.v || ""
+            });
+          }
         }
       }
       
@@ -137,9 +233,11 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
     }, 0);
   };
   
-  // Obtener datos para las dos tablas
+  // Obtener datos para las tablas
   const positivosData = extractTableData(excelData, { startCol: 'A', endCol: 'E', startIndex: 1, endIndex: 60 });
   const negativosData = extractTableData(excelData, { startCol: 'Q', endCol: 'U', startIndex: 1, endIndex: 60 });
+  const maquinariaData = extractTableData(excelData, { startCol: 'G', endCol: 'H', startIndex: 1, endIndex: 13 });
+  const centralPositivaData = extractTableData(excelData, { startCol: 'J', endCol: 'O', startIndex: 1, endIndex: 20 });
   
   // Calcular sumatorios
   const sumPositivos = calculateSum(positivosData);
@@ -246,6 +344,73 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
             {!positivosData.length && !negativosData.length && (
               <p className="mt-4 italic">No se encontraron datos de cargas térmicas en el archivo Excel.</p>
             )}
+          </div>
+        </div>
+        
+        {/* Section 14 - MAQUINARIA INSTALADA */}
+        <div className="mb-6">
+          <h3 className="text-lg font-bold">14. MAQUINARIA INSTALADA</h3>
+          
+          <div className="mt-4 text-sm text-justify">
+            <p>
+              Para atender la demanda de todas las cargas térmicas indicadas, se han instalado las siguientes centrales frigoríficas y componentes:
+            </p>
+            
+            {maquinariaData.length > 0 ? (
+              <div className="mt-6 overflow-x-auto">
+                <Table className="w-full border-collapse">
+                  <TableHeader>
+                    <TableRow className="bg-blue-100">
+                      <TableHead className="border border-gray-300 p-2">ELEMENTO</TableHead>
+                      <TableHead className="border border-gray-300 p-2">DETALLES</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {maquinariaData.map((row, index) => (
+                      <TableRow key={index}>
+                        <TableCell className="border border-gray-300 p-2">{row.elemento}</TableCell>
+                        <TableCell className="border border-gray-300 p-2">{row.detalles}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            ) : (
+              <p className="mt-4 italic">No se encontraron datos de maquinaria instalada en el archivo Excel.</p>
+            )}
+            
+            {/* Section 14.1 - CENTRAL POSITIVA */}
+            <div className="mt-8">
+              <h4 className="text-md font-bold">14.1. CENTRAL POSITIVA</h4>
+              <p className="mt-2">
+                Se trata de una central frigorífica formada por compresores semiherméticos alternativos accionados mediante un motor eléctrico trifásico. Sus características técnicas son las siguientes:
+              </p>
+              
+              {centralPositivaData.length > 0 ? (
+                <div className="mt-4 overflow-x-auto">
+                  <Table className="w-full border-collapse">
+                    <TableHeader>
+                      <TableRow className="bg-blue-100">
+                        <TableHead className="border border-gray-300 p-2">CARACTERÍSTICA</TableHead>
+                        <TableHead className="border border-gray-300 p-2">MEDIDAS</TableHead>
+                        <TableHead className="border border-gray-300 p-2">OBSERVACIONES</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {centralPositivaData.map((row, index) => (
+                        <TableRow key={index}>
+                          <TableCell className="border border-gray-300 p-2">{row.caracteristica}</TableCell>
+                          <TableCell className="border border-gray-300 p-2">{row.medidas}</TableCell>
+                          <TableCell className="border border-gray-300 p-2">{row.observaciones}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              ) : (
+                <p className="mt-4 italic">No se encontraron datos de la central positiva en el archivo Excel.</p>
+              )}
+            </div>
           </div>
         </div>
       </div>
