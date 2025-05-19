@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -142,7 +141,7 @@ const MemoriaTecnicaForm = ({
         <TabsContent value="descripcion" className="mt-6">
           <Card>
             <div className="p-6">
-              <h3 className="text-lg font-medium mb-4">10. DESCRIPCIÓN DE LA INSTALACIÓN FRIGORÍFICA</h3>
+              <h3 className="text-lg font-medium mb-4">12. DESCRIPCIÓN DE LA INSTALACIÓN FRIGORÍFICA</h3>
               <div className="space-y-4">
                 <div>
                   <Label htmlFor="descripcionInstalacion">

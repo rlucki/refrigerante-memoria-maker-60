@@ -19,8 +19,6 @@ Tanto los servicios positivos como los negativos se alimentan con refrigerante R
 
 Los gases de descarga generados por los compresores de la central positiva junto a los al compresor paralelo, que salen a +124,8 °C y 93,7 bar, se envían a un separador de aceite, donde este se separa del refrigerante y se redirige a un acumulador desde el que se alimentará el circuito de aceite de todos los compresores de la bancada. El aceite ingresará a cada compresor a través de un nivel electrónico, el cual está dotado de una electroválvula que gestiona su apertura o cierre.`;
 
-  // Text for level 2 with parallel compressor = 0 (using the default value from descripcionInstalacion)
-  
   // Determine which description to show
   const getDescription = () => {
     if (data.nivelInstalacion === "Nivel 2") {
@@ -32,8 +30,8 @@ Los gases de descarga generados por los compresores de la central positiva junto
       return data.descripcionInstalacion || "";
     }
     
-    // For level 1, return empty string (only show the title)
-    return "";
+    // For level 1, always return the description from data
+    return data.descripcionInstalacion || "";
   };
 
   return (

@@ -34,20 +34,36 @@ export async function generateWordDocument(templateFile: File, memoriaData: Memo
             }),
             
             // Section 1: Datos del titular
-            ...createHeadingWithText("1. DATOS DEL TITULAR", 
-              `${memoriaData.titular || ''}\n` +
-              `NIF/CIF: ${memoriaData.nif || ''}\n` +
-              `Dirección: ${memoriaData.direccion || ''}\n` +
-              `Población: ${memoriaData.poblacion || ''}, ${memoriaData.provincia || ''}\n` +
-              `C.P.: ${memoriaData.cp || ''}\n` +
-              `Teléfono: ${memoriaData.telefono || ''}\n` +
-              `Email: ${memoriaData.email || ''}`
-            ),
+            new Paragraph({
+              text: "1. DATOS DEL TITULAR",
+              heading: HeadingLevel.HEADING_1,
+            }),
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: `${memoriaData.titular || ''}\n` +
+                  `NIF/CIF: ${memoriaData.nif || ''}\n` +
+                  `Dirección: ${memoriaData.direccion || ''}\n` +
+                  `Población: ${memoriaData.poblacion || ''}, ${memoriaData.provincia || ''}\n` +
+                  `C.P.: ${memoriaData.cp || ''}\n` +
+                  `Teléfono: ${memoriaData.telefono || ''}\n` +
+                  `Email: ${memoriaData.email || ''}`
+                }),
+              ],
+            }),
             
             // Section 12: Descripción de la instalación
-            ...createHeadingWithText("12. DESCRIPCIÓN DE LA INSTALACIÓN FRIGORÍFICA", 
-              memoriaData.descripcionInstalacion || ''
-            ),
+            new Paragraph({
+              text: "12. DESCRIPCIÓN DE LA INSTALACIÓN FRIGORÍFICA",
+              heading: HeadingLevel.HEADING_1,
+            }),
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: memoriaData.descripcionInstalacion || '',
+                }),
+              ],
+            }),
             
             // Process any index markers in the description
             ...(memoriaData.descripcionInstalacion ? 
