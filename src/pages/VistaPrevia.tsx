@@ -7,8 +7,6 @@ import MemoriaPreview from "@/components/memoriaPreview/MemoriaPreview";
 import { toast } from "@/hooks/use-toast";
 import ExcelUploader from "@/components/ExcelUploader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import ExcelCalculationsForm from "@/components/ExcelCalculationsForm";
-import { generateWordDocument } from "@/services/wordDocumentService";
 import WordDocumentTemplate from "@/components/WordDocumentTemplate";
 import ExcelDataViewer from "@/components/ExcelDataViewer";
 
@@ -312,9 +310,6 @@ El refrigerante, a alta presión, se expansiona hasta la presión de intermedia 
                 <TabsTrigger value="form" className="data-[state=active]:border-b-2 data-[state=active]:border-primary">
                   Formulario
                 </TabsTrigger>
-                <TabsTrigger value="excel" className="data-[state=active]:border-b-2 data-[state=active]:border-primary">
-                  Cálculos Excel
-                </TabsTrigger>
                 <TabsTrigger value="word" className="data-[state=active]:border-b-2 data-[state=active]:border-primary">
                   Base word
                 </TabsTrigger>
@@ -329,22 +324,9 @@ El refrigerante, a alta presión, se expansiona hasta la presión de intermedia 
                   hasWordTemplate={!!wordTemplate}
                   activeTab={activeSubTab}
                   setActiveTab={setActiveSubTab}
+                  onCalculationsChange={handleCalculationsChange}
+                  onExcelUpload={handleExcelUpload}
                 />
-              </TabsContent>
-              
-              <TabsContent value="excel" className="mt-6">
-                <div className="space-y-8">
-                  {/* Formulario de cálculos */}
-                  <ExcelCalculationsForm onChange={handleCalculationsChange} />
-                  
-                  {/* Uploader de Excel con visualizador mejorado */}
-                  <div className="mt-8">
-                    <h3 className="text-lg font-bold mb-4">Cargar archivo Excel</h3>
-                    <ExcelUploader onDataLoaded={handleExcelUpload} />
-                  </div>
-                  
-                  {/* El visualizador ya está integrado dentro del ExcelUploader */}
-                </div>
               </TabsContent>
               
               <TabsContent value="word" className="mt-6">

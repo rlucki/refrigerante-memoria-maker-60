@@ -19,6 +19,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
+import ExcelUploader from "./ExcelUploader";
+import {
+  RadioGroup,
+  RadioGroupItem,
+} from "./ui/radio-group";
+import { Separator } from "./ui/separator";
 
 interface MemoriaTecnicaFormProps {
   onSubmit: () => void;
@@ -28,13 +34,17 @@ interface MemoriaTecnicaFormProps {
   hasWordTemplate?: boolean;
   activeTab?: string;
   setActiveTab?: (tab: string) => void;
+  onCalculationsChange?: (field: string, value: string) => void;
+  onExcelUpload?: (data: any) => void;
 }
 
 const MemoriaTecnicaForm = ({ 
   onSubmit, 
   onChange, 
   activeTab = "titular",
-  setActiveTab
+  setActiveTab,
+  onCalculationsChange,
+  onExcelUpload
 }: MemoriaTecnicaFormProps) => {
   const [internalActiveTab, setInternalActiveTab] = useState(activeTab);
   
@@ -81,6 +91,13 @@ const MemoriaTecnicaForm = ({
   const handleSelectChange = (id: string, value: string) => {
     if (onChange) {
       onChange(id, value);
+    }
+  };
+  
+  // Handle calculations changes
+  const handleCalcChange = (field: string, value: string) => {
+    if (onCalculationsChange) {
+      onCalculationsChange(field, value);
     }
   };
   
@@ -139,6 +156,80 @@ const MemoriaTecnicaForm = ({
         
         <TabsContent value="descripcion_clasificacion" className="mt-6">
           <div className="space-y-6">
+            {/* Formulario de cálculos (Movido de la pestaña Excel) */}
+            <Card className="p-6">
+              <h3 className="text-lg font-medium mb-4">Configuración de Compresores y Equipos</h3>
+              <div className="space-y-6">
+                {/* Compresor MT */}
+                <div className="grid gap-2">
+                  <Label htmlFor="compresorMT">Compresor MT</Label>
+                  <Select 
+                    onValueChange={(value) => handleCalcChange("compresorMT", value)}
+                    defaultValue="0"
+                  >
+                    <SelectTrigger id="compresorMT" className="w-full">
+                      <SelectValue placeholder="Seleccionar número" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">0</SelectItem>
+                      <SelectItem value="1">1</SelectItem>
+                      <SelectItem value="2">2</SelectItem>
+                      <SelectItem value="3">3</SelectItem>
+                      <SelectItem value="4">4</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                {/* Compresor BT */}
+                <div className="grid gap-2">
+                  <Label htmlFor="compresorBT">Compresor BT</Label>
+                  <Select 
+                    onValueChange={(value) => handleCalcChange("compresorBT", value)}
+                    defaultValue="0"
+                  >
+                    <SelectTrigger id="compresorBT" className="w-full">
+                      <SelectValue placeholder="Seleccionar número" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">0</SelectItem>
+                      <SelectItem value="1">1</SelectItem>
+                      <SelectItem value="2">2</SelectItem>
+                      <SelectItem value="3">3</SelectItem>
+                      <SelectItem value="4">4</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                {/* Compresor Paralelo */}
+                <div className="grid gap-2">
+                  <Label htmlFor="compresorParalelo">Compresor Paralelo</Label>
+                  <Select 
+                    onValueChange={(value) => handleCalcChange("compresorParalelo", value)}
+                    defaultValue="0"
+                  >
+                    <SelectTrigger id="compresorParalelo" className="w-full">
+                      <SelectValue placeholder="Seleccionar número" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0">0</SelectItem>
+                      <SelectItem value="1">1</SelectItem>
+                      <SelectItem value="2">2</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </Card>
+
+            {/* Uploader de Excel con visualizador (Movido de la pestaña Excel) */}
+            {onExcelUpload && (
+              <Card className="p-6">
+                <h3 className="text-lg font-medium mb-4">Cargar archivo Excel</h3>
+                <ExcelUploader onDataLoaded={onExcelUpload} />
+              </Card>
+            )}
+
+            <Separator className="my-6" />
+
             {/* Descripción de la instalación */}
             <Card className="p-6">
               <h3 className="text-lg font-medium mb-4">Descripción de la instalación</h3>
@@ -212,31 +303,43 @@ const MemoriaTecnicaForm = ({
                 </div>
                 <div>
                   <Label htmlFor="tieneIHX">Intercambiador IHX</Label>
-                  <Select
-                    onValueChange={(value) => handleSelectChange("tieneIHX", value)}
+                  <RadioGroup 
+                    onValueChange={(value) => {
+                      handleSelectChange("tieneIHX", value);
+                      if (onCalculationsChange) onCalculationsChange("tieneIHX", value);
+                    }}
+                    defaultValue="no"
+                    className="flex gap-6 mt-2"
                   >
-                    <SelectTrigger className="w-full mt-2">
-                      <SelectValue placeholder="¿Tiene intercambiador IHX?" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="SI">SI</SelectItem>
-                      <SelectItem value="NO">NO</SelectItem>
-                    </SelectContent>
-                  </Select>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="si" id="tieneIHX-si" />
+                      <Label htmlFor="tieneIHX-si">Sí</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="no" id="tieneIHX-no" />
+                      <Label htmlFor="tieneIHX-no">No</Label>
+                    </div>
+                  </RadioGroup>
                 </div>
                 <div>
                   <Label htmlFor="tieneDesrecalentador">Desrecalentador</Label>
-                  <Select
-                    onValueChange={(value) => handleSelectChange("tieneDesrecalentador", value)}
+                  <RadioGroup 
+                    onValueChange={(value) => {
+                      handleSelectChange("tieneDesrecalentador", value);
+                      if (onCalculationsChange) onCalculationsChange("tieneDesrecalentador", value);
+                    }}
+                    defaultValue="no"
+                    className="flex gap-6 mt-2"
                   >
-                    <SelectTrigger className="w-full mt-2">
-                      <SelectValue placeholder="¿Tiene desrecalentador?" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="SI">SI</SelectItem>
-                      <SelectItem value="NO">NO</SelectItem>
-                    </SelectContent>
-                  </Select>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="si" id="tieneDesrecalentador-si" />
+                      <Label htmlFor="tieneDesrecalentador-si">Sí</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="no" id="tieneDesrecalentador-no" />
+                      <Label htmlFor="tieneDesrecalentador-no">No</Label>
+                    </div>
+                  </RadioGroup>
                 </div>
                 <div>
                   <Label htmlFor="kilosRefrigerante">Kilos de refrigerante según instalador (kg)</Label>
