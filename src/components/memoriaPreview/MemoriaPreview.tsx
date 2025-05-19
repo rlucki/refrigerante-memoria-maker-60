@@ -14,6 +14,7 @@ import MemoriaTuberias from "./MemoriaTuberias";
 import MemoriaSoportaciones from "./MemoriaSoportaciones";
 import MemoriaSobrepresiones from "./MemoriaSobrepresiones";
 import MemoriaCargaRefrigerante from "./MemoriaCargaRefrigerante";
+import MemoriaEvaporadores from "./MemoriaEvaporadores";
 
 interface MemoriaPreviewProps {
   data: {
@@ -97,6 +98,7 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1, 
       <MemoriaInstalacionElectrica />
       <MemoriaTuberias />
       <MemoriaSoportaciones />
+      <MemoriaEvaporadores excelData={excelData} />
       <MemoriaSobrepresiones />
       <MemoriaCargaRefrigerante />
     </div>
