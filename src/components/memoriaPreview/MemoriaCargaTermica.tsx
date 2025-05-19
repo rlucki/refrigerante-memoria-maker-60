@@ -89,22 +89,30 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
         
         // Buscar datos en el área G-H
         for (const row of data) {
-          if (row && 
-             ((row["__EMPTY_6"] || row["Unnamed: 6"] || row["MAQUINARIA INSTALADA"]) && 
-              (row["__EMPTY_6"] !== "MAQUINARIA INSTALADA" && 
-               row["__EMPTY_6"] !== "ELEMENTO" && 
-               row["__EMPTY_6"] !== "CENTRAL FRIGORÍFICA"))) {
+          // Verificar todos los posibles nombres de columna para los datos de maquinaria
+          const elemento = 
+            row?.["MAQUINARIA INSTALADA"] || 
+            row?.["__EMPTY_6"] || 
+            row?.["Unnamed: 6"] || 
+            row?.["ELEMENTO"] || 
+            "";
             
-            const elemento = row["__EMPTY_6"] || row["Unnamed: 6"] || row["MAQUINARIA INSTALADA"] || "";
-            const detalles = row["__EMPTY_7"] || row["Unnamed: 7"] || row["ELEMENTO"] || "";
-            
-            // Solo agregar filas no vacías
-            if (elemento && elemento !== "MAQUINARIA INSTALADA" && elemento !== "ELEMENTO") {
-              maquinaria.push({
-                elemento: elemento,
-                detalles: detalles
-              });
-            }
+          const detalles = 
+            row?.["ELEMENTO"] || 
+            row?.["__EMPTY_7"] || 
+            row?.["Unnamed: 7"] || 
+            row?.["DETALLES"] || 
+            "";
+          
+          // Solo agregar filas no vacías y no encabezados
+          if (elemento && 
+              elemento !== "MAQUINARIA INSTALADA" && 
+              elemento !== "ELEMENTO" && 
+              elemento !== "CENTRAL FRIGORÍFICA") {
+            maquinaria.push({
+              elemento: elemento,
+              detalles: detalles
+            });
           }
         }
         
@@ -119,9 +127,24 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
         for (const row of data) {
           if (row) {
             // Intentar extraer los datos usando diferentes posibles nombres de columnas
-            const caracteristica = row["__EMPTY_9"] || row["Unnamed: 9"] || row["CENTRAL POSITIVA"] || row["CARACTERÍSTICA"] || "";
-            const medidas = row["__EMPTY_10"] || row["Unnamed: 10"] || row["MEDIDAS"] || "";
-            const observaciones = row["__EMPTY_14"] || row["Unnamed: 14"] || row["OBSERVACIONES"] || "";
+            const caracteristica = 
+              row["CARACTERÍSTICA"] || 
+              row["__EMPTY_9"] || 
+              row["Unnamed: 9"] || 
+              row["CENTRAL POSITIVA"] || 
+              "";
+              
+            const medidas = 
+              row["MEDIDAS"] || 
+              row["__EMPTY_10"] || 
+              row["Unnamed: 10"] || 
+              "";
+              
+            const observaciones = 
+              row["OBSERVACIONES"] || 
+              row["__EMPTY_14"] || 
+              row["Unnamed: 14"] || 
+              "";
             
             // Solo agregar filas no vacías y no encabezados
             if (caracteristica && 
