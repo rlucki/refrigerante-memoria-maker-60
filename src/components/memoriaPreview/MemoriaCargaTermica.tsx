@@ -12,353 +12,338 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
     
     console.log(`Procesando datos Excel para rango ${range.startCol}-${range.endCol}:`, data);
     
-    // Para datos en formato array (como en los logs)
-    if (Array.isArray(data) && data.length > 0) {
-      console.log("Datos en formato array encontrados");
+    // For parsing specific tables with special formatting
+    const extractCentralIntermedia = (data: any) => {
+      if (!data) return [];
       
-      // Filtrar encabezados y extraer datos para la primera tabla (A-E)
-      if (range.startCol === 'A' && range.endCol === 'E') {
-        // Filtramos filas que contengan datos útiles (eliminamos filas vacías y encabezados no deseados)
-        const validRows = data.filter(row => {
-          // Verificar que la fila tenga datos en la primera columna y no sea un encabezado
-          return row && 
-                 row["SERVICIOS CENTRAL INTERMEDIA"] && 
-                 // Excluir filas con encabezados o totales específicos
-                 row["SERVICIOS CENTRAL INTERMEDIA"] !== "DENOMINACIÓN" &&
-                 row["SERVICIOS CENTRAL INTERMEDIA"] !== "CENTRAL FRIGORÍFICA" &&
-                 row["SERVICIOS CENTRAL INTERMEDIA"] !== "Fabricante central" &&
-                 row["SERVICIOS CENTRAL INTERMEDIA"] !== "Modelo central" &&
-                 row["SERVICIOS CENTRAL INTERMEDIA"] !== "Nº de serie central" &&
-                 row["SERVICIOS CENTRAL INTERMEDIA"] !== "Tensión de alimentación" &&
-                 row["SERVICIOS CENTRAL INTERMEDIA"] !== "Dimensiones Central" &&
-                 row["SERVICIOS CENTRAL INTERMEDIA"] !== "Peso central";
-        });
-        
-        // Extraer los datos relevantes de cada fila
-        const formattedRows = validRows.map(row => {
-          return {
-            denominacion: row["SERVICIOS CENTRAL INTERMEDIA"] || "",
-            modulos: row["__EMPTY"] || "",
-            modVol: row["__EMPTY_1"] || "",
-            temperatura: row["__EMPTY_2"] || "",
-            cargaT: row["__EMPTY_3"] || ""
-          };
-        });
-        
-        console.log("Filas procesadas para servicios positivos:", formattedRows);
-        return formattedRows;
-      } 
-      // Para la segunda tabla (Q-U) - SERVICIOS NEGATIVOS
-      else if (range.startCol === 'Q' && range.endCol === 'U') {
-        const serviciosNegativos = [];
-        
-        // Buscar datos en el área Q-U usando las columnas correctas
-        for (const row of data) {
-          // Verificar columnas específicas para datos de servicios negativos
-          if (row && 
-              ((row["DENOMINACIÓN"] && row["MÓDULOS"] && row["Tª INT."]) || 
-               (row["__EMPTY_16"] && row["__EMPTY_17"] && row["__EMPTY_19"]))) {
-            
-            // Extraer los datos usando las columnas correctas según el formato
-            const denominacion = row["DENOMINACIÓN"] || row["__EMPTY_16"] || "";
-            const modulos = row["MÓDULOS"] || row["__EMPTY_17"] || "";
-            const modVol = row["MOD./PUERTAS"] || row["__EMPTY_18"] || "";
-            const temperatura = row["Tª INT."] || row["__EMPTY_19"] || "";
-            const cargaT = row["CARGA Tª"] || row["__EMPTY_20"] || "";
-            
-            // Filtrar filas de encabezado o totales
-            if (denominacion !== "DENOMINACIÓN" && denominacion) {
-              serviciosNegativos.push({
-                denominacion,
-                modulos,
-                modVol,
-                temperatura,
-                cargaT
-              });
-            }
-          }
-        }
-        
-        console.log("Filas procesadas para servicios negativos:", serviciosNegativos);
-        return serviciosNegativos;
-      }
-      // Para la tabla de Maquinaria Instalada (G-H)
-      else if (range.startCol === 'G' && range.endCol === 'H') {
-        const maquinaria = [];
-        
-        // Buscar datos en el área G-H
-        for (const row of data) {
-          if (row && 
-             ((row["__EMPTY_6"] || row["Unnamed: 6"] || row["MAQUINARIA INSTALADA"]) && 
-              (row["__EMPTY_6"] !== "MAQUINARIA INSTALADA" && 
-               row["__EMPTY_6"] !== "ELEMENTO" && 
-               row["__EMPTY_6"] !== "CENTRAL FRIGORÍFICA"))) {
-            
-            const elemento = row["__EMPTY_6"] || row["Unnamed: 6"] || row["MAQUINARIA INSTALADA"] || "";
-            const detalles = row["__EMPTY_7"] || row["Unnamed: 7"] || row["ELEMENTO"] || "";
-            
-            // Solo agregar filas no vacías
-            if (elemento && elemento !== "MAQUINARIA INSTALADA" && elemento !== "ELEMENTO") {
-              maquinaria.push({
-                elemento: elemento,
-                detalles: detalles
-              });
-            }
-          }
-        }
-        
-        console.log("Filas procesadas para maquinaria instalada:", maquinaria);
-        return maquinaria;
-      }
-      // Para la tabla de Central Positiva (J-O)
-      else if (range.startCol === 'J' && range.endCol === 'O') {
-        const centralPositiva = [];
-        
-        // Buscar datos en el área J-O
+      const centralIntermedia = [];
+      
+      // First try to extract from array format
+      if (Array.isArray(data) && data.length > 0) {
         for (const row of data) {
           if (row) {
-            // Intentar extraer los datos usando diferentes posibles nombres de columnas
-            const caracteristica = row["__EMPTY_9"] || row["Unnamed: 9"] || row["CENTRAL POSITIVA"] || row["CARACTERÍSTICA"] || row["CENTRAL INTERMEDIA"] || "";
-            const medidas = row["__EMPTY_10"] || row["Unnamed: 10"] || row["MEDIDAS"] || "";
-            const observaciones = row["__EMPTY_14"] || row["Unnamed: 14"] || row["OBSERVACIONES"] || row["__EMPTY_15"] || "";
+            // Use direct property names that match the Excel structure
+            const caracteristica = row["CARACTERÍSTICA"] || row["__EMPTY_9"] || row["Unnamed: 9"] || row["CENTRAL POSITIVA"] || row["CENTRAL INTERMEDIA"] || "";
             
-            // Solo agregar filas no vacías y no encabezados
+            // Skip header rows and empty rows
             if (caracteristica && 
                 caracteristica !== "CENTRAL POSITIVA" && 
                 caracteristica !== "CENTRAL INTERMEDIA" &&
                 caracteristica !== "CARACTERÍSTICA") {
               
-              // Añadir todos los valores intermedios para completar la tabla
-              centralPositiva.push({
-                caracteristica,
-                medidas,
-                observaciones
-              });
+              // Create a row object that matches the structure in the screenshots
+              const rowData: any = {
+                caracteristica
+              };
+              
+              // Add specific measurements based on the characteristic type
+              if (caracteristica === "Modelos compresores" || 
+                  caracteristica === "Nº de serie compresores" || 
+                  caracteristica === "Potencia frigorífica" ||
+                  caracteristica === "Potencia absorbida" ||
+                  caracteristica === "Potencia absorbida máxima" ||
+                  caracteristica === "Caudal Másico" ||
+                  caracteristica === "Desplazamiento Volumétrico" ||
+                  caracteristica === "Intensidad a régimen" ||
+                  caracteristica === "Intensidad máxima") {
+                  
+                  // Add multiple columns if needed
+                  rowData.col1 = row["__EMPTY_10"] || "";
+                  rowData.col2 = row["__EMPTY_11"] || "";
+                  rowData.col3 = row["__EMPTY_12"] || "";
+                  rowData.col4 = row["__EMPTY_13"] || "";
+                  rowData.total = row["__EMPTY_14"] || "";
+              } else {
+                // For single-value rows
+                rowData.valor = row["__EMPTY_10"] || "";
+                
+                // Add additional columns like pressure if available
+                if (caracteristica.includes("Presión") || caracteristica.includes("Temp")) {
+                  rowData.separator = "/";
+                  rowData.presion = row["__EMPTY_11"] || "";
+                }
+              }
+              
+              centralIntermedia.push(rowData);
             }
           }
         }
-        
-        console.log("Filas procesadas para central positiva:", centralPositiva);
-        return centralPositiva;
       }
-      // Para la tabla de Compresores Paralelos (W-Z)
-      else if (range.startCol === 'W' && range.endCol === 'Z') {
-        const compresoresParalelos = [];
+      
+      // If we couldn't find data in array format, try sheet format
+      if (centralIntermedia.length === 0 && data && data["RESUM LEGA"]) {
+        const sheet = data["RESUM LEGA"];
         
-        // Buscar datos en el área W-Z
+        for (let i = 1; i <= 30; i++) {
+          const caracteristicaKey = `J${i}`;
+          
+          if (sheet[caracteristicaKey] && sheet[caracteristicaKey].v && 
+              sheet[caracteristicaKey].v !== "CENTRAL POSITIVA" && 
+              sheet[caracteristicaKey].v !== "CENTRAL INTERMEDIA" &&
+              sheet[caracteristicaKey].v !== "CARACTERÍSTICA") {
+            
+            const caracteristica = sheet[caracteristicaKey].v;
+            const rowData: any = {
+              caracteristica
+            };
+            
+            // Add specific measurements based on the characteristic type
+            if (caracteristica === "Modelos compresores" || 
+                caracteristica === "Nº de serie compresores" || 
+                caracteristica === "Potencia frigorífica" ||
+                caracteristica === "Potencia absorbida" ||
+                caracteristica === "Potencia absorbida máxima" ||
+                caracteristica === "Caudal Másico" ||
+                caracteristica === "Desplazamiento Volumétrico" ||
+                caracteristica === "Intensidad a régimen" ||
+                caracteristica === "Intensidad máxima") {
+                
+                // Add multiple columns if needed
+                rowData.col1 = sheet[`K${i}`]?.v || "";
+                rowData.col2 = sheet[`L${i}`]?.v || "";
+                rowData.col3 = sheet[`M${i}`]?.v || "";
+                rowData.col4 = sheet[`N${i}`]?.v || "";
+                rowData.total = sheet[`O${i}`]?.v || "";
+            } else {
+              // For single-value rows
+              rowData.valor = sheet[`K${i}`]?.v || "";
+              
+              // Add additional columns like pressure if available
+              if (caracteristica.includes("Presión") || caracteristica.includes("Temp")) {
+                rowData.separator = "/";
+                rowData.presion = sheet[`L${i}`]?.v || "";
+              }
+            }
+            
+            centralIntermedia.push(rowData);
+          }
+        }
+      }
+      
+      return centralIntermedia;
+    };
+    
+    const extractCompresoresParalelos = (data: any) => {
+      if (!data) return [];
+      
+      const compresoresParalelos = [];
+      
+      // First try to extract from array format
+      if (Array.isArray(data) && data.length > 0) {
         for (const row of data) {
           if (row) {
-            // Intentar extraer los datos usando diferentes posibles nombres de columnas
-            const caracteristica = row["__EMPTY_22"] || row["Unnamed: 22"] || row["COMPRESORES PARALELOS"] || row["CARACTERÍSTICA"] || "";
-            const medidas = row["__EMPTY_23"] || row["Unnamed: 23"] || row["MEDIDAS"] || "";
-            const observaciones = row["__EMPTY_25"] || row["Unnamed: 25"] || row["OBSERVACIONES"] || "";
+            // Use direct property names that match the Excel structure
+            const caracteristica = row["CARACTERÍSTICA"] || row["__EMPTY_22"] || row["Unnamed: 22"] || row["COMPRESORES PARALELOS"] || "";
             
-            // Solo agregar filas no vacías y no encabezados
+            // Skip header rows and empty rows
             if (caracteristica && 
                 caracteristica !== "COMPRESORES PARALELOS" && 
                 caracteristica !== "CARACTERÍSTICA") {
               
-              // Añadir la presión en la columna de observaciones si está disponible
-              const obsColumn = row["__EMPTY_24"] ? `${row["__EMPTY_24"]} / ${observaciones}`.trim() : observaciones;
+              // Create a row object that matches the structure in the screenshots
+              const rowData: any = {
+                caracteristica
+              };
               
-              compresoresParalelos.push({
-                caracteristica,
-                medidas,
-                observaciones: obsColumn
-              });
+              // Add specific measurements based on the characteristic type
+              if (caracteristica === "Modelos compresores" || 
+                  caracteristica === "Nº de serie compresores" || 
+                  caracteristica === "Potencia absorbida" ||
+                  caracteristica === "Potencia absorbida máxima" ||
+                  caracteristica === "Caudal Másico" ||
+                  caracteristica === "Desplazamiento Volumétrico" ||
+                  caracteristica === "Intensidad a régimen" ||
+                  caracteristica === "Intensidad máxima") {
+                  
+                  // Add multiple columns if needed
+                  rowData.col1 = row["__EMPTY_23"] || "";
+                  rowData.col2 = row["__EMPTY_24"] || "";
+                  rowData.total = row["__EMPTY_25"] || "";
+              } else {
+                // For single-value rows
+                rowData.valor = row["__EMPTY_23"] || "";
+                
+                // Add additional columns like pressure if available
+                if (caracteristica.includes("Presión") || caracteristica.includes("Temp")) {
+                  rowData.separator = "/";
+                  rowData.presion = row["__EMPTY_24"] || "";
+                }
+              }
+              
+              compresoresParalelos.push(rowData);
             }
           }
         }
-        
-        console.log("Filas procesadas para compresores paralelos:", compresoresParalelos);
-        return compresoresParalelos;
       }
-      // Para la tabla de Central Negativa (AD-AH) - ACTUALIZADO DE AB-AF A AD-AH
-      else if (range.startCol === 'AD' && range.endCol === 'AH') {
-        const centralNegativa = [];
+      
+      // If we couldn't find data in array format, try sheet format
+      if (compresoresParalelos.length === 0 && data && data["RESUM LEGA"]) {
+        const sheet = data["RESUM LEGA"];
         
-        // Buscar datos en el área AD-AH
+        for (let i = 1; i <= 30; i++) {
+          const caracteristicaKey = `W${i}`;
+          
+          if (sheet[caracteristicaKey] && sheet[caracteristicaKey].v && 
+              sheet[caracteristicaKey].v !== "COMPRESORES PARALELOS" && 
+              sheet[caracteristicaKey].v !== "CARACTERÍSTICA") {
+            
+            const caracteristica = sheet[caracteristicaKey].v;
+            const rowData: any = {
+              caracteristica
+            };
+            
+            // Add specific measurements based on the characteristic type
+            if (caracteristica === "Modelos compresores" || 
+                caracteristica === "Nº de serie compresores" || 
+                caracteristica === "Potencia absorbida" ||
+                caracteristica === "Potencia absorbida máxima" ||
+                caracteristica === "Caudal Másico" ||
+                caracteristica === "Desplazamiento Volumétrico" ||
+                caracteristica === "Intensidad a régimen" ||
+                caracteristica === "Intensidad máxima") {
+                
+                // Add multiple columns if needed
+                rowData.col1 = sheet[`X${i}`]?.v || "";
+                rowData.col2 = sheet[`Y${i}`]?.v || "";
+                rowData.total = sheet[`Z${i}`]?.v || "";
+            } else {
+              // For single-value rows
+              rowData.valor = sheet[`X${i}`]?.v || "";
+              
+              // Add additional columns like pressure if available
+              if (caracteristica.includes("Presión") || caracteristica.includes("Temp")) {
+                rowData.separator = "/";
+                rowData.presion = sheet[`Y${i}`]?.v || "";
+              }
+            }
+            
+            compresoresParalelos.push(rowData);
+          }
+        }
+      }
+      
+      return compresoresParalelos;
+    };
+    
+    const extractCentralNegativa = (data: any) => {
+      if (!data) return [];
+      
+      const centralNegativa = [];
+      
+      // First try to extract from array format
+      if (Array.isArray(data) && data.length > 0) {
         for (const row of data) {
           if (row) {
-            // Intentar extraer los datos usando diferentes posibles nombres de columnas
-            // Actualizado para usar columnas AD, AE, AF, AG, AH (en lugar de AB, AC, AD, AE, AF)
-            const caracteristica = row["__EMPTY_29"] || row["Unnamed: 29"] || row["CENTRAL NEGATIVA"] || row["CARACTERÍSTICA"] || "";
-            const medidas = row["__EMPTY_30"] || row["Unnamed: 30"] || row["MEDIDAS"] || "";
-            const observaciones = row["__EMPTY_33"] || row["Unnamed: 33"] || row["OBSERVACIONES"] || row["__EMPTY_34"] || "";
+            // Use direct property names that match the Excel structure
+            const caracteristica = row["CARACTERÍSTICA"] || row["__EMPTY_29"] || row["Unnamed: 29"] || row["CENTRAL NEGATIVA"] || "";
             
-            // Solo agregar filas no vacías y no encabezados
+            // Skip header rows and empty rows
             if (caracteristica && 
                 caracteristica !== "CENTRAL NEGATIVA" && 
                 caracteristica !== "CARACTERÍSTICA") {
               
-              // Añadir la presión en la columna de observaciones si está disponible
-              const obsColumn = row["__EMPTY_31"] ? `${row["__EMPTY_31"]} / ${observaciones}`.trim() : observaciones;
+              // Create a row object that matches the structure in the screenshots
+              const rowData: any = {
+                caracteristica
+              };
               
-              centralNegativa.push({
-                caracteristica,
-                medidas,
-                observaciones: obsColumn
-              });
+              // Add specific measurements based on the characteristic type
+              if (caracteristica === "Modelos compresores" || 
+                  caracteristica === "Nº de serie compresores" || 
+                  caracteristica === "Potencia frigorífica" ||
+                  caracteristica === "Potencia absorbida" ||
+                  caracteristica === "Potencia absorbida máxima" ||
+                  caracteristica === "COP" ||
+                  caracteristica === "Caudal Másico" ||
+                  caracteristica === "Desplazamiento Volumétrico" ||
+                  caracteristica === "Intensidad a régimen" ||
+                  caracteristica === "Intensidad máxima") {
+                  
+                  // Add multiple columns if needed
+                  rowData.col1 = row["__EMPTY_30"] || "";
+                  rowData.col2 = row["__EMPTY_31"] || "";
+                  rowData.col3 = row["__EMPTY_32"] || "";
+                  rowData.total = row["__EMPTY_33"] || "";
+              } else {
+                // For single-value rows
+                rowData.valor = row["__EMPTY_30"] || "";
+                
+                // Add additional columns like pressure if available
+                if (caracteristica.includes("Presión") || caracteristica.includes("Temp")) {
+                  rowData.separator = "/";
+                  rowData.presion = row["__EMPTY_31"] || "";
+                  rowData.valor2 = row["__EMPTY_32"] || "";
+                  rowData.presion2 = row["__EMPTY_33"] || "";
+                }
+              }
+              
+              centralNegativa.push(rowData);
             }
           }
         }
-        
-        console.log("Filas procesadas para central negativa:", centralNegativa);
-        return centralNegativa;
       }
-    }
-    
-    // Para datos en formato de hoja de cálculo
-    if (data && data["RESUM LEGA"]) {
-      const sheet = data["RESUM LEGA"];
-      console.log(`Hoja RESUM LEGA encontrada para rango ${range.startCol}-${range.endCol}:`, sheet);
       
-      const rows = [];
-      
-      // Determinar las columnas según el rango
-      if (range.startCol === 'A' && range.endCol === 'E') {
-        const colMapping = { denom: 'A', modulos: 'B', modVol: 'C', temp: 'D', carga: 'E' };
+      // If we couldn't find data in array format, try sheet format
+      if (centralNegativa.length === 0 && data && data["RESUM LEGA"]) {
+        const sheet = data["RESUM LEGA"];
         
-        // Iterar sobre las filas potenciales
-        for (let i = range.startIndex; i <= range.endIndex; i++) {
-          const denomKey = `${colMapping.denom}${i}`;
-          
-          // Verificar si hay valor en la columna de denominación
-          if (sheet[denomKey] && sheet[denomKey].v && 
-              sheet[denomKey].v !== "DENOMINACIÓN" &&
-              sheet[denomKey].v !== "CENTRAL FRIGORÍFICA") {
-            const row = {
-              denominacion: sheet[denomKey].v || "",
-              modulos: sheet[`${colMapping.modulos}${i}`]?.v || "",
-              modVol: sheet[`${colMapping.modVol}${i}`]?.v || "",
-              temperatura: sheet[`${colMapping.temp}${i}`]?.v || "",
-              cargaT: sheet[`${colMapping.carga}${i}`]?.v || ""
-            };
-            
-            rows.push(row);
-          }
-        }
-      } 
-      else if (range.startCol === 'Q' && range.endCol === 'U') {
-        const colMapping = { denom: 'Q', modulos: 'R', modVol: 'S', temp: 'T', carga: 'U' };
-        
-        for (let i = range.startIndex; i <= range.endIndex; i++) {
-          const denomKey = `${colMapping.denom}${i}`;
-          
-          if (sheet[denomKey] && sheet[denomKey].v && sheet[denomKey].v !== "DENOMINACIÓN") {
-            const row = {
-              denominacion: sheet[denomKey].v || "",
-              modulos: sheet[`${colMapping.modulos}${i}`]?.v || "",
-              modVol: sheet[`${colMapping.modVol}${i}`]?.v || "",
-              temperatura: sheet[`${colMapping.temp}${i}`]?.v || "",
-              cargaT: sheet[`${colMapping.carga}${i}`]?.v || ""
-            };
-            
-            rows.push(row);
-          }
-        }
-      }
-      else if (range.startCol === 'G' && range.endCol === 'H') {
-        // Para la tabla de maquinaria instalada
-        for (let i = range.startIndex; i <= range.endIndex; i++) {
-          const elementoKey = `G${i}`;
-          
-          if (sheet[elementoKey] && sheet[elementoKey].v && 
-              sheet[elementoKey].v !== "MAQUINARIA INSTALADA" &&
-              sheet[elementoKey].v !== "ELEMENTO" &&
-              sheet[elementoKey].v !== "CENTRAL FRIGORÍFICA") {
-            
-            rows.push({
-              elemento: sheet[elementoKey].v || "",
-              detalles: sheet[`H${i}`]?.v || ""
-            });
-          }
-        }
-      }
-      else if (range.startCol === 'J' && range.endCol === 'O') {
-        // Para la tabla de central positiva
-        for (let i = range.startIndex; i <= range.endIndex; i++) {
-          const caracteristicaKey = `J${i}`;
-          
-          if (sheet[caracteristicaKey] && sheet[caracteristicaKey].v && 
-              sheet[caracteristicaKey].v !== "CENTRAL POSITIVA" &&
-              sheet[caracteristicaKey].v !== "CENTRAL INTERMEDIA" &&
-              sheet[caracteristicaKey].v !== "CARACTERÍSTICA") {
-            
-            const medidas = sheet[`K${i}`]?.v || sheet[`L${i}`]?.v || "";
-            
-            // Añadir columna de presión si está disponible
-            let presionValor = sheet[`L${i}`]?.v || "";
-            let observaciones = sheet[`O${i}`]?.v || "";
-            
-            // Si hay presión, añadirla a observaciones
-            if (presionValor && presionValor !== medidas) {
-              observaciones = `${presionValor} / ${observaciones}`.trim();
-            }
-            
-            rows.push({
-              caracteristica: sheet[caracteristicaKey].v || "",
-              medidas: medidas,
-              observaciones: observaciones
-            });
-          }
-        }
-      }
-      else if (range.startCol === 'W' && range.endCol === 'Z') {
-        // Para la tabla de compresores paralelos
-        for (let i = range.startIndex; i <= range.endIndex; i++) {
-          const caracteristicaKey = `W${i}`;
-          
-          if (sheet[caracteristicaKey] && sheet[caracteristicaKey].v && 
-              sheet[caracteristicaKey].v !== "COMPRESORES PARALELOS" &&
-              sheet[caracteristicaKey].v !== "CARACTERÍSTICA") {
-            
-            const medidas = sheet[`X${i}`]?.v || "";
-            const presion = sheet[`Y${i}`]?.v || "";
-            const observaciones = sheet[`Z${i}`]?.v || "";
-            
-            // Combinar presión con observaciones si existe
-            const obsColumn = presion ? `${presion} / ${observaciones}`.trim() : observaciones;
-            
-            rows.push({
-              caracteristica: sheet[caracteristicaKey].v || "",
-              medidas: medidas,
-              observaciones: obsColumn
-            });
-          }
-        }
-      }
-      else if (range.startCol === 'AD' && range.endCol === 'AH') {
-        // Para la tabla de central negativa con el rango actualizado (AD-AH)
-        for (let i = range.startIndex; i <= range.endIndex; i++) {
+        for (let i = 1; i <= 30; i++) {
           const caracteristicaKey = `AD${i}`;
           
           if (sheet[caracteristicaKey] && sheet[caracteristicaKey].v && 
-              sheet[caracteristicaKey].v !== "CENTRAL NEGATIVA" &&
+              sheet[caracteristicaKey].v !== "CENTRAL NEGATIVA" && 
               sheet[caracteristicaKey].v !== "CARACTERÍSTICA") {
             
-            const medidas = sheet[`AE${i}`]?.v || "";
-            const presion = sheet[`AF${i}`]?.v || "";
-            const observaciones = sheet[`AH${i}`]?.v || "";
+            const caracteristica = sheet[caracteristicaKey].v;
+            const rowData: any = {
+              caracteristica
+            };
             
-            // Combinar presión con observaciones si existe
-            const obsColumn = presion ? `${presion} / ${observaciones}`.trim() : observaciones;
+            // Add specific measurements based on the characteristic type
+            if (caracteristica === "Modelos compresores" || 
+                caracteristica === "Nº de serie compresores" || 
+                caracteristica === "Potencia frigorífica" ||
+                caracteristica === "Potencia absorbida" ||
+                caracteristica === "Potencia absorbida máxima" ||
+                caracteristica === "COP" ||
+                caracteristica === "Caudal Másico" ||
+                caracteristica === "Desplazamiento Volumétrico" ||
+                caracteristica === "Intensidad a régimen" ||
+                caracteristica === "Intensidad máxima") {
+                
+                // Add multiple columns if needed
+                rowData.col1 = sheet[`AE${i}`]?.v || "";
+                rowData.col2 = sheet[`AF${i}`]?.v || "";
+                rowData.col3 = sheet[`AG${i}`]?.v || "";
+                rowData.total = sheet[`AH${i}`]?.v || "";
+            } else {
+              // For single-value rows
+              rowData.valor = sheet[`AE${i}`]?.v || "";
+              
+              // Add additional columns like pressure if available
+              if (caracteristica.includes("Presión") || caracteristica.includes("Temp")) {
+                rowData.separator = "/";
+                rowData.presion = sheet[`AF${i}`]?.v || "";
+                rowData.valor2 = sheet[`AG${i}`]?.v || "";
+                rowData.presion2 = sheet[`AH${i}`]?.v || "";
+              }
+            }
             
-            rows.push({
-              caracteristica: sheet[caracteristicaKey].v || "",
-              medidas: medidas,
-              observaciones: obsColumn
-            });
+            centralNegativa.push(rowData);
           }
         }
       }
       
-      console.log(`Filas extraídas de RESUM LEGA (${range.startCol}-${range.endCol}):`, rows);
-      return rows;
-    }
+      return centralNegativa;
+    };
     
-    console.log(`No se pudo procesar el formato de los datos Excel para rango ${range.startCol}-${range.endCol}`);
-    return [];
+    if (range.startCol === 'J' && range.endCol === 'O') {
+      return extractCentralIntermedia(data);
+    } else if (range.startCol === 'W' && range.endCol === 'Z') {
+      return extractCompresoresParalelos(data);
+    } else if (range.startCol === 'AD' && range.endCol === 'AH') {
+      return extractCentralNegativa(data);
+    }
   };
   
   // Calcular el sumatorio de la columna de carga térmica
@@ -375,15 +360,167 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
   const positivosData = extractTableData(excelData, { startCol: 'A', endCol: 'E', startIndex: 1, endIndex: 60 });
   const negativosData = extractTableData(excelData, { startCol: 'Q', endCol: 'U', startIndex: 1, endIndex: 60 });
   const maquinariaData = extractTableData(excelData, { startCol: 'G', endCol: 'H', startIndex: 1, endIndex: 9 });
-  const centralPositivaData = extractTableData(excelData, { startCol: 'J', endCol: 'O', startIndex: 1, endIndex: 20 });
+  const centralIntermediaData = extractTableData(excelData, { startCol: 'J', endCol: 'O', startIndex: 1, endIndex: 20 });
   const compresoresParalelosData = extractTableData(excelData, { startCol: 'W', endCol: 'Z', startIndex: 1, endIndex: 20 });
-  // Actualizado el rango para central negativa de AB-AF a AD-AH
   const centralNegativaData = extractTableData(excelData, { startCol: 'AD', endCol: 'AH', startIndex: 1, endIndex: 20 });
   
-  // Calcular sumatorios
-  const sumPositivos = calculateSum(positivosData);
-  const sumNegativos = calculateSum(negativosData);
+  const renderCentralIntermediaTable = () => {
+    return (
+      <div className="mt-4 overflow-x-auto">
+        <Table className="w-full border-collapse">
+          <TableHeader>
+            <TableRow className="bg-gray-800 text-white">
+              <TableHead colSpan={6} className="border border-gray-600 p-2 text-center font-bold">
+                CENTRAL INTERMEDIA
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {centralIntermediaData.map((row: any, index: number) => {
+              // Rows with multiple columns (like "Modelos compresores")
+              if (row.col1 !== undefined) {
+                return (
+                  <TableRow key={index} className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}>
+                    <TableCell className="border border-gray-300 p-2 font-medium">{row.caracteristica}</TableCell>
+                    <TableCell className="border border-gray-300 p-2 text-center">{row.col1}</TableCell>
+                    <TableCell className="border border-gray-300 p-2 text-center">{row.col2}</TableCell>
+                    <TableCell className="border border-gray-300 p-2 text-center">{row.col3}</TableCell>
+                    <TableCell className="border border-gray-300 p-2 text-center">{row.col4}</TableCell>
+                    <TableCell className="border border-gray-300 p-2 text-center font-bold">{row.total}</TableCell>
+                  </TableRow>
+                );
+              }
+              // Rows with temperature/pressure
+              else if (row.separator) {
+                return (
+                  <TableRow key={index} className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}>
+                    <TableCell className="border border-gray-300 p-2 font-medium">{row.caracteristica}</TableCell>
+                    <TableCell colSpan={4} className="border border-gray-300 p-2 text-center">
+                      {row.valor ? `${row.valor} ºC` : ""} {row.separator} {row.presion ? `${row.presion} bar` : ""}
+                    </TableCell>
+                    <TableCell className="border border-gray-300 p-2"></TableCell>
+                  </TableRow>
+                );
+              }
+              // Regular rows
+              else {
+                return (
+                  <TableRow key={index} className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}>
+                    <TableCell className="border border-gray-300 p-2 font-medium">{row.caracteristica}</TableCell>
+                    <TableCell colSpan={5} className="border border-gray-300 p-2 text-center">{row.valor}</TableCell>
+                  </TableRow>
+                );
+              }
+            })}
+          </TableBody>
+        </Table>
+      </div>
+    );
+  };
   
+  const renderCompresoresParalelosTable = () => {
+    return (
+      <div className="mt-4 overflow-x-auto">
+        <Table className="w-full border-collapse">
+          <TableHeader>
+            <TableRow className="bg-gray-800 text-white">
+              <TableHead colSpan={4} className="border border-gray-600 p-2 text-center font-bold">
+                COMPRESORES PARALELOS
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {compresoresParalelosData.map((row: any, index: number) => {
+              // Rows with multiple columns
+              if (row.col1 !== undefined) {
+                return (
+                  <TableRow key={index} className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}>
+                    <TableCell className="border border-gray-300 p-2 font-medium">{row.caracteristica}</TableCell>
+                    <TableCell className="border border-gray-300 p-2 text-center">{row.col1}</TableCell>
+                    <TableCell className="border border-gray-300 p-2 text-center">{row.col2}</TableCell>
+                    <TableCell className="border border-gray-300 p-2 text-center font-bold">{row.total}</TableCell>
+                  </TableRow>
+                );
+              }
+              // Rows with temperature/pressure
+              else if (row.separator) {
+                return (
+                  <TableRow key={index} className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}>
+                    <TableCell className="border border-gray-300 p-2 font-medium">{row.caracteristica}</TableCell>
+                    <TableCell colSpan={3} className="border border-gray-300 p-2 text-center">
+                      {row.valor ? `${row.valor} ºC` : ""} {row.separator} {row.presion ? `${row.presion} bar` : ""}
+                    </TableCell>
+                  </TableRow>
+                );
+              }
+              // Regular rows
+              else {
+                return (
+                  <TableRow key={index} className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}>
+                    <TableCell className="border border-gray-300 p-2 font-medium">{row.caracteristica}</TableCell>
+                    <TableCell colSpan={3} className="border border-gray-300 p-2 text-center">{row.valor}</TableCell>
+                  </TableRow>
+                );
+              }
+            })}
+          </TableBody>
+        </Table>
+      </div>
+    );
+  };
+  
+  const renderCentralNegativaTable = () => {
+    return (
+      <div className="mt-4 overflow-x-auto">
+        <Table className="w-full border-collapse">
+          <TableHeader>
+            <TableRow className="bg-gray-800 text-white">
+              <TableHead colSpan={5} className="border border-gray-600 p-2 text-center font-bold">
+                CENTRAL NEGATIVA
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {centralNegativaData.map((row: any, index: number) => {
+              // Rows with multiple columns
+              if (row.col1 !== undefined) {
+                return (
+                  <TableRow key={index} className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}>
+                    <TableCell className="border border-gray-300 p-2 font-medium">{row.caracteristica}</TableCell>
+                    <TableCell className="border border-gray-300 p-2 text-center">{row.col1}</TableCell>
+                    <TableCell className="border border-gray-300 p-2 text-center">{row.col2}</TableCell>
+                    <TableCell className="border border-gray-300 p-2 text-center">{row.col3}</TableCell>
+                    <TableCell className="border border-gray-300 p-2 text-center font-bold">{row.total}</TableCell>
+                  </TableRow>
+                );
+              }
+              // Rows with temperature/pressure
+              else if (row.separator) {
+                return (
+                  <TableRow key={index} className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}>
+                    <TableCell className="border border-gray-300 p-2 font-medium">{row.caracteristica}</TableCell>
+                    <TableCell colSpan={4} className="border border-gray-300 p-2 text-center">
+                      {row.valor ? `${row.valor} ºC` : ""} {row.separator} {row.presion ? `${row.presion} bar` : ""}
+                    </TableCell>
+                  </TableRow>
+                );
+              }
+              // Regular rows
+              else {
+                return (
+                  <TableRow key={index} className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}>
+                    <TableCell className="border border-gray-300 p-2 font-medium">{row.caracteristica}</TableCell>
+                    <TableCell colSpan={4} className="border border-gray-300 p-2 text-center">{row.valor}</TableCell>
+                  </TableRow>
+                );
+              }
+            })}
+          </TableBody>
+        </Table>
+      </div>
+    );
+  };
+
   return (
     <div className="mb-8 max-w-[210mm] mx-auto bg-white min-h-[297mm] relative p-6">
       <div className="pb-20">
@@ -430,7 +567,7 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
                         TOTAL CARGA TÉRMICA POSITIVA
                       </TableCell>
                       <TableCell className="border border-gray-300 p-2">
-                        {Math.round(sumPositivos)}
+                        {Math.round(calculateSum(positivosData))}
                       </TableCell>
                     </TableRow>
                   </TableBody>
@@ -474,7 +611,7 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
                         TOTAL CARGA TÉRMICA NEGATIVA
                       </TableCell>
                       <TableCell className="border border-gray-300 p-2">
-                        {Math.round(sumNegativos)}
+                        {Math.round(calculateSum(negativosData))}
                       </TableCell>
                     </TableRow>
                   </TableBody>
@@ -520,41 +657,17 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
               <p className="mt-4 italic">No se encontraron datos de maquinaria instalada en el archivo Excel.</p>
             )}
             
-            {/* Section 14.1 - CENTRAL POSITIVA */}
+            {/* Section 14.1 - CENTRAL INTERMEDIA */}
             <div className="mt-8">
-              <h4 className="text-md font-bold">14.1. CENTRAL POSITIVA</h4>
+              <h4 className="text-md font-bold">14.1. CENTRAL INTERMEDIA</h4>
               <p className="mt-2">
                 Se trata de una central frigorífica formada por compresores semiherméticos alternativos accionados mediante un motor eléctrico trifásico. Sus características técnicas son las siguientes:
               </p>
               
-              {centralPositivaData.length > 0 ? (
-                <div className="mt-4 overflow-x-auto">
-                  <Table className="w-full border-collapse">
-                    <TableHeader>
-                      <TableRow className="bg-blue-100">
-                        <TableHead colSpan={3} className="border border-gray-300 p-2 text-center font-bold">
-                          CENTRAL INTERMEDIA
-                        </TableHead>
-                      </TableRow>
-                      <TableRow className="bg-blue-100">
-                        <TableHead className="border border-gray-300 p-2">CARACTERÍSTICA</TableHead>
-                        <TableHead className="border border-gray-300 p-2">MEDIDAS</TableHead>
-                        <TableHead className="border border-gray-300 p-2">OBSERVACIONES</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {centralPositivaData.map((row, index) => (
-                        <TableRow key={index}>
-                          <TableCell className="border border-gray-300 p-2">{row.caracteristica}</TableCell>
-                          <TableCell className="border border-gray-300 p-2">{row.medidas}</TableCell>
-                          <TableCell className="border border-gray-300 p-2">{row.observaciones}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
+              {centralIntermediaData.length > 0 ? (
+                renderCentralIntermediaTable()
               ) : (
-                <p className="mt-4 italic">No se encontraron datos de la central positiva en el archivo Excel.</p>
+                <p className="mt-4 italic">No se encontraron datos de la central intermedia en el archivo Excel.</p>
               )}
             </div>
             
@@ -566,31 +679,7 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
               </p>
               
               {compresoresParalelosData.length > 0 ? (
-                <div className="mt-4 overflow-x-auto">
-                  <Table className="w-full border-collapse">
-                    <TableHeader>
-                      <TableRow className="bg-blue-100">
-                        <TableHead colSpan={3} className="border border-gray-300 p-2 text-center font-bold">
-                          COMPRESORES PARALELOS
-                        </TableHead>
-                      </TableRow>
-                      <TableRow className="bg-blue-100">
-                        <TableHead className="border border-gray-300 p-2">CARACTERÍSTICA</TableHead>
-                        <TableHead className="border border-gray-300 p-2">MEDIDAS</TableHead>
-                        <TableHead className="border border-gray-300 p-2">OBSERVACIONES</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {compresoresParalelosData.map((row, index) => (
-                        <TableRow key={index}>
-                          <TableCell className="border border-gray-300 p-2">{row.caracteristica}</TableCell>
-                          <TableCell className="border border-gray-300 p-2">{row.medidas}</TableCell>
-                          <TableCell className="border border-gray-300 p-2">{row.observaciones}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
+                renderCompresoresParalelosTable()
               ) : (
                 <p className="mt-4 italic">No se encontraron datos de los compresores paralelos en el archivo Excel.</p>
               )}
@@ -604,31 +693,7 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
               </p>
               
               {centralNegativaData.length > 0 ? (
-                <div className="mt-4 overflow-x-auto">
-                  <Table className="w-full border-collapse">
-                    <TableHeader>
-                      <TableRow className="bg-blue-100">
-                        <TableHead colSpan={3} className="border border-gray-300 p-2 text-center font-bold">
-                          CENTRAL NEGATIVA
-                        </TableHead>
-                      </TableRow>
-                      <TableRow className="bg-blue-100">
-                        <TableHead className="border border-gray-300 p-2">CARACTERÍSTICA</TableHead>
-                        <TableHead className="border border-gray-300 p-2">MEDIDAS</TableHead>
-                        <TableHead className="border border-gray-300 p-2">OBSERVACIONES</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {centralNegativaData.map((row, index) => (
-                        <TableRow key={index}>
-                          <TableCell className="border border-gray-300 p-2">{row.caracteristica}</TableCell>
-                          <TableCell className="border border-gray-300 p-2">{row.medidas}</TableCell>
-                          <TableCell className="border border-gray-300 p-2">{row.observaciones}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
+                renderCentralNegativaTable()
               ) : (
                 <p className="mt-4 italic">No se encontraron datos de la central negativa en el archivo Excel.</p>
               )}
