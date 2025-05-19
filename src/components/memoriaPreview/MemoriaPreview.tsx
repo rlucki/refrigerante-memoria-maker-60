@@ -8,6 +8,7 @@ import MemoriaClasificacionLocal from "./MemoriaClasificacionLocal";
 import MemoriaClasificacionGas from "./MemoriaClasificacionGas";
 import MemoriaInstalacion from "./MemoriaInstalacion";
 import MemoriaDescripcion from "./MemoriaDescripcion";
+import MemoriaCargaTermica from "./MemoriaCargaTermica";
 import MemoriaInstalacionElectrica from "./MemoriaInstalacionElectrica";
 import MemoriaTuberias from "./MemoriaTuberias";
 import MemoriaSoportaciones from "./MemoriaSoportaciones";
@@ -68,9 +69,10 @@ interface MemoriaPreviewProps {
     tieneIHX?: string;
     tieneDesrecalentador?: string;
   };
+  excelData?: any;
 }
 
-const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1, calculationsData }) => {
+const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1, calculationsData, excelData }) => {
   
   return (
     <div className="memoria-preview-container continuous-flow">
@@ -82,6 +84,7 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1, 
       <MemoriaClasificacionGas data={data} />
       <MemoriaInstalacion data={data} />
       <MemoriaDescripcion data={data} calculationsData={calculationsData} />
+      <MemoriaCargaTermica excelData={excelData} />
       <MemoriaInstalacionElectrica />
       <MemoriaTuberias />
       <MemoriaSoportaciones />

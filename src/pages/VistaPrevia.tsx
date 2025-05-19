@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, Download } from "lucide-react";
@@ -402,6 +401,7 @@ El refrigerante, a alta presión, se expansiona hasta la presión de intermedia 
             <MemoriaPreview 
               data={memoriaData} 
               calculationsData={calculationsData}
+              excelData={excelData}
             />
           </div>
         </div>
