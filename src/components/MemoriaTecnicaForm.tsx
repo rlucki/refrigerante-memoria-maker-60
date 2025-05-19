@@ -12,7 +12,6 @@ import ClasificacionSection from "./formSections/ClasificacionSection";
 import { Textarea } from "./ui/textarea";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
-import WordDocumentTemplate from "./WordDocumentTemplate";
 
 interface MemoriaTecnicaFormProps {
   onSubmit: () => void;
@@ -20,6 +19,8 @@ interface MemoriaTecnicaFormProps {
   onWordTemplateUploaded?: (file: File) => void;
   onGenerateWordDocument?: () => void;
   hasWordTemplate?: boolean;
+  activeTab?: string;
+  setActiveTab?: (tab: string) => void;
 }
 
 const defaultDescripcionText = `La instalación está compuesta por varios muebles frigoríficos tipo mural y dos armarios de congelados, así como tres cámaras de conservación, un obrador y dos cámaras de congelados. Los servicios positivos se alimentan desde una central compacta positiva, mientras que los servicios negativos se alimentan desde una central compacta negativa.
@@ -35,11 +36,14 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
 const MemoriaTecnicaForm = ({ 
   onSubmit, 
   onChange, 
-  onWordTemplateUploaded, 
-  onGenerateWordDocument,
-  hasWordTemplate = false
+  activeTab = "titular",
+  setActiveTab
 }: MemoriaTecnicaFormProps) => {
-  const [activeTab, setActiveTab] = useState("titular");
+  const [internalActiveTab, setInternalActiveTab] = useState(activeTab);
+  
+  // Use external tab state if provided, otherwise use internal
+  const currentTab = setActiveTab ? activeTab : internalActiveTab;
+  const updateTab = setActiveTab || setInternalActiveTab;
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,8 +78,8 @@ const MemoriaTecnicaForm = ({
   
   return (
     <form onSubmit={handleSubmit}>
-      <Tabs defaultValue="titular" value={activeTab} onValueChange={setActiveTab} className="mb-6">
-        <TabsList className="grid grid-cols-8 w-full">
+      <Tabs defaultValue={currentTab} value={currentTab} onValueChange={updateTab} className="mb-6">
+        <TabsList className="grid grid-cols-7 w-full">
           <TabsTrigger value="titular">Datos Titular</TabsTrigger>
           <TabsTrigger value="instalador">Datos Instalador</TabsTrigger>
           <TabsTrigger value="instalacion">Datos Instalación</TabsTrigger>
@@ -83,7 +87,6 @@ const MemoriaTecnicaForm = ({
           <TabsTrigger value="clasificacion">Clasificación</TabsTrigger>
           <TabsTrigger value="normativa">Normativa</TabsTrigger>
           <TabsTrigger value="descripcion">Descripción</TabsTrigger>
-          <TabsTrigger value="word">Documento</TabsTrigger>
         </TabsList>
         
         <TabsContent value="titular" className="mt-6">
@@ -160,14 +163,6 @@ const MemoriaTecnicaForm = ({
             </div>
           </Card>
         </TabsContent>
-        
-        <TabsContent value="word" className="mt-6">
-          <WordDocumentTemplate 
-            onTemplateUploaded={onWordTemplateUploaded || (() => {})}
-            onDownloadDocument={onGenerateWordDocument || (() => {})}
-            hasTemplate={hasWordTemplate}
-          />
-        </TabsContent>
       </Tabs>
       
       <div className="flex justify-between gap-4 mt-8">
@@ -182,38 +177,33 @@ const MemoriaTecnicaForm = ({
               "datos_proyecto": "instalacion",
               "clasificacion": "datos_proyecto",
               "normativa": "clasificacion",
-              "descripcion": "normativa",
-              "word": "descripcion"
-            }[activeTab];
-            setActiveTab(prevTab);
+              "descripcion": "normativa"
+            }[currentTab];
+            updateTab(prevTab);
           }}
-          disabled={activeTab === "titular"}
+          disabled={currentTab === "titular"}
         >
           Anterior
         </Button>
         
-        {activeTab !== "word" ? (
-          <Button 
-            type="button"
-            onClick={() => {
-              const nextTab = {
-                "titular": "instalador",
-                "instalador": "instalacion",
-                "instalacion": "datos_proyecto",
-                "datos_proyecto": "clasificacion",
-                "clasificacion": "normativa",
-                "normativa": "descripcion",
-                "descripcion": "word",
-                "word": "word"
-              }[activeTab];
-              setActiveTab(nextTab);
-            }}
-          >
-            Siguiente
-          </Button>
-        ) : (
-          <Button type="submit">Generar Memoria</Button>
-        )}
+        <Button 
+          type="button"
+          onClick={() => {
+            const nextTab = {
+              "titular": "instalador",
+              "instalador": "instalacion",
+              "instalacion": "datos_proyecto",
+              "datos_proyecto": "clasificacion",
+              "clasificacion": "normativa",
+              "normativa": "descripcion",
+              "descripcion": "descripcion"
+            }[currentTab];
+            updateTab(nextTab);
+          }}
+          disabled={currentTab === "descripcion"}
+        >
+          Siguiente
+        </Button>
       </div>
     </form>
   );

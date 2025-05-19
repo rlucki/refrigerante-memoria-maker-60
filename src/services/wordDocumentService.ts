@@ -49,8 +49,14 @@ export async function generateWordDocument(templateFile: File, memoriaData: Memo
               memoriaData.descripcionInstalacion || ''
             ),
             
+            // Process any index markers in the description
+            ...(memoriaData.descripcionInstalacion ? 
+              processIndexMarkersAndCreateContent(memoriaData.descripcionInstalacion) : []),
+            
+            // Add more sections based on available data
+            ...(memoriaData.normativaCompleta ? createNormativaSection(memoriaData.normativaCompleta) : []),
+            
             // Add more sections...
-            // We would add all sections here based on memoriaData structure
           ],
         },
       ],
@@ -85,6 +91,97 @@ function createHeadingWithText(title: string, content: string) {
       ],
     }),
   ];
+}
+
+// Function to process index markers and create paragraphs
+function processIndexMarkersAndCreateContent(text: string) {
+  const paragraphs: Paragraph[] = [];
+  const lines = text.split('\n');
+  
+  lines.forEach(line => {
+    // Check for index markers
+    const matches = line.match(/&&(.*?)&&/g);
+    if (matches && matches.length > 0) {
+      // Extract heading text and create a heading paragraph
+      matches.forEach(match => {
+        const headingText = match.replace(/&&/g, '');
+        paragraphs.push(
+          new Paragraph({
+            text: headingText,
+            heading: HeadingLevel.HEADING_2,
+          })
+        );
+      });
+      
+      // Create content paragraph with clean text (no markers)
+      const cleanLine = line.replace(/&&(.*?)&&/g, '$1');
+      paragraphs.push(
+        new Paragraph({
+          children: [
+            new TextRun({
+              text: cleanLine,
+            }),
+          ],
+        })
+      );
+    } else if (line.trim()) {
+      // Regular paragraph without markers
+      paragraphs.push(
+        new Paragraph({
+          children: [
+            new TextRun({
+              text: line,
+            }),
+          ],
+        })
+      );
+    }
+  });
+  
+  return paragraphs;
+}
+
+// Function to create normativa section
+function createNormativaSection(normativaData: any) {
+  const paragraphs: Paragraph[] = [];
+  
+  paragraphs.push(
+    new Paragraph({
+      text: "11. NORMATIVA APLICABLE",
+      heading: HeadingLevel.HEADING_1,
+    })
+  );
+  
+  if (normativaData && Array.isArray(normativaData)) {
+    normativaData.forEach(item => {
+      if (item && item.title) {
+        paragraphs.push(
+          new Paragraph({
+            children: [
+              new TextRun({
+                text: `• ${item.title}`,
+                bold: true,
+              }),
+            ],
+          })
+        );
+        
+        if (item.description) {
+          paragraphs.push(
+            new Paragraph({
+              children: [
+                new TextRun({
+                  text: item.description,
+                }),
+              ],
+            })
+          );
+        }
+      }
+    });
+  }
+  
+  return paragraphs;
 }
 
 // Function to check for index markers and process them

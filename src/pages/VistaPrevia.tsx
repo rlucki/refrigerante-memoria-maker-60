@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, Download } from "lucide-react";
@@ -10,6 +11,7 @@ import ExcelUploader from "@/components/ExcelUploader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ExcelCalculationsForm from "@/components/ExcelCalculationsForm";
 import { generateWordDocument } from "@/services/wordDocumentService";
+import WordDocumentTemplate from "@/components/WordDocumentTemplate";
 
 const VistaPrevia = () => {
   const navigate = useNavigate();
@@ -95,6 +97,7 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
   
   const [excelData, setExcelData] = useState(null);
   const [activeTab, setActiveTab] = useState("form");
+  const [activeSubTab, setActiveSubTab] = useState("titular");
   const formContainerRef = useRef<HTMLDivElement>(null);
   const previewContainerRef = useRef<HTMLDivElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
@@ -305,6 +308,9 @@ El refrigerante, a alta presión, se expansiona hasta la presión de intermedia 
                 <TabsTrigger value="excel" className="data-[state=active]:border-b-2 data-[state=active]:border-primary">
                   Cálculos Excel
                 </TabsTrigger>
+                <TabsTrigger value="word" className="data-[state=active]:border-b-2 data-[state=active]:border-primary">
+                  Base word
+                </TabsTrigger>
               </TabsList>
               
               <TabsContent value="form" className="mt-6">
@@ -314,6 +320,8 @@ El refrigerante, a alta presión, se expansiona hasta la presión de intermedia 
                   onWordTemplateUploaded={handleWordTemplateUpload}
                   onGenerateWordDocument={handleGenerateWordDocument}
                   hasWordTemplate={!!wordTemplate}
+                  activeTab={activeSubTab}
+                  setActiveTab={setActiveSubTab}
                 />
               </TabsContent>
               
@@ -338,6 +346,14 @@ El refrigerante, a alta presión, se expansiona hasta la presión de intermedia 
                     </div>
                   )}
                 </div>
+              </TabsContent>
+              
+              <TabsContent value="word" className="mt-6">
+                <WordDocumentTemplate 
+                  onTemplateUploaded={handleWordTemplateUpload}
+                  onDownloadDocument={handleGenerateWordDocument}
+                  hasTemplate={!!wordTemplate}
+                />
               </TabsContent>
             </Tabs>
           </div>
