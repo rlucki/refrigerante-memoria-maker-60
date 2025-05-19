@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -11,6 +12,13 @@ import ClasificacionSection from "./formSections/ClasificacionSection";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 
 interface MemoriaTecnicaFormProps {
   onSubmit: () => void;
@@ -70,9 +78,9 @@ const MemoriaTecnicaForm = ({
   };
 
   // Create an adapter function for select elements
-  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleSelectChange = (id: string, value: string) => {
     if (onChange) {
-      onChange(e.target.id, e.target.value);
+      onChange(id, value);
     }
   };
   
@@ -146,14 +154,100 @@ const MemoriaTecnicaForm = ({
                 </div>
                 <div>
                   <Label htmlFor="nivelInstalacion">Nivel de instalación</Label>
-                  <select
-                    id="nivelInstalacion"
-                    className="w-full p-2 border rounded-md mt-2"
-                    onChange={handleSelectChange}
+                  <Select
+                    onValueChange={(value) => handleSelectChange("nivelInstalacion", value)}
                   >
-                    <option value="Nivel 1">Nivel 1</option>
-                    <option value="Nivel 2">Nivel 2</option>
-                  </select>
+                    <SelectTrigger className="w-full mt-2">
+                      <SelectValue placeholder="Seleccionar nivel" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Nivel 1">Nivel 1</SelectItem>
+                      <SelectItem value="Nivel 2">Nivel 2</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="tipoVentilador">Tipo de ventilador</Label>
+                  <Select
+                    onValueChange={(value) => handleSelectChange("tipoVentilador", value)}
+                  >
+                    <SelectTrigger className="w-full mt-2">
+                      <SelectValue placeholder="Seleccionar tipo de ventilador" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Helicoidal">Helicoidal</SelectItem>
+                      <SelectItem value="Axial">Axial</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="temperaturaDescarga">Temperatura de descarga (ºC)</Label>
+                  <Input 
+                    id="temperaturaDescarga"
+                    type="number"
+                    className="mt-2"
+                    placeholder="Ej: 124.8"
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="presionDescarga">Presión de descarga (bar)</Label>
+                  <Input 
+                    id="presionDescarga"
+                    type="number"
+                    className="mt-2"
+                    step="0.1"
+                    placeholder="Ej: 93.7"
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="ubicacionGascooler">Ubicación gascooler</Label>
+                  <Input 
+                    id="ubicacionGascooler"
+                    className="mt-2"
+                    placeholder="Indique la ubicación del gascooler"
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="tieneIHX">Intercambiador IHX</Label>
+                  <Select
+                    onValueChange={(value) => handleSelectChange("tieneIHX", value)}
+                  >
+                    <SelectTrigger className="w-full mt-2">
+                      <SelectValue placeholder="¿Tiene intercambiador IHX?" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="SI">SI</SelectItem>
+                      <SelectItem value="NO">NO</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="tieneDesrecalentador">Desrecalentador</Label>
+                  <Select
+                    onValueChange={(value) => handleSelectChange("tieneDesrecalentador", value)}
+                  >
+                    <SelectTrigger className="w-full mt-2">
+                      <SelectValue placeholder="¿Tiene desrecalentador?" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="SI">SI</SelectItem>
+                      <SelectItem value="NO">NO</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="kilosRefrigerante">Kilos de refrigerante según instalador (kg)</Label>
+                  <Input 
+                    id="kilosRefrigerante"
+                    type="number"
+                    step="0.1"
+                    className="mt-2"
+                    placeholder="Indique la cantidad en kg"
+                    onChange={handleInputChange}
+                  />
                 </div>
               </div>
             </Card>

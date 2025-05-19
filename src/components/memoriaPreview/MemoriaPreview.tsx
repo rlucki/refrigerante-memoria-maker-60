@@ -54,11 +54,20 @@ interface MemoriaPreviewProps {
     nivelInstalacion?: string;
     documentoNecesario?: string;
     
-    // Datos de normativa
+    // Normativa
     normativaCompleta?: any;
     
     // Descripción de la instalación
     descripcionInstalacion?: string;
+    
+    // Nuevos campos para la descripción de la instalación
+    tipoVentilador?: string;
+    temperaturaDescarga?: string;
+    presionDescarga?: string;
+    ubicacionGascooler?: string;
+    intercambiadorIHX?: string;
+    desrecalentador?: string;
+    kilosRefrigerante?: string;
   };
   currentPage?: number;
   calculationsData?: {

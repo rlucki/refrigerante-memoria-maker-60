@@ -5,6 +5,13 @@ interface MemoriaDescripcionProps {
   data: {
     descripcionInstalacion?: string;
     nivelInstalacion?: string;
+    tipoVentilador?: string;
+    temperaturaDescarga?: string;
+    presionDescarga?: string;
+    ubicacionGascooler?: string;
+    intercambiadorIHX?: string;
+    desrecalentador?: string;
+    kilosRefrigerante?: string;
   };
   calculationsData?: {
     compresorParalelo?: string;
@@ -17,7 +24,7 @@ const MemoriaDescripcion: React.FC<MemoriaDescripcionProps> = ({ data, calculati
 
 Tanto los servicios positivos como los negativos se alimentan con refrigerante R-744 (CO₂). Para garantizar las condiciones mencionadas se ha instalado un grupo "booster" de compresión, dotado de dos centrales frigoríficas, trabajando una con una temperatura de evaporación de -8 °C (central positiva), y la otra a -33 °C (central negativa).  La central positiva trabaja en modo transcrítico, mientras que la central negativa lo hace en modo subcrítico, descargando sobre la aspiración de la central positiva. Ambas centrales están en la misma bancada "booster" junto a un compresor denominado "paralelo" y cuya misión es mejorar la eficiencia energética del conjunto de centrales, aspirando los gases de "flash gas" del recipiente de líquido a una temperatura superior a los +5,3 °C de la central positiva, mejorando el COP global.
 
-Los gases de descarga generados por los compresores de la central positiva junto a los al compresor paralelo, que salen a +124,8 °C y 93,7 bar, se envían a un separador de aceite, donde este se separa del refrigerante y se redirige a un acumulador desde el que se alimentará el circuito de aceite de todos los compresores de la bancada. El aceite ingresará a cada compresor a través de un nivel electrónico, el cual está dotado de una electroválvula que gestiona su apertura o cierre.`;
+Los gases de descarga generados por los compresores de la central positiva junto a los al compresor paralelo, que salen a +${data.temperaturaDescarga || "124,8"} °C y ${data.presionDescarga || "93,7"} bar, se envían a un separador de aceite, donde este se separa del refrigerante y se redirige a un acumulador desde el que se alimentará el circuito de aceite de todos los compresores de la bancada. El aceite ingresará a cada compresor a través de un nivel electrónico, el cual está dotado de una electroválvula que gestiona su apertura o cierre.`;
 
   // Additional sections for the description
   const regimenTrabajoPositiva = `
@@ -45,6 +52,14 @@ Servicios Negativos:    Eléctrico en muebles y cámaras`;
 Compresor del tipo semi-hermético alternativo, ubicado en sala de máquinas accionado por medio de motores trifásicos con doble devanado 50%-50% lo que permitirá el arranque según sistema Part Winding, minimizando así los picos de intensidad. El compresor contará con un Variador de Frecuencia.
 
 Régimen de trabajo: +5ºC`;
+
+  // Generate gas cooler text based on inputs
+  const gasCoolerText = `
+12.5. SISTEMA DE ENFRIAMIENTO
+El sistema utiliza un gas cooler con ventiladores de tipo ${data.tipoVentilador || "helicoidal"} ubicado en ${data.ubicacionGascooler || "cubierta"}. ${data.intercambiadorIHX === "si" ? "Cuenta con un intercambiador de calor interno (IHX) para mejorar la eficiencia." : "No dispone de intercambiador de calor interno (IHX)."}
+${data.desrecalentador === "si" ? "Incorpora un desrecalentador para el aprovechamiento de calor residual." : "No incorpora desrecalentador."}
+
+La carga de refrigerante según el instalador es de ${data.kilosRefrigerante || "120"} kg.`;
 
   // Determine which description to show
   const getDescription = () => {
@@ -84,6 +99,9 @@ Régimen de trabajo: +5ºC`;
             )}
             
             <p className="whitespace-pre-line">{sistemaDesescarche}</p>
+            
+            {/* Add gas cooler section */}
+            <p className="whitespace-pre-line">{gasCoolerText}</p>
           </div>
         </div>
       </div>
