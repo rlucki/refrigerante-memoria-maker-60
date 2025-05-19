@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -52,10 +51,14 @@ const MemoriaTecnicaForm = ({
     }
   };
   
-  // Función para manejar cambios en objetos complejos como la normativa
-  const handleComplexChange = (field: string, value: any) => {
+  // Adapter function for ClasificacionSection - this resolves the type mismatch
+  const handleClasificacionChange = (e: React.ChangeEvent<HTMLInputElement> | { id: string, value: string }) => {
     if (onChange) {
-      onChange(field, value);
+      if ('target' in e) {
+        onChange(e.target.id, e.target.value);
+      } else {
+        onChange(e.id, e.value);
+      }
     }
   };
 
@@ -156,7 +159,7 @@ const MemoriaTecnicaForm = ({
             </Card>
 
             {/* Clasificación */}
-            <ClasificacionSection onChange={handleComplexChange} />
+            <ClasificacionSection onChange={handleClasificacionChange} />
           </div>
         </TabsContent>
       </Tabs>
