@@ -25,6 +25,7 @@ import {
   RadioGroupItem,
 } from "./ui/radio-group";
 import { Separator } from "./ui/separator";
+import { Fan, Thermometer, Gauge, AirVent, Weight } from "lucide-react";
 
 interface MemoriaTecnicaFormProps {
   onSubmit: () => void;
@@ -243,21 +244,8 @@ const MemoriaTecnicaForm = ({
                     onChange={handleTextareaChange}
                   />
                 </div>
-                <div>
-                  <Label htmlFor="nivelInstalacion">Nivel de instalación</Label>
-                  <Select
-                    onValueChange={(value) => handleSelectChange("nivelInstalacion", value)}
-                  >
-                    <SelectTrigger className="w-full mt-2">
-                      <SelectValue placeholder="Seleccionar nivel" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Nivel 1">Nivel 1</SelectItem>
-                      <SelectItem value="Nivel 2">Nivel 2</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
+                <div className="flex items-center gap-2">
+                  <Fan size={18} />
                   <Label htmlFor="tipoVentilador">Tipo de ventilador</Label>
                   <Select
                     onValueChange={(value) => handleSelectChange("tipoVentilador", value)}
@@ -271,7 +259,8 @@ const MemoriaTecnicaForm = ({
                     </SelectContent>
                   </Select>
                 </div>
-                <div>
+                <div className="flex items-center gap-2">
+                  <Thermometer size={18} />
                   <Label htmlFor="temperaturaDescarga">Temperatura de descarga (ºC)</Label>
                   <Input 
                     id="temperaturaDescarga"
@@ -281,7 +270,8 @@ const MemoriaTecnicaForm = ({
                     onChange={handleInputChange}
                   />
                 </div>
-                <div>
+                <div className="flex items-center gap-2">
+                  <Gauge size={18} />
                   <Label htmlFor="presionDescarga">Presión de descarga (bar)</Label>
                   <Input 
                     id="presionDescarga"
@@ -292,7 +282,8 @@ const MemoriaTecnicaForm = ({
                     onChange={handleInputChange}
                   />
                 </div>
-                <div>
+                <div className="flex items-center gap-2">
+                  <AirVent size={18} />
                   <Label htmlFor="ubicacionGascooler">Ubicación gascooler</Label>
                   <Input 
                     id="ubicacionGascooler"
@@ -341,7 +332,8 @@ const MemoriaTecnicaForm = ({
                     </div>
                   </RadioGroup>
                 </div>
-                <div>
+                <div className="flex items-center gap-2">
+                  <Weight size={18} />
                   <Label htmlFor="kilosRefrigerante">Kilos de refrigerante según instalador (kg)</Label>
                   <Input 
                     id="kilosRefrigerante"

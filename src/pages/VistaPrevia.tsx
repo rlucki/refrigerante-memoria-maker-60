@@ -1,4 +1,5 @@
-import { useState, useRef, useEffect } from "react";
+
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, Download } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -110,71 +111,7 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
   });
   const [wordTemplate, setWordTemplate] = useState<File | null>(null);
 
-  // Enhanced scroll synchronization with debouncing
-  useEffect(() => {
-    const formContainer = formContainerRef.current;
-    const previewContainer = previewContainerRef.current;
-
-    if (!formContainer || !previewContainer) return;
-
-    let scrollTimeout: NodeJS.Timeout;
-    
-    const handleScroll = () => {
-      clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(() => {
-        if (formContainer && previewContainer) {
-          const formScrollPercentage = 
-            formContainer.scrollTop / (formContainer.scrollHeight - formContainer.clientHeight);
-
-          // Apply the same scroll percentage to the preview with smoother behavior
-          const previewScrollMax = previewContainer.scrollHeight - previewContainer.clientHeight;
-          previewContainer.scrollTop = formScrollPercentage * previewScrollMax;
-        }
-      }, 10); // Small timeout for better performance
-    };
-
-    formContainer.addEventListener("scroll", handleScroll);
-    return () => {
-      formContainer.removeEventListener("scroll", handleScroll);
-      clearTimeout(scrollTimeout);
-    };
-  }, []);
-
-  // Improved content visibility handling
-  useEffect(() => {
-    const checkContentVisibility = () => {
-      const previewContainer = previewContainerRef.current;
-      if (previewContainer) {
-        // Force DOM reflow to ensure content is properly rendered
-        previewContainer.style.display = 'none';
-        
-        // Use a longer timeout to ensure complete rendering
-        setTimeout(() => {
-          if (previewContainer) {
-            previewContainer.style.display = 'block';
-            
-            // Force scroll to reveal any hidden content
-            setTimeout(() => {
-              if (previewContainer) {
-                const currentScroll = previewContainer.scrollTop;
-                previewContainer.scrollTop = currentScroll + 1;
-                setTimeout(() => {
-                  if (previewContainer) {
-                    previewContainer.scrollTop = currentScroll;
-                  }
-                }, 50);
-              }
-            }, 100);
-          }
-        }, 100);
-      }
-    };
-    
-    if (activeTab === "form") {
-      checkContentVisibility();
-    }
-  }, [activeTab, memoriaData]);
-
+  // Improved content visibility handling without scroll synchronization
   const handleFormChange = (field: string, value: any) => {
     console.log(`Field changed: ${field}`, value);
     setMemoriaData(prev => ({ ...prev, [field]: value }));
@@ -191,7 +128,7 @@ Los gases de descarga, ya prácticamente sin aceite y a la temperatura y presió
 RADIAL SALA DE MÁQUINAS / HELICOIDAL CUBIERTA
 
 El refrigerante, a alta presión, se expansiona hasta la presión de intermedia mediante una válvula de expansión electrónica transcrítica y se conduce al recipiente de líquido vertical de las centrales, a una temperatura superior a los +5,3 °C, donde una parte llega en fase líquida y la otra en fase gas (flash gas). Estos gases flash sobrecalentados se reconducen hasta el colector de aspiración de la central positiva, provocándoles una pequeña caída de presión mediante otra válvula de expansión electrónica, denominada válvula de flash gas bypass`;
-      
+        
       setMemoriaData(prev => ({ ...prev, descripcionInstalacion: boosterDescription }));
     }
   };
@@ -344,9 +281,7 @@ El refrigerante, a alta presión, se expansiona hasta la presión de intermedia 
         {/* Right side - Preview */}
         <div 
           className="w-full lg:w-1/2 p-4 bg-gray-50 overflow-auto"
-          style={{ 
-            height: 'calc(100vh - 126px)',
-          }}
+          style={{ height: 'calc(100vh - 126px)' }}
           ref={previewContainerRef}
         >
           <div 
