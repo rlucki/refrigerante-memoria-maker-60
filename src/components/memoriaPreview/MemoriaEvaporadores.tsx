@@ -118,7 +118,7 @@ const MemoriaEvaporadores: React.FC<MemoriaEvaporadoresProps> = ({ excelData }) 
           <p className="italic text-gray-500">No se encontraron datos de central negativa en el Excel.</p>
         )}
         
-        {/* Then we show the Evaporadores section (14.12) */}
+        {/* Then immediately after we show the Evaporadores section (14.12) */}
         <h3 className="text-lg font-bold mt-8">14.12. EVAPORADORES</h3>
         
         <div className="mt-4 text-sm text-justify">
