@@ -9,6 +9,7 @@ import ExcelUploader from "@/components/ExcelUploader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import WordDocumentTemplate from "@/components/WordDocumentTemplate";
 import ExcelDataViewer from "@/components/ExcelDataViewer";
+import { generateWordDocument } from "@/services/wordDocumentService";
 
 const VistaPrevia = () => {
   const navigate = useNavigate();
