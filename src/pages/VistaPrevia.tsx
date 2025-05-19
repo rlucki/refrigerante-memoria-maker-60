@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, Download } from "lucide-react";
@@ -5,12 +6,12 @@ import { useNavigate } from "react-router-dom";
 import MemoriaTecnicaForm from "@/components/MemoriaTecnicaForm";
 import MemoriaPreview from "@/components/memoriaPreview/MemoriaPreview";
 import { toast } from "@/hooks/use-toast";
-import { validateMargin } from "@/lib/utils";
 import ExcelUploader from "@/components/ExcelUploader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ExcelCalculationsForm from "@/components/ExcelCalculationsForm";
 import { generateWordDocument } from "@/services/wordDocumentService";
 import WordDocumentTemplate from "@/components/WordDocumentTemplate";
+import ExcelDataViewer from "@/components/ExcelDataViewer";
 
 const VistaPrevia = () => {
   const navigate = useNavigate();
@@ -95,6 +96,7 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
   });
   
   const [excelData, setExcelData] = useState(null);
+  const [excelVisibleData, setExcelVisibleData] = useState(null); // For visualization
   const [activeTab, setActiveTab] = useState("form");
   const [activeSubTab, setActiveSubTab] = useState("titular");
   const formContainerRef = useRef<HTMLDivElement>(null);
@@ -199,6 +201,13 @@ El refrigerante, a alta presión, se expansiona hasta la presión de intermedia 
   const handleExcelUpload = (data: any) => {
     console.log("Excel data loaded:", data);
     setExcelData(data);
+    
+    // Prepare data for visualization
+    if (data && data.jsonData) {
+      setExcelVisibleData(data.jsonData);
+    } else {
+      setExcelVisibleData(data);
+    }
   };
 
   const handleCalculationsChange = (field: string, value: string) => {
@@ -344,21 +353,13 @@ El refrigerante, a alta presión, se expansiona hasta la presión de intermedia 
                   {/* Formulario de cálculos */}
                   <ExcelCalculationsForm onChange={handleCalculationsChange} />
                   
-                  {/* Uploader de Excel existente */}
+                  {/* Uploader de Excel con visualizador mejorado */}
                   <div className="mt-8">
                     <h3 className="text-lg font-bold mb-4">Cargar archivo Excel</h3>
                     <ExcelUploader onDataLoaded={handleExcelUpload} />
                   </div>
                   
-                  {/* Mostrar datos del Excel si existen */}
-                  {excelData && (
-                    <div className="mt-6">
-                      <h2 className="text-xl font-bold mb-4">Datos de la hoja "RESUM LEGA"</h2>
-                      <pre className="bg-gray-100 p-4 rounded-md overflow-auto max-h-96">
-                        {JSON.stringify(excelData, null, 2)}
-                      </pre>
-                    </div>
-                  )}
+                  {/* El visualizador ya está integrado dentro del ExcelUploader */}
                 </div>
               </TabsContent>
               

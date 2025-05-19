@@ -1,0 +1,235 @@
+
+import React, { useState } from "react";
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Search, XCircle } from "lucide-react";
+
+interface ExcelDataViewerProps {
+  data: any;
+  title?: string;
+}
+
+const ExcelDataViewer: React.FC<ExcelDataViewerProps> = ({ data, title = "Datos de Excel" }) => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedArea, setSelectedArea] = useState<string | null>(null);
+  
+  if (!data || (Array.isArray(data) && !data.length)) {
+    return (
+      <Card className="mt-6">
+        <CardHeader>
+          <CardTitle>{title}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-gray-500">No hay datos disponibles para mostrar.</p>
+        </CardContent>
+      </Card>
+    );
+  }
+  
+  // Determina si los datos son un array o un objeto (formato de hoja de cálculo)
+  const isArrayFormat = Array.isArray(data);
+  
+  // Para datos en formato de array (como en los logs)
+  const renderArrayData = () => {
+    // Obtener todas las claves únicas de todos los objetos
+    const allKeys = data.reduce((keys: Set<string>, item: any) => {
+      if (item) {
+        Object.keys(item).forEach(key => keys.add(key));
+      }
+      return keys;
+    }, new Set<string>());
+    
+    const keys = Array.from(allKeys);
+    
+    // Filtrar datos según el término de búsqueda
+    const filteredData = data.filter((item: any) => {
+      if (!item) return false;
+      
+      const stringValues = Object.values(item)
+        .map(value => value?.toString?.() || "")
+        .join(" ")
+        .toLowerCase();
+        
+      return stringValues.includes(searchTerm.toLowerCase());
+    });
+    
+    return (
+      <div>
+        <div className="flex gap-2 mb-4">
+          <div className="relative flex-1">
+            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Buscar en los datos..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-8"
+            />
+            {searchTerm && (
+              <button 
+                className="absolute right-2 top-2.5"
+                onClick={() => setSearchTerm("")}
+              >
+                <XCircle className="h-4 w-4 text-muted-foreground" />
+              </button>
+            )}
+          </div>
+        </div>
+
+        <div className="overflow-x-auto">
+          <Table className="w-full">
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-10">#</TableHead>
+                {keys.map((key) => (
+                  <TableHead key={key} className="whitespace-nowrap min-w-32">
+                    {key}
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredData.map((item: any, index: number) => (
+                <TableRow key={index}>
+                  <TableCell>{index + 1}</TableCell>
+                  {keys.map((key) => (
+                    <TableCell key={key} className="whitespace-nowrap overflow-hidden text-ellipsis max-w-52">
+                      {item[key] !== undefined ? String(item[key]) : ""}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </div>
+    );
+  };
+  
+  // Para datos en formato de hoja de cálculo
+  const renderSheetData = () => {
+    // Obtener nombres de las hojas
+    const sheetNames = Object.keys(data);
+    
+    // Si no hay un área seleccionada, mostrar selector de hojas
+    if (!selectedArea) {
+      return (
+        <div className="flex flex-col gap-4">
+          <h3 className="text-lg font-semibold">Seleccione una hoja:</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            {sheetNames.map((sheetName) => (
+              <Button 
+                key={sheetName}
+                variant="outline"
+                onClick={() => setSelectedArea(sheetName)}
+                className="justify-start"
+              >
+                {sheetName}
+              </Button>
+            ))}
+          </div>
+        </div>
+      );
+    }
+    
+    // Mostrar datos de la hoja seleccionada
+    const sheetData = data[selectedArea];
+    
+    // Extraer las celdas y organizarlas por fila/columna
+    const cells: Record<string, any> = {};
+    const rows: Set<number> = new Set();
+    const columns: Set<string> = new Set();
+    
+    Object.entries(sheetData).forEach(([cellId, cellData]: [string, any]) => {
+      if (cellId !== '!ref' && cellId !== '!margins' && typeof cellId === 'string') {
+        // Extraer columna (letras) y fila (números)
+        const colMatch = cellId.match(/^[A-Z]+/);
+        const rowMatch = cellId.match(/\d+$/);
+        
+        if (colMatch && rowMatch) {
+          const col = colMatch[0];
+          const row = parseInt(rowMatch[0], 10);
+          
+          columns.add(col);
+          rows.add(row);
+          
+          cells[cellId] = cellData;
+        }
+      }
+    });
+    
+    // Convertir sets a arrays ordenados
+    const sortedRows = Array.from(rows).sort((a, b) => a - b);
+    const sortedColumns = Array.from(columns).sort();
+    
+    // Rango de filas a mostrar
+    const maxRowsToShow = 50;
+    const startRow = 1;
+    const endRow = Math.min(startRow + maxRowsToShow, sortedRows.length);
+    const visibleRows = sortedRows.slice(startRow - 1, endRow);
+    
+    return (
+      <div>
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-semibold">Hoja: {selectedArea}</h3>
+          <Button
+            variant="ghost"
+            onClick={() => setSelectedArea(null)}
+          >
+            Volver a la selección de hojas
+          </Button>
+        </div>
+        
+        <div className="overflow-x-auto">
+          <Table className="w-full">
+            <TableHeader>
+              <TableRow>
+                <TableHead className="sticky left-0 bg-white z-10">#</TableHead>
+                {sortedColumns.map((col) => (
+                  <TableHead key={col} className="whitespace-nowrap min-w-24">
+                    {col}
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {visibleRows.map((row) => (
+                <TableRow key={row}>
+                  <TableCell className="font-medium sticky left-0 bg-white z-10">
+                    {row}
+                  </TableCell>
+                  {sortedColumns.map((col) => {
+                    const cellId = `${col}${row}`;
+                    const cell = cells[cellId];
+                    return (
+                      <TableCell 
+                        key={cellId} 
+                        className="whitespace-nowrap"
+                      >
+                        {cell?.v !== undefined ? String(cell.v) : ""}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </div>
+    );
+  };
+  
+  return (
+    <Card className="mt-6">
+      <CardHeader>
+        <CardTitle>{title}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {isArrayFormat ? renderArrayData() : renderSheetData()}
+      </CardContent>
+    </Card>
+  );
+};
+
+export default ExcelDataViewer;

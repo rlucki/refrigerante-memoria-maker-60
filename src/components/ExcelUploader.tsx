@@ -5,6 +5,7 @@ import { FileUp } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { toast } from "@/hooks/use-toast";
 import * as XLSX from 'xlsx';
+import ExcelDataViewer from "./ExcelDataViewer";
 
 interface ExcelUploaderProps {
   onDataLoaded: (data: any) => void;
@@ -13,6 +14,7 @@ interface ExcelUploaderProps {
 const ExcelUploader: React.FC<ExcelUploaderProps> = ({ onDataLoaded }) => {
   const [file, setFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [excelData, setExcelData] = useState<any>(null);
   
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -29,6 +31,7 @@ const ExcelUploader: React.FC<ExcelUploaderProps> = ({ onDataLoaded }) => {
       }
       
       setFile(selectedFile);
+      setExcelData(null); // Reset data when new file selected
     }
   };
   
@@ -56,15 +59,31 @@ const ExcelUploader: React.FC<ExcelUploaderProps> = ({ onDataLoaded }) => {
             return;
           }
           
-          // Get data from "RESUM LEGA" sheet
-          const worksheet = workbook.Sheets['RESUM LEGA'];
-          const jsonData = XLSX.utils.sheet_to_json(worksheet);
+          // Get both formats of data for different uses
           
-          onDataLoaded(jsonData);
+          // 1. Full workbook with all sheet data in original format
+          const fullData: Record<string, any> = {};
+          workbook.SheetNames.forEach(sheetName => {
+            const worksheet = workbook.Sheets[sheetName];
+            fullData[sheetName] = worksheet;
+          });
+          
+          // 2. JSON data from RESUM LEGA for the component
+          const resumLegaSheet = workbook.Sheets['RESUM LEGA'];
+          const jsonData = XLSX.utils.sheet_to_json(resumLegaSheet);
+          
+          // Set the data for viewing
+          setExcelData(fullData);
+          
+          // Send the data to parent component for use in the preview
+          onDataLoaded({
+            ...fullData,
+            jsonData // Add the JSON data for easier access
+          });
           
           toast({
             title: "Datos cargados",
-            description: `Se cargaron ${jsonData.length} registros de la hoja "RESUM LEGA"`,
+            description: `Archivo Excel cargado correctamente con ${Object.keys(fullData).length} hojas`,
           });
         } catch (error) {
           console.error("Error processing Excel file:", error);
@@ -91,44 +110,54 @@ const ExcelUploader: React.FC<ExcelUploaderProps> = ({ onDataLoaded }) => {
   };
   
   return (
-    <Card className="p-6">
-      <h2 className="text-xl font-bold mb-4">Cargar datos de Excel</h2>
-      <p className="text-sm text-gray-500 mb-6">
-        Sube un archivo Excel que contenga una hoja llamada "RESUM LEGA" para importar los datos
-      </p>
-      
-      <div className="flex flex-col space-y-4">
-        <div className="flex items-center gap-4">
-          <input
-            type="file"
-            id="excelFile"
-            onChange={handleFileChange}
-            className="hidden"
-            accept=".xlsx,.xls,.xlsm"
-          />
-          <label
-            htmlFor="excelFile"
-            className="cursor-pointer flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md bg-white hover:bg-gray-50 transition-colors"
-          >
-            <FileUp className="mr-2 h-4 w-4" />
-            Seleccionar archivo
-          </label>
-          {file && (
-            <span className="text-sm text-gray-500">
-              {file.name}
-            </span>
-          )}
-        </div>
+    <div>
+      <Card className="p-6">
+        <h2 className="text-xl font-bold mb-4">Cargar datos de Excel</h2>
+        <p className="text-sm text-gray-500 mb-6">
+          Sube un archivo Excel que contenga una hoja llamada "RESUM LEGA" para importar los datos
+        </p>
         
-        <Button 
-          onClick={handleUpload} 
-          disabled={!file || isLoading}
-          className="w-fit"
-        >
-          {isLoading ? "Procesando..." : "Cargar datos"}
-        </Button>
-      </div>
-    </Card>
+        <div className="flex flex-col space-y-4">
+          <div className="flex items-center gap-4">
+            <input
+              type="file"
+              id="excelFile"
+              onChange={handleFileChange}
+              className="hidden"
+              accept=".xlsx,.xls,.xlsm"
+            />
+            <label
+              htmlFor="excelFile"
+              className="cursor-pointer flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md bg-white hover:bg-gray-50 transition-colors"
+            >
+              <FileUp className="mr-2 h-4 w-4" />
+              Seleccionar archivo
+            </label>
+            {file && (
+              <span className="text-sm text-gray-500">
+                {file.name}
+              </span>
+            )}
+          </div>
+          
+          <Button 
+            onClick={handleUpload} 
+            disabled={!file || isLoading}
+            className="w-fit"
+          >
+            {isLoading ? "Procesando..." : "Cargar datos"}
+          </Button>
+        </div>
+      </Card>
+      
+      {/* Show Excel data viewer if data is available */}
+      {excelData && (
+        <ExcelDataViewer 
+          data={excelData} 
+          title="Vista previa de datos Excel" 
+        />
+      )}
+    </div>
   );
 };
 
