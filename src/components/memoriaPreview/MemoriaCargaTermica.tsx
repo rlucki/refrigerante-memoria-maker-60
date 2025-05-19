@@ -11,52 +11,82 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
   const extractTableData = (data: any) => {
     if (!data) return [];
     
-    // Parse the data structure
-    console.log("Excel data structure:", data);
+    console.log("Procesando datos Excel:", data);
     
-    // Look for the "RESUM LEGA" sheet
-    if (!data["RESUM LEGA"]) {
-      console.log("No RESUM LEGA sheet found");
-      return [];
+    // Primero vamos a verificar si los datos tienen un formato plano (como un array)
+    if (Array.isArray(data) && data.length > 0) {
+      console.log("Datos en formato array encontrados");
+      
+      // Filtramos filas que contengan datos útiles (eliminamos filas vacías y encabezados no deseados)
+      const validRows = data.filter(row => {
+        // Verificar que la fila tenga datos en la primera columna
+        return row && 
+               // "SERVICIOS CENTRAL INTERMEDIA" parece ser la columna de denominación
+               row["SERVICIOS CENTRAL INTERMEDIA"] && 
+               // Excluir filas con encabezados o totales específicos
+               row["SERVICIOS CENTRAL INTERMEDIA"] !== "CENTRAL FRIGORÍFICA" &&
+               row["SERVICIOS CENTRAL INTERMEDIA"] !== "Fabricante central" &&
+               row["SERVICIOS CENTRAL INTERMEDIA"] !== "Modelo central" &&
+               row["SERVICIOS CENTRAL INTERMEDIA"] !== "Nº de serie central" &&
+               row["SERVICIOS CENTRAL INTERMEDIA"] !== "Tensión de alimentación" &&
+               row["SERVICIOS CENTRAL INTERMEDIA"] !== "Dimensiones Central" &&
+               row["SERVICIOS CENTRAL INTERMEDIA"] !== "Peso central";
+      });
+      
+      // Extraer los datos relevantes de cada fila
+      const formattedRows = validRows.map(row => {
+        return {
+          denominacion: row["SERVICIOS CENTRAL INTERMEDIA"] || "",
+          modulos: row["__EMPTY"] || "",
+          modVol: row["__EMPTY_1"] || "",
+          temperatura: row["__EMPTY_2"] || "",
+          cargaT: row["__EMPTY_3"] || ""
+        };
+      });
+      
+      console.log("Filas procesadas:", formattedRows);
+      return formattedRows;
     }
     
-    const sheet = data["RESUM LEGA"];
-    console.log("Sheet found:", sheet);
-    
-    // Prepare rows array
-    const rows = [];
-    
-    // Start from row 1 and go through all possible rows up to 60
-    for (let i = 1; i <= 60; i++) {
-      const rowNum = i;
+    // Si no es un array, intentamos el formato de hoja de cálculo por nombre
+    // Buscar la hoja "RESUM LEGA" 
+    if (data["RESUM LEGA"]) {
+      const sheet = data["RESUM LEGA"];
+      console.log("Hoja RESUM LEGA encontrada:", sheet);
       
-      // Get cell keys for this row (A1, B1, etc.)
-      const aKey = `A${rowNum}`;
-      const bKey = `B${rowNum}`;
-      const cKey = `C${rowNum}`;
-      const dKey = `D${rowNum}`;
-      const eKey = `E${rowNum}`;
+      const rows = [];
       
-      // Check if this row has data in column A
-      if (sheet[aKey] && sheet[aKey].v) {
-        // Create a row with cell values from columns A to E
-        const row = {
-          denominacion: sheet[aKey]?.v || "",
-          modulos: sheet[bKey]?.v || "",
-          modVol: sheet[cKey]?.v || "",
-          temperatura: sheet[dKey]?.v || "",
-          cargaT: sheet[eKey]?.v || ""
-        };
+      // Iterar sobre las filas potenciales del A1 al E60
+      for (let i = 1; i <= 60; i++) {
+        const aKey = `A${i}`;
+        const bKey = `B${i}`;
+        const cKey = `C${i}`;
+        const dKey = `D${i}`;
+        const eKey = `E${i}`;
         
-        // Add row only if it has a denomination
-        if (row.denominacion && row.denominacion !== "") {
-          rows.push(row);
+        // Si hay un valor en la columna A, procesamos la fila
+        if (sheet[aKey] && sheet[aKey].v) {
+          const row = {
+            denominacion: sheet[aKey].v || "",
+            modulos: sheet[bKey]?.v || "",
+            modVol: sheet[cKey]?.v || "",
+            temperatura: sheet[dKey]?.v || "",
+            cargaT: sheet[eKey]?.v || ""
+          };
+          
+          // Añadir fila solo si tiene denominación válida
+          if (row.denominacion && row.denominacion !== "") {
+            rows.push(row);
+          }
         }
       }
+      
+      console.log("Filas extraídas de RESUM LEGA:", rows);
+      return rows;
     }
     
-    console.log("Extracted table data:", rows);
-    return rows;
+    console.log("No se pudo procesar el formato de los datos Excel");
+    return [];
   };
   
   // Get table data from Excel
@@ -93,7 +123,9 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
                         <TableCell className="border border-gray-300 p-2">{row.modulos}</TableCell>
                         <TableCell className="border border-gray-300 p-2">{row.modVol}</TableCell>
                         <TableCell className="border border-gray-300 p-2">{row.temperatura}</TableCell>
-                        <TableCell className="border border-gray-300 p-2">{row.cargaT ? Math.round(row.cargaT) : ""}</TableCell>
+                        <TableCell className="border border-gray-300 p-2">
+                          {row.cargaT ? (typeof row.cargaT === 'number' ? Math.round(row.cargaT) : row.cargaT) : ""}
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
