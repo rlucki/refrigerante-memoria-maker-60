@@ -4,7 +4,7 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Search, XCircle } from "lucide-react";
+import { Search, XCircle, FileSpreadsheet, Table as TableIcon } from "lucide-react";
 
 interface ExcelDataViewerProps {
   data: any;
@@ -14,6 +14,7 @@ interface ExcelDataViewerProps {
 const ExcelDataViewer: React.FC<ExcelDataViewerProps> = ({ data, title = "Datos de Excel" }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedArea, setSelectedArea] = useState<string | null>(null);
+  const [displayMode, setDisplayMode] = useState<"formatted" | "raw">("formatted");
   
   if (!data || (Array.isArray(data) && !data.length)) {
     return (
@@ -57,7 +58,7 @@ const ExcelDataViewer: React.FC<ExcelDataViewerProps> = ({ data, title = "Datos 
     
     return (
       <div>
-        <div className="flex gap-2 mb-4">
+        <div className="flex gap-2 mb-4 items-center">
           <div className="relative flex-1">
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
@@ -75,34 +76,60 @@ const ExcelDataViewer: React.FC<ExcelDataViewerProps> = ({ data, title = "Datos 
               </button>
             )}
           </div>
+          <div className="flex gap-2">
+            <Button
+              size="sm"
+              variant={displayMode === "formatted" ? "default" : "outline"}
+              onClick={() => setDisplayMode("formatted")}
+              className="flex gap-2 items-center"
+            >
+              <TableIcon className="h-4 w-4" />
+              Formateado
+            </Button>
+            <Button
+              size="sm"
+              variant={displayMode === "raw" ? "default" : "outline"}
+              onClick={() => setDisplayMode("raw")}
+              className="flex gap-2 items-center"
+            >
+              <FileSpreadsheet className="h-4 w-4" />
+              Datos crudos
+            </Button>
+          </div>
         </div>
 
-        <div className="overflow-x-auto">
-          <Table className="w-full">
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-10">#</TableHead>
-                {keys.map((key) => (
-                  <TableHead key={key as React.Key} className="whitespace-nowrap min-w-32">
-                    {String(key)}
-                  </TableHead>
-                ))}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredData.map((item: any, index: number) => (
-                <TableRow key={index}>
-                  <TableCell>{index + 1}</TableCell>
+        {displayMode === "formatted" ? (
+          <div className="overflow-x-auto">
+            <Table className="w-full">
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-10">#</TableHead>
                   {keys.map((key) => (
-                    <TableCell key={key as React.Key} className="whitespace-nowrap overflow-hidden text-ellipsis max-w-52">
-                      {item[key as keyof typeof item] !== undefined ? String(item[key as keyof typeof item]) : ""}
-                    </TableCell>
+                    <TableHead key={key as React.Key} className="whitespace-nowrap min-w-32">
+                      {String(key)}
+                    </TableHead>
                   ))}
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+              </TableHeader>
+              <TableBody>
+                {filteredData.map((item: any, index: number) => (
+                  <TableRow key={index}>
+                    <TableCell>{index + 1}</TableCell>
+                    {keys.map((key) => (
+                      <TableCell key={key as React.Key} className="whitespace-nowrap overflow-hidden text-ellipsis max-w-52">
+                        {item[key as keyof typeof item] !== undefined ? String(item[key as keyof typeof item]) : ""}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        ) : (
+          <div className="p-4 bg-gray-50 rounded border overflow-auto">
+            <pre className="text-xs">{JSON.stringify(filteredData, null, 2)}</pre>
+          </div>
+        )}
       </div>
     );
   };
@@ -164,7 +191,7 @@ const ExcelDataViewer: React.FC<ExcelDataViewerProps> = ({ data, title = "Datos 
     const sortedColumns = Array.from(columns).sort();
     
     // Rango de filas a mostrar
-    const maxRowsToShow = 50;
+    const maxRowsToShow = 100; // Aumentado para ver más datos
     const startRow = 1;
     const endRow = Math.min(startRow + maxRowsToShow, sortedRows.length);
     const visibleRows = sortedRows.slice(startRow - 1, endRow);
@@ -173,49 +200,75 @@ const ExcelDataViewer: React.FC<ExcelDataViewerProps> = ({ data, title = "Datos 
       <div>
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-semibold">Hoja: {selectedArea}</h3>
-          <Button
-            variant="ghost"
-            onClick={() => setSelectedArea(null)}
-          >
-            Volver a la selección de hojas
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              variant="ghost"
+              onClick={() => setSelectedArea(null)}
+            >
+              Volver a la selección de hojas
+            </Button>
+            <Button
+              size="sm"
+              variant={displayMode === "formatted" ? "default" : "outline"}
+              onClick={() => setDisplayMode("formatted")}
+              className="flex gap-2 items-center"
+            >
+              <TableIcon className="h-4 w-4" />
+              Tabla
+            </Button>
+            <Button
+              size="sm"
+              variant={displayMode === "raw" ? "default" : "outline"}
+              onClick={() => setDisplayMode("raw")}
+              className="flex gap-2 items-center"
+            >
+              <FileSpreadsheet className="h-4 w-4" />
+              Datos crudos
+            </Button>
+          </div>
         </div>
         
-        <div className="overflow-x-auto">
-          <Table className="w-full">
-            <TableHeader>
-              <TableRow>
-                <TableHead className="sticky left-0 bg-white z-10">#</TableHead>
-                {sortedColumns.map((col) => (
-                  <TableHead key={col} className="whitespace-nowrap min-w-24">
-                    {col}
-                  </TableHead>
-                ))}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {visibleRows.map((row) => (
-                <TableRow key={row}>
-                  <TableCell className="font-medium sticky left-0 bg-white z-10">
-                    {row}
-                  </TableCell>
-                  {sortedColumns.map((col) => {
-                    const cellId = `${col}${row}`;
-                    const cell = cells[cellId];
-                    return (
-                      <TableCell 
-                        key={cellId} 
-                        className="whitespace-nowrap"
-                      >
-                        {cell?.v !== undefined ? String(cell.v) : ""}
-                      </TableCell>
-                    );
-                  })}
+        {displayMode === "formatted" ? (
+          <div className="overflow-x-auto border rounded">
+            <Table className="w-full">
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="sticky left-0 bg-white z-10">#</TableHead>
+                  {sortedColumns.map((col) => (
+                    <TableHead key={col} className="whitespace-nowrap min-w-24">
+                      {col}
+                    </TableHead>
+                  ))}
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+              </TableHeader>
+              <TableBody>
+                {visibleRows.map((row) => (
+                  <TableRow key={row}>
+                    <TableCell className="font-medium sticky left-0 bg-white z-10">
+                      {row}
+                    </TableCell>
+                    {sortedColumns.map((col) => {
+                      const cellId = `${col}${row}`;
+                      const cell = cells[cellId];
+                      return (
+                        <TableCell 
+                          key={cellId} 
+                          className="whitespace-nowrap"
+                        >
+                          {cell?.v !== undefined ? String(cell.v) : ""}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        ) : (
+          <div className="p-4 bg-gray-50 rounded border overflow-auto">
+            <pre className="text-xs">{JSON.stringify(cells, null, 2)}</pre>
+          </div>
+        )}
       </div>
     );
   };

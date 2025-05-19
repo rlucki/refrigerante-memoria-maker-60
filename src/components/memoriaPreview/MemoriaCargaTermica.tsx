@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 
@@ -118,13 +119,14 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
         for (const row of data) {
           if (row) {
             // Intentar extraer los datos usando diferentes posibles nombres de columnas
-            const caracteristica = row["__EMPTY_9"] || row["Unnamed: 9"] || row["CENTRAL POSITIVA"] || row["CARACTERÍSTICA"] || "";
+            const caracteristica = row["__EMPTY_9"] || row["Unnamed: 9"] || row["CENTRAL POSITIVA"] || row["CARACTERÍSTICA"] || row["CENTRAL INTERMEDIA"] || "";
             const medidas = row["__EMPTY_10"] || row["Unnamed: 10"] || row["MEDIDAS"] || "";
-            const observaciones = row["__EMPTY_14"] || row["Unnamed: 14"] || row["OBSERVACIONES"] || "";
+            const observaciones = row["__EMPTY_14"] || row["Unnamed: 14"] || row["OBSERVACIONES"] || row["__EMPTY_15"] || "";
             
             // Solo agregar filas no vacías y no encabezados
             if (caracteristica && 
                 caracteristica !== "CENTRAL POSITIVA" && 
+                caracteristica !== "CENTRAL INTERMEDIA" &&
                 caracteristica !== "CARACTERÍSTICA") {
               centralPositiva.push({
                 caracteristica,
@@ -165,6 +167,34 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
         
         console.log("Filas procesadas para compresores paralelos:", compresoresParalelos);
         return compresoresParalelos;
+      }
+      // Para la tabla de Central Negativa (AB-AF)
+      else if (range.startCol === 'AB' && range.endCol === 'AF') {
+        const centralNegativa = [];
+        
+        // Buscar datos en el área AB-AF
+        for (const row of data) {
+          if (row) {
+            // Intentar extraer los datos usando diferentes posibles nombres de columnas
+            const caracteristica = row["__EMPTY_27"] || row["Unnamed: 27"] || row["CENTRAL NEGATIVA"] || row["CARACTERÍSTICA"] || "";
+            const medidas = row["__EMPTY_28"] || row["Unnamed: 28"] || row["MEDIDAS"] || "";
+            const observaciones = row["__EMPTY_31"] || row["Unnamed: 31"] || row["OBSERVACIONES"] || "";
+            
+            // Solo agregar filas no vacías y no encabezados
+            if (caracteristica && 
+                caracteristica !== "CENTRAL NEGATIVA" && 
+                caracteristica !== "CARACTERÍSTICA") {
+              centralNegativa.push({
+                caracteristica,
+                medidas,
+                observaciones
+              });
+            }
+          }
+        }
+        
+        console.log("Filas procesadas para central negativa:", centralNegativa);
+        return centralNegativa;
       }
     }
     
@@ -242,12 +272,16 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
           
           if (sheet[caracteristicaKey] && sheet[caracteristicaKey].v && 
               sheet[caracteristicaKey].v !== "CENTRAL POSITIVA" &&
+              sheet[caracteristicaKey].v !== "CENTRAL INTERMEDIA" &&
               sheet[caracteristicaKey].v !== "CARACTERÍSTICA") {
+            
+            const medidas = sheet[`K${i}`]?.v || sheet[`L${i}`]?.v || "";
+            const observaciones = sheet[`O${i}`]?.v || "";
             
             rows.push({
               caracteristica: sheet[caracteristicaKey].v || "",
-              medidas: sheet[`K${i}`]?.v || sheet[`L${i}`]?.v || "",
-              observaciones: sheet[`O${i}`]?.v || ""
+              medidas: medidas,
+              observaciones: observaciones
             });
           }
         }
@@ -265,6 +299,23 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
               caracteristica: sheet[caracteristicaKey].v || "",
               medidas: sheet[`X${i}`]?.v || "",
               observaciones: sheet[`Z${i}`]?.v || ""
+            });
+          }
+        }
+      }
+      else if (range.startCol === 'AB' && range.endCol === 'AF') {
+        // Para la tabla de central negativa
+        for (let i = range.startIndex; i <= range.endIndex; i++) {
+          const caracteristicaKey = `AB${i}`;
+          
+          if (sheet[caracteristicaKey] && sheet[caracteristicaKey].v && 
+              sheet[caracteristicaKey].v !== "CENTRAL NEGATIVA" &&
+              sheet[caracteristicaKey].v !== "CARACTERÍSTICA") {
+            
+            rows.push({
+              caracteristica: sheet[caracteristicaKey].v || "",
+              medidas: sheet[`AC${i}`]?.v || "",
+              observaciones: sheet[`AF${i}`]?.v || ""
             });
           }
         }
@@ -294,6 +345,7 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
   const maquinariaData = extractTableData(excelData, { startCol: 'G', endCol: 'H', startIndex: 1, endIndex: 9 });
   const centralPositivaData = extractTableData(excelData, { startCol: 'J', endCol: 'O', startIndex: 1, endIndex: 20 });
   const compresoresParalelosData = extractTableData(excelData, { startCol: 'W', endCol: 'Z', startIndex: 1, endIndex: 20 });
+  const centralNegativaData = extractTableData(excelData, { startCol: 'AB', endCol: 'AF', startIndex: 1, endIndex: 20 });
   
   // Calcular sumatorios
   const sumPositivos = calculateSum(positivosData);
@@ -498,6 +550,39 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
                 </div>
               ) : (
                 <p className="mt-4 italic">No se encontraron datos de los compresores paralelos en el archivo Excel.</p>
+              )}
+            </div>
+            
+            {/* Section 14.3 - CENTRAL NEGATIVA */}
+            <div className="mt-8">
+              <h4 className="text-md font-bold">14.3. CENTRAL NEGATIVA</h4>
+              <p className="mt-2">
+                Central frigorífica formada por compresores semiherméticos alternativos, accionados mediante un motor eléctrico trifásico. Está ubicada en la misma bancada que la central anterior, a diferente altura. Sus características técnicas son las siguientes:
+              </p>
+              
+              {centralNegativaData.length > 0 ? (
+                <div className="mt-4 overflow-x-auto">
+                  <Table className="w-full border-collapse">
+                    <TableHeader>
+                      <TableRow className="bg-blue-100">
+                        <TableHead className="border border-gray-300 p-2">CARACTERÍSTICA</TableHead>
+                        <TableHead className="border border-gray-300 p-2">MEDIDAS</TableHead>
+                        <TableHead className="border border-gray-300 p-2">OBSERVACIONES</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {centralNegativaData.map((row, index) => (
+                        <TableRow key={index}>
+                          <TableCell className="border border-gray-300 p-2">{row.caracteristica}</TableCell>
+                          <TableCell className="border border-gray-300 p-2">{row.medidas}</TableCell>
+                          <TableCell className="border border-gray-300 p-2">{row.observaciones}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              ) : (
+                <p className="mt-4 italic">No se encontraron datos de la central negativa en el archivo Excel.</p>
               )}
             </div>
           </div>
