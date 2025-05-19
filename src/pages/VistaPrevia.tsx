@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, Download } from "lucide-react";
@@ -189,7 +190,7 @@ Tanto los servicios positivos como los negativos se alimentan con refrigerante R
 Los gases de descarga generados por los compresores de la central positiva que salen a +124,8 °C y 93,7 bar, se envían a un separador de aceite, donde este se separa del refrigerante y se redirige a un acumulador desde el que se alimentará el circuito de aceite de todos los compresores de la bancada. El aceite ingresará a cada compresor a través de un nivel electrónico, el cual está dotado de una electroválvula que gestiona su apertura o cierre.  
 
 Los gases de descarga, ya prácticamente sin aceite y a la temperatura y presión indicada anteriormente, son conducidos a un "gas cooler" (enfriador), situado en cubierta y dotado de ventiladores helicoidales, donde ceden parte del calor sensible al aire que circula por su batería y se produce un decremento de la temperatura del fluido frigorífico hasta alcanzar +38 °C. 
-HELICOIDAL CUBIERTA
+RADIAL SALA DE MÁQUINAS / HELICOIDAL CUBIERTA
 
 El refrigerante, a alta presión, se expansiona hasta la presión de intermedia mediante una válvula de expansión electrónica transcrítica y se conduce al recipiente de líquido vertical de las centrales, a una temperatura superior a los +5,3 °C, donde una parte llega en fase líquida y la otra en fase gas (flash gas). Estos gases flash sobrecalentados se reconducen hasta el colector de aspiración de la central positiva, provocándoles una pequeña caída de presión mediante otra válvula de expansión electrónica, denominada válvula de flash gas bypass`;
       
@@ -223,7 +224,7 @@ Tanto los servicios positivos como los negativos se alimentan con refrigerante R
 Los gases de descarga generados por los compresores de la central positiva que salen a +124,8 °C y 93,7 bar, se envían a un separador de aceite, donde este se separa del refrigerante y se redirige a un acumulador desde el que se alimentará el circuito de aceite de todos los compresores de la bancada. El aceite ingresará a cada compresor a través de un nivel electrónico, el cual está dotado de una electroválvula que gestiona su apertura o cierre.  
 
 Los gases de descarga, ya prácticamente sin aceite y a la temperatura y presión indicada anteriormente, son conducidos a un "gas cooler" (enfriador), situado en cubierta y dotado de ventiladores helicoidales, donde ceden parte del calor sensible al aire que circula por su batería y se produce un decremento de la temperatura del fluido frigorífico hasta alcanzar +38 °C. 
-HELICOIDAL CUBIERTA
+RADIAL SALA DE MÁQUINAS / HELICOIDAL CUBIERTA
 
 El refrigerante, a alta presión, se expansiona hasta la presión de intermedia mediante una válvula de expansión electrónica transcrítica y se conduce al recipiente de líquido vertical de las centrales, a una temperatura superior a los +5,3 °C, donde una parte llega en fase líquida y la otra en fase gas (flash gas). Estos gases flash sobrecalentados se reconducen hasta el colector de aspiración de la central positiva, provocándoles una pequeña caída de presión mediante otra válvula de expansión electrónica, denominada válvula de flash gas bypass`;
         
@@ -332,7 +333,6 @@ El refrigerante, a alta presión, se expansiona hasta la presión de intermedia 
                   hasWordTemplate={!!wordTemplate}
                   activeTab={activeSubTab}
                   setActiveTab={setActiveSubTab}
-                  formData={memoriaData}
                 />
               </TabsContent>
               

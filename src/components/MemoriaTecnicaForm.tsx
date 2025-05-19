@@ -9,7 +9,6 @@ import DatosInstalacionSection from "./formSections/DatosInstalacionSection";
 import DatosTecnicosSection from "./formSections/DatosTecnicosSection";
 import NormativaSection from "./formSections/NormativaSection";
 import ClasificacionSection from "./formSections/ClasificacionSection";
-import DescripcionInstalacionSection from "./formSections/DescripcionInstalaciónSection";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 
@@ -21,15 +20,13 @@ interface MemoriaTecnicaFormProps {
   hasWordTemplate?: boolean;
   activeTab?: string;
   setActiveTab?: (tab: string) => void;
-  formData?: any;
 }
 
 const MemoriaTecnicaForm = ({ 
   onSubmit, 
   onChange, 
   activeTab = "titular",
-  setActiveTab,
-  formData = {}
+  setActiveTab
 }: MemoriaTecnicaFormProps) => {
   const [internalActiveTab, setInternalActiveTab] = useState(activeTab);
   
@@ -64,14 +61,12 @@ const MemoriaTecnicaForm = ({
   return (
     <form onSubmit={handleSubmit}>
       <Tabs defaultValue={currentTab} value={currentTab} onValueChange={updateTab} className="mb-6">
-        <TabsList className="grid grid-cols-8 w-full">
+        <TabsList className="grid grid-cols-6 w-full">
           <TabsTrigger value="titular">Datos Titular</TabsTrigger>
           <TabsTrigger value="instalador">Datos Instalador</TabsTrigger>
           <TabsTrigger value="instalacion">Datos Instalación</TabsTrigger>
           <TabsTrigger value="datos_proyecto">Datos Proyecto</TabsTrigger>
           <TabsTrigger value="clasificacion">Clasificación</TabsTrigger>
-          <TabsTrigger value="descripcion">Descripción</TabsTrigger>
-          <TabsTrigger value="datos_tecnicos">Datos Técnicos</TabsTrigger>
           <TabsTrigger value="normativa">Normativa</TabsTrigger>
         </TabsList>
         
@@ -99,8 +94,7 @@ const MemoriaTecnicaForm = ({
                     className="mt-2"
                     placeholder="Ej: Supermercado"
                     onChange={handleInputChange}
-                    defaultValue={formData.tipoInstalacion || "Supermercado"}
-                    value={formData.tipoInstalacion || ""}
+                    defaultValue="Supermercado"
                   />
                 </div>
                 <div>
@@ -110,8 +104,7 @@ const MemoriaTecnicaForm = ({
                     className="mt-2"
                     placeholder="Ej: Costa del Silencio (Arona)"
                     onChange={handleInputChange}
-                    defaultValue={formData.nombreProyecto || "Costa del Silencio (Arona)"}
-                    value={formData.nombreProyecto || ""}
+                    defaultValue="Costa del Silencio (Arona)"
                   />
                 </div>
               </div>
@@ -120,18 +113,7 @@ const MemoriaTecnicaForm = ({
         </TabsContent>
         
         <TabsContent value="clasificacion" className="mt-6">
-          <ClasificacionSection onChange={handleInputChange} formData={formData} />
-        </TabsContent>
-        
-        <TabsContent value="descripcion" className="mt-6">
-          <DescripcionInstalacionSection 
-            onChange={handleComplexChange} 
-            formData={formData}
-          />
-        </TabsContent>
-        
-        <TabsContent value="datos_tecnicos" className="mt-6">
-          <DatosTecnicosSection onChange={handleInputChange} />
+          <ClasificacionSection onChange={handleInputChange} />
         </TabsContent>
         
         <TabsContent value="normativa" className="mt-6">
@@ -150,9 +132,7 @@ const MemoriaTecnicaForm = ({
               "instalacion": "instalador",
               "datos_proyecto": "instalacion",
               "clasificacion": "datos_proyecto",
-              "descripcion": "clasificacion",
-              "datos_tecnicos": "descripcion",
-              "normativa": "datos_tecnicos",
+              "normativa": "clasificacion",
             }[currentTab];
             updateTab(prevTab);
           }}
@@ -169,9 +149,7 @@ const MemoriaTecnicaForm = ({
               "instalador": "instalacion",
               "instalacion": "datos_proyecto",
               "datos_proyecto": "clasificacion",
-              "clasificacion": "descripcion",
-              "descripcion": "datos_tecnicos",
-              "datos_tecnicos": "normativa",
+              "clasificacion": "normativa",
               "normativa": "normativa",
             }[currentTab];
             updateTab(nextTab);
