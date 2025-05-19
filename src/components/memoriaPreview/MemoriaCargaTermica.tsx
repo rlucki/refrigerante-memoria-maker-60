@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 
@@ -139,6 +138,34 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
         console.log("Filas procesadas para central positiva:", centralPositiva);
         return centralPositiva;
       }
+      // Para la tabla de Compresores Paralelos (W-Z)
+      else if (range.startCol === 'W' && range.endCol === 'Z') {
+        const compresoresParalelos = [];
+        
+        // Buscar datos en el área W-Z
+        for (const row of data) {
+          if (row) {
+            // Intentar extraer los datos usando diferentes posibles nombres de columnas
+            const caracteristica = row["__EMPTY_22"] || row["Unnamed: 22"] || row["COMPRESORES PARALELOS"] || row["CARACTERÍSTICA"] || "";
+            const medidas = row["__EMPTY_23"] || row["Unnamed: 23"] || row["MEDIDAS"] || "";
+            const observaciones = row["__EMPTY_25"] || row["Unnamed: 25"] || row["OBSERVACIONES"] || "";
+            
+            // Solo agregar filas no vacías y no encabezados
+            if (caracteristica && 
+                caracteristica !== "COMPRESORES PARALELOS" && 
+                caracteristica !== "CARACTERÍSTICA") {
+              compresoresParalelos.push({
+                caracteristica,
+                medidas,
+                observaciones
+              });
+            }
+          }
+        }
+        
+        console.log("Filas procesadas para compresores paralelos:", compresoresParalelos);
+        return compresoresParalelos;
+      }
     }
     
     // Para datos en formato de hoja de cálculo
@@ -225,6 +252,23 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
           }
         }
       }
+      else if (range.startCol === 'W' && range.endCol === 'Z') {
+        // Para la tabla de compresores paralelos
+        for (let i = range.startIndex; i <= range.endIndex; i++) {
+          const caracteristicaKey = `W${i}`;
+          
+          if (sheet[caracteristicaKey] && sheet[caracteristicaKey].v && 
+              sheet[caracteristicaKey].v !== "COMPRESORES PARALELOS" &&
+              sheet[caracteristicaKey].v !== "CARACTERÍSTICA") {
+            
+            rows.push({
+              caracteristica: sheet[caracteristicaKey].v || "",
+              medidas: sheet[`X${i}`]?.v || "",
+              observaciones: sheet[`Z${i}`]?.v || ""
+            });
+          }
+        }
+      }
       
       console.log(`Filas extraídas de RESUM LEGA (${range.startCol}-${range.endCol}):`, rows);
       return rows;
@@ -249,6 +293,7 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
   const negativosData = extractTableData(excelData, { startCol: 'Q', endCol: 'U', startIndex: 1, endIndex: 60 });
   const maquinariaData = extractTableData(excelData, { startCol: 'G', endCol: 'H', startIndex: 1, endIndex: 9 });
   const centralPositivaData = extractTableData(excelData, { startCol: 'J', endCol: 'O', startIndex: 1, endIndex: 20 });
+  const compresoresParalelosData = extractTableData(excelData, { startCol: 'W', endCol: 'Z', startIndex: 1, endIndex: 20 });
   
   // Calcular sumatorios
   const sumPositivos = calculateSum(positivosData);
@@ -420,6 +465,39 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
                 </div>
               ) : (
                 <p className="mt-4 italic">No se encontraron datos de la central positiva en el archivo Excel.</p>
+              )}
+            </div>
+            
+            {/* Section 14.2 - COMPRESORES PARALELOS */}
+            <div className="mt-8">
+              <h4 className="text-md font-bold">14.2. COMPRESORES PARALELOS</h4>
+              <p className="mt-2">
+                La bancada "booster" incluye compresor/es denominados paralelos (IT), que descargan sobre el mismo colector que la central positiva y que tienen como misión comprimir una parte de los gases flash procedentes del correspondiente recipiente de líquido, pero a una temperatura de evaporación más elevada, lo que redunda en una mayor eficiencia energética de las centrales. Estos compresores son también del tipo semihermético, y sus características técnicas son las que siguen:
+              </p>
+              
+              {compresoresParalelosData.length > 0 ? (
+                <div className="mt-4 overflow-x-auto">
+                  <Table className="w-full border-collapse">
+                    <TableHeader>
+                      <TableRow className="bg-blue-100">
+                        <TableHead className="border border-gray-300 p-2">CARACTERÍSTICA</TableHead>
+                        <TableHead className="border border-gray-300 p-2">MEDIDAS</TableHead>
+                        <TableHead className="border border-gray-300 p-2">OBSERVACIONES</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {compresoresParalelosData.map((row, index) => (
+                        <TableRow key={index}>
+                          <TableCell className="border border-gray-300 p-2">{row.caracteristica}</TableCell>
+                          <TableCell className="border border-gray-300 p-2">{row.medidas}</TableCell>
+                          <TableCell className="border border-gray-300 p-2">{row.observaciones}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              ) : (
+                <p className="mt-4 italic">No se encontraron datos de los compresores paralelos en el archivo Excel.</p>
               )}
             </div>
           </div>
