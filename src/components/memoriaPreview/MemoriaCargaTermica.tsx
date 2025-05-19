@@ -11,24 +11,41 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
   const extractTableData = (data: any) => {
     if (!data) return [];
     
-    // Try to extract data from "RESUM LEGA" sheet
+    // Parse the data structure
+    console.log("Excel data structure:", data);
+    
+    // Look for the "RESUM LEGA" sheet
+    if (!data["RESUM LEGA"]) {
+      console.log("No RESUM LEGA sheet found");
+      return [];
+    }
+    
     const sheet = data["RESUM LEGA"];
-    if (!sheet) return [];
+    console.log("Sheet found:", sheet);
     
     // Prepare rows array
     const rows = [];
     
-    // Start from row 2 (index 1) to skip headers
-    for (let i = 1; i < 60; i++) {
-      // Check if this row exists and has data
-      if (sheet[`A${i+1}`] && sheet[`A${i+1}`].v) {
+    // Start from row 1 and go through all possible rows up to 60
+    for (let i = 1; i <= 60; i++) {
+      const rowNum = i;
+      
+      // Get cell keys for this row (A1, B1, etc.)
+      const aKey = `A${rowNum}`;
+      const bKey = `B${rowNum}`;
+      const cKey = `C${rowNum}`;
+      const dKey = `D${rowNum}`;
+      const eKey = `E${rowNum}`;
+      
+      // Check if this row has data in column A
+      if (sheet[aKey] && sheet[aKey].v) {
         // Create a row with cell values from columns A to E
         const row = {
-          denominacion: sheet[`A${i+1}`]?.v || "",
-          modulos: sheet[`B${i+1}`]?.v || "",
-          modVol: sheet[`C${i+1}`]?.v || "",
-          temperatura: sheet[`D${i+1}`]?.v || "",
-          cargaT: sheet[`E${i+1}`]?.v || ""
+          denominacion: sheet[aKey]?.v || "",
+          modulos: sheet[bKey]?.v || "",
+          modVol: sheet[cKey]?.v || "",
+          temperatura: sheet[dKey]?.v || "",
+          cargaT: sheet[eKey]?.v || ""
         };
         
         // Add row only if it has a denomination
@@ -38,6 +55,7 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
       }
     }
     
+    console.log("Extracted table data:", rows);
     return rows;
   };
   
@@ -75,7 +93,7 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
                         <TableCell className="border border-gray-300 p-2">{row.modulos}</TableCell>
                         <TableCell className="border border-gray-300 p-2">{row.modVol}</TableCell>
                         <TableCell className="border border-gray-300 p-2">{row.temperatura}</TableCell>
-                        <TableCell className="border border-gray-300 p-2">{Math.round(row.cargaT)}</TableCell>
+                        <TableCell className="border border-gray-300 p-2">{row.cargaT ? Math.round(row.cargaT) : ""}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>

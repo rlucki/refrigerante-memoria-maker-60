@@ -304,6 +304,9 @@ El refrigerante, a alta presión, se expansiona hasta la presión de intermedia 
                 <TabsTrigger value="form" className="data-[state=active]:border-b-2 data-[state=active]:border-primary">
                   Formulario
                 </TabsTrigger>
+                <TabsTrigger value="descripcion" className="data-[state=active]:border-b-2 data-[state=active]:border-primary">
+                  Descripción
+                </TabsTrigger>
                 <TabsTrigger value="excel" className="data-[state=active]:border-b-2 data-[state=active]:border-primary">
                   Cálculos Excel
                 </TabsTrigger>
@@ -322,6 +325,18 @@ El refrigerante, a alta presión, se expansiona hasta la presión de intermedia 
                   activeTab={activeSubTab}
                   setActiveTab={setActiveSubTab}
                 />
+              </TabsContent>
+              
+              <TabsContent value="descripcion" className="mt-6">
+                <div className="space-y-4">
+                  <h2 className="text-xl font-bold">Descripción de la instalación</h2>
+                  <textarea
+                    className="w-full h-96 p-4 border rounded-md"
+                    placeholder="Introduzca la descripción de la instalación frigorífica"
+                    value={memoriaData.descripcionInstalacion || ""}
+                    onChange={(e) => handleFormChange("descripcionInstalacion", e.target.value)}
+                  />
+                </div>
               </TabsContent>
               
               <TabsContent value="excel" className="mt-6">
@@ -358,7 +373,7 @@ El refrigerante, a alta presión, se expansiona hasta la presión de intermedia 
           </div>
         </div>
         
-        {/* Right side - Preview always visible */}
+        {/* Right side - Preview */}
         <div 
           className="w-full lg:w-1/2 p-4 bg-gray-50 overflow-auto"
           style={{ 
