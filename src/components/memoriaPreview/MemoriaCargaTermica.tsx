@@ -7,90 +7,129 @@ interface MemoriaCargaTermicaProps {
 }
 
 const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) => {
-  // Function to extract relevant data from Excel data within A1:E60 range
-  const extractTableData = (data: any) => {
+  // Function to extract relevant data from Excel data within specific ranges
+  const extractTableData = (data: any, range: { startCol: string, endCol: string, startIndex: number, endIndex: number }) => {
     if (!data) return [];
     
-    console.log("Procesando datos Excel:", data);
+    console.log(`Procesando datos Excel para rango ${range.startCol}-${range.endCol}:`, data);
     
-    // Primero vamos a verificar si los datos tienen un formato plano (como un array)
+    // Para datos en formato array (como en los logs)
     if (Array.isArray(data) && data.length > 0) {
       console.log("Datos en formato array encontrados");
       
-      // Filtramos filas que contengan datos útiles (eliminamos filas vacías y encabezados no deseados)
-      const validRows = data.filter(row => {
-        // Verificar que la fila tenga datos en la primera columna
-        return row && 
-               // "SERVICIOS CENTRAL INTERMEDIA" parece ser la columna de denominación
-               row["SERVICIOS CENTRAL INTERMEDIA"] && 
-               // Excluir filas con encabezados o totales específicos
-               row["SERVICIOS CENTRAL INTERMEDIA"] !== "CENTRAL FRIGORÍFICA" &&
-               row["SERVICIOS CENTRAL INTERMEDIA"] !== "Fabricante central" &&
-               row["SERVICIOS CENTRAL INTERMEDIA"] !== "Modelo central" &&
-               row["SERVICIOS CENTRAL INTERMEDIA"] !== "Nº de serie central" &&
-               row["SERVICIOS CENTRAL INTERMEDIA"] !== "Tensión de alimentación" &&
-               row["SERVICIOS CENTRAL INTERMEDIA"] !== "Dimensiones Central" &&
-               row["SERVICIOS CENTRAL INTERMEDIA"] !== "Peso central";
-      });
-      
-      // Extraer los datos relevantes de cada fila
-      const formattedRows = validRows.map(row => {
-        return {
-          denominacion: row["SERVICIOS CENTRAL INTERMEDIA"] || "",
-          modulos: row["__EMPTY"] || "",
-          modVol: row["__EMPTY_1"] || "",
-          temperatura: row["__EMPTY_2"] || "",
-          cargaT: row["__EMPTY_3"] || ""
-        };
-      });
-      
-      console.log("Filas procesadas:", formattedRows);
-      return formattedRows;
+      // Filtrar encabezados y extraer datos para la primera tabla (A-E)
+      if (range.startCol === 'A' && range.endCol === 'E') {
+        // Filtramos filas que contengan datos útiles (eliminamos filas vacías y encabezados no deseados)
+        const validRows = data.filter(row => {
+          // Verificar que la fila tenga datos en la primera columna y no sea un encabezado
+          return row && 
+                 row["SERVICIOS CENTRAL INTERMEDIA"] && 
+                 // Excluir filas con encabezados o totales específicos
+                 row["SERVICIOS CENTRAL INTERMEDIA"] !== "DENOMINACIÓN" &&
+                 row["SERVICIOS CENTRAL INTERMEDIA"] !== "CENTRAL FRIGORÍFICA" &&
+                 row["SERVICIOS CENTRAL INTERMEDIA"] !== "Fabricante central" &&
+                 row["SERVICIOS CENTRAL INTERMEDIA"] !== "Modelo central" &&
+                 row["SERVICIOS CENTRAL INTERMEDIA"] !== "Nº de serie central" &&
+                 row["SERVICIOS CENTRAL INTERMEDIA"] !== "Tensión de alimentación" &&
+                 row["SERVICIOS CENTRAL INTERMEDIA"] !== "Dimensiones Central" &&
+                 row["SERVICIOS CENTRAL INTERMEDIA"] !== "Peso central";
+        });
+        
+        // Extraer los datos relevantes de cada fila
+        const formattedRows = validRows.map(row => {
+          return {
+            denominacion: row["SERVICIOS CENTRAL INTERMEDIA"] || "",
+            modulos: row["__EMPTY"] || "",
+            modVol: row["__EMPTY_1"] || "",
+            temperatura: row["__EMPTY_2"] || "",
+            cargaT: row["__EMPTY_3"] || ""
+          };
+        });
+        
+        console.log("Filas procesadas para servicios positivos:", formattedRows);
+        return formattedRows;
+      } 
+      // Para la segunda tabla (Q-U)
+      else if (range.startCol === 'Q' && range.endCol === 'U') {
+        const serviciosNegativos = [];
+        
+        // Buscar datos en el área Q-U
+        for (const row of data) {
+          if (row && row["__EMPTY_16"] && row["__EMPTY_16"] !== "DENOMINACIÓN") {
+            serviciosNegativos.push({
+              denominacion: row["__EMPTY_16"] || "",
+              modulos: row["__EMPTY_17"] || "",
+              modVol: row["__EMPTY_18"] || "",
+              temperatura: row["__EMPTY_19"] || "",
+              cargaT: row["__EMPTY_20"] || ""
+            });
+          }
+        }
+        
+        console.log("Filas procesadas para servicios negativos:", serviciosNegativos);
+        return serviciosNegativos;
+      }
     }
     
-    // Si no es un array, intentamos el formato de hoja de cálculo por nombre
-    // Buscar la hoja "RESUM LEGA" 
+    // Para datos en formato de hoja de cálculo
     if (data["RESUM LEGA"]) {
       const sheet = data["RESUM LEGA"];
-      console.log("Hoja RESUM LEGA encontrada:", sheet);
+      console.log(`Hoja RESUM LEGA encontrada para rango ${range.startCol}-${range.endCol}:`, sheet);
       
       const rows = [];
       
-      // Iterar sobre las filas potenciales del A1 al E60
-      for (let i = 1; i <= 60; i++) {
-        const aKey = `A${i}`;
-        const bKey = `B${i}`;
-        const cKey = `C${i}`;
-        const dKey = `D${i}`;
-        const eKey = `E${i}`;
+      // Determinar las columnas según el rango
+      const colMapping = range.startCol === 'A' ? 
+        { denom: 'A', modulos: 'B', modVol: 'C', temp: 'D', carga: 'E' } :
+        { denom: 'Q', modulos: 'R', modVol: 'S', temp: 'T', carga: 'U' };
+      
+      // Iterar sobre las filas potenciales
+      for (let i = range.startIndex; i <= range.endIndex; i++) {
+        const denomKey = `${colMapping.denom}${i}`;
+        const modulosKey = `${colMapping.modulos}${i}`;
+        const modVolKey = `${colMapping.modVol}${i}`;
+        const tempKey = `${colMapping.temp}${i}`;
+        const cargaKey = `${colMapping.carga}${i}`;
         
-        // Si hay un valor en la columna A, procesamos la fila
-        if (sheet[aKey] && sheet[aKey].v) {
+        // Verificar si hay valor en la columna de denominación
+        if (sheet[denomKey] && sheet[denomKey].v && sheet[denomKey].v !== "DENOMINACIÓN") {
           const row = {
-            denominacion: sheet[aKey].v || "",
-            modulos: sheet[bKey]?.v || "",
-            modVol: sheet[cKey]?.v || "",
-            temperatura: sheet[dKey]?.v || "",
-            cargaT: sheet[eKey]?.v || ""
+            denominacion: sheet[denomKey].v || "",
+            modulos: sheet[modulosKey]?.v || "",
+            modVol: sheet[modVolKey]?.v || "",
+            temperatura: sheet[tempKey]?.v || "",
+            cargaT: sheet[cargaKey]?.v || ""
           };
           
-          // Añadir fila solo si tiene denominación válida
-          if (row.denominacion && row.denominacion !== "") {
-            rows.push(row);
-          }
+          rows.push(row);
         }
       }
       
-      console.log("Filas extraídas de RESUM LEGA:", rows);
+      console.log(`Filas extraídas de RESUM LEGA (${range.startCol}-${range.endCol}):`, rows);
       return rows;
     }
     
-    console.log("No se pudo procesar el formato de los datos Excel");
+    console.log(`No se pudo procesar el formato de los datos Excel para rango ${range.startCol}-${range.endCol}`);
     return [];
   };
   
-  // Get table data from Excel
-  const tableData = extractTableData(excelData);
+  // Calcular el sumatorio de la columna de carga térmica
+  const calculateSum = (data: any[]): number => {
+    return data.reduce((sum, row) => {
+      const value = typeof row.cargaT === 'number' ? row.cargaT : 
+                    (typeof row.cargaT === 'string' && !isNaN(parseFloat(row.cargaT))) ? 
+                    parseFloat(row.cargaT) : 0;
+      return sum + value;
+    }, 0);
+  };
+  
+  // Obtener datos para las dos tablas
+  const positivosData = extractTableData(excelData, { startCol: 'A', endCol: 'E', startIndex: 1, endIndex: 60 });
+  const negativosData = extractTableData(excelData, { startCol: 'Q', endCol: 'U', startIndex: 1, endIndex: 60 });
+  
+  // Calcular sumatorios
+  const sumPositivos = calculateSum(positivosData);
+  const sumNegativos = calculateSum(negativosData);
   
   return (
     <div className="mb-8 max-w-[210mm] mx-auto bg-white min-h-[297mm] relative p-6">
@@ -104,10 +143,15 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
               De acuerdo con los datos facilitados considerando unas condiciones interiores de +24ºC/+60% y exteriores de +32ºC/65%, se han calculado las siguientes cargas térmicas para el mobiliario frigorífico, según los datos aportados por el fabricante, y las cámaras.
             </p>
             
-            {tableData.length > 0 ? (
+            {positivosData.length > 0 ? (
               <div className="mt-6 overflow-x-auto">
                 <Table className="w-full border-collapse">
                   <TableHeader>
+                    <TableRow className="bg-blue-100">
+                      <TableHead colSpan={5} className="border border-gray-300 p-2 text-center font-bold">
+                        SERVICIOS POSITIVOS
+                      </TableHead>
+                    </TableRow>
                     <TableRow className="bg-blue-100">
                       <TableHead className="border border-gray-300 p-2">DENOMINACIÓN</TableHead>
                       <TableHead className="border border-gray-300 p-2">MÓDULOS</TableHead>
@@ -117,7 +161,7 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {tableData.map((row, index) => (
+                    {positivosData.map((row, index) => (
                       <TableRow key={index}>
                         <TableCell className="border border-gray-300 p-2">{row.denominacion}</TableCell>
                         <TableCell className="border border-gray-300 p-2">{row.modulos}</TableCell>
@@ -128,10 +172,64 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
                         </TableCell>
                       </TableRow>
                     ))}
+                    <TableRow className="font-bold bg-gray-100">
+                      <TableCell colSpan={4} className="border border-gray-300 p-2 text-right">
+                        TOTAL CARGA TÉRMICA POSITIVA
+                      </TableCell>
+                      <TableCell className="border border-gray-300 p-2">
+                        {Math.round(sumPositivos)}
+                      </TableCell>
+                    </TableRow>
                   </TableBody>
                 </Table>
               </div>
             ) : (
+              <p className="mt-4 italic">No se encontraron datos de servicios positivos en el archivo Excel.</p>
+            )}
+            
+            {negativosData.length > 0 && (
+              <div className="mt-8 overflow-x-auto">
+                <Table className="w-full border-collapse">
+                  <TableHeader>
+                    <TableRow className="bg-blue-100">
+                      <TableHead colSpan={5} className="border border-gray-300 p-2 text-center font-bold">
+                        SERVICIOS NEGATIVOS
+                      </TableHead>
+                    </TableRow>
+                    <TableRow className="bg-blue-100">
+                      <TableHead className="border border-gray-300 p-2">DENOMINACIÓN</TableHead>
+                      <TableHead className="border border-gray-300 p-2">MÓDULOS</TableHead>
+                      <TableHead className="border border-gray-300 p-2">MOD/VOL</TableHead>
+                      <TableHead className="border border-gray-300 p-2">Tª</TableHead>
+                      <TableHead className="border border-gray-300 p-2">CARGA Tª</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {negativosData.map((row, index) => (
+                      <TableRow key={index}>
+                        <TableCell className="border border-gray-300 p-2">{row.denominacion}</TableCell>
+                        <TableCell className="border border-gray-300 p-2">{row.modulos}</TableCell>
+                        <TableCell className="border border-gray-300 p-2">{row.modVol}</TableCell>
+                        <TableCell className="border border-gray-300 p-2">{row.temperatura}</TableCell>
+                        <TableCell className="border border-gray-300 p-2">
+                          {row.cargaT ? (typeof row.cargaT === 'number' ? Math.round(row.cargaT) : row.cargaT) : ""}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                    <TableRow className="font-bold bg-gray-100">
+                      <TableCell colSpan={4} className="border border-gray-300 p-2 text-right">
+                        TOTAL CARGA TÉRMICA NEGATIVA
+                      </TableCell>
+                      <TableCell className="border border-gray-300 p-2">
+                        {Math.round(sumNegativos)}
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+            
+            {!positivosData.length && !negativosData.length && (
               <p className="mt-4 italic">No se encontraron datos de cargas térmicas en el archivo Excel.</p>
             )}
           </div>
