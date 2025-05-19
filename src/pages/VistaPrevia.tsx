@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Download } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import MemoriaTecnicaForm from "@/components/MemoriaTecnicaForm";
 import MemoriaPreview from "@/components/memoriaPreview/MemoriaPreview";
@@ -9,6 +9,7 @@ import { validateMargin } from "@/lib/utils";
 import ExcelUploader from "@/components/ExcelUploader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ExcelCalculationsForm from "@/components/ExcelCalculationsForm";
+import { generateWordDocument } from "@/services/wordDocumentService";
 
 const VistaPrevia = () => {
   const navigate = useNavigate();
@@ -105,6 +106,7 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
     tieneIHX: "no",
     tieneDesrecalentador: "no"
   });
+  const [wordTemplate, setWordTemplate] = useState<File | null>(null);
 
   // Enhanced scroll synchronization with debouncing
   useEffect(() => {
@@ -222,6 +224,50 @@ El refrigerante, a alta presión, se expansiona hasta la presión de intermedia 
     });
   };
 
+  // Handle Word template upload
+  const handleWordTemplateUpload = (file: File) => {
+    setWordTemplate(file);
+    console.log("Word template uploaded:", file.name);
+  };
+  
+  // Generate and download Word document
+  const handleGenerateWordDocument = async () => {
+    if (!wordTemplate) {
+      toast({
+        title: "Plantilla no encontrada",
+        description: "Debes cargar una plantilla Word antes de generar el documento",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    try {
+      const docBlob = await generateWordDocument(wordTemplate, memoriaData);
+      
+      // Create a download link
+      const url = URL.createObjectURL(docBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Memoria_Tecnica_${memoriaData.nombreProyecto || 'Proyecto'}.docx`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      toast({
+        title: "Documento generado",
+        description: "El documento Word se ha generado correctamente"
+      });
+    } catch (error) {
+      console.error("Error generating document:", error);
+      toast({
+        title: "Error",
+        description: "No se pudo generar el documento Word",
+        variant: "destructive"
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <header className="bg-white shadow-sm py-4 px-6 md:px-10 border-b sticky top-0 z-10">
@@ -236,6 +282,14 @@ El refrigerante, a alta presión, se expansiona hasta la presión de intermedia 
             </Button>
             <h1 className="text-2xl font-bold text-gray-800">Vista Previa de Memoria Técnica</h1>
           </div>
+          {wordTemplate && (
+            <Button 
+              onClick={handleGenerateWordDocument}
+              className="flex gap-2 items-center"
+            >
+              <Download size={16} /> Descargar Word
+            </Button>
+          )}
         </div>
       </header>
       
@@ -257,6 +311,9 @@ El refrigerante, a alta presión, se expansiona hasta la presión de intermedia 
                 <MemoriaTecnicaForm 
                   onSubmit={() => {}} 
                   onChange={handleFormChange}
+                  onWordTemplateUploaded={handleWordTemplateUpload}
+                  onGenerateWordDocument={handleGenerateWordDocument}
+                  hasWordTemplate={!!wordTemplate}
                 />
               </TabsContent>
               

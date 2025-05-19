@@ -12,10 +12,14 @@ import ClasificacionSection from "./formSections/ClasificacionSection";
 import { Textarea } from "./ui/textarea";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
+import WordDocumentTemplate from "./WordDocumentTemplate";
 
 interface MemoriaTecnicaFormProps {
   onSubmit: () => void;
   onChange?: (field: string, value: any) => void;
+  onWordTemplateUploaded?: (file: File) => void;
+  onGenerateWordDocument?: () => void;
+  hasWordTemplate?: boolean;
 }
 
 const defaultDescripcionText = `La instalación está compuesta por varios muebles frigoríficos tipo mural y dos armarios de congelados, así como tres cámaras de conservación, un obrador y dos cámaras de congelados. Los servicios positivos se alimentan desde una central compacta positiva, mientras que los servicios negativos se alimentan desde una central compacta negativa.
@@ -28,7 +32,13 @@ El refrigerante condensado se almacena en su correspondiente recipiente de líqu
 Se ha instalado un evaporador en cada cámara, correctamente dimensionado a sus necesidades. El desescarche de los evaporadores se realiza por resistencias eléctricas.
 El gas utilizado en la instalación es R-448A. La carga de refrigerante para la central compacta positiva es de 50 kg, mientras que la carga de refrigerante para la central compacta negativa es de 35 kg. Por lo que la instalación cuenta con una carga total de 85 kg de refrigerante R-448A repartida en dos sistemas diferentes.`;
 
-const MemoriaTecnicaForm = ({ onSubmit, onChange }: MemoriaTecnicaFormProps) => {
+const MemoriaTecnicaForm = ({ 
+  onSubmit, 
+  onChange, 
+  onWordTemplateUploaded, 
+  onGenerateWordDocument,
+  hasWordTemplate = false
+}: MemoriaTecnicaFormProps) => {
   const [activeTab, setActiveTab] = useState("titular");
   
   const handleSubmit = (e: React.FormEvent) => {
@@ -65,7 +75,7 @@ const MemoriaTecnicaForm = ({ onSubmit, onChange }: MemoriaTecnicaFormProps) => 
   return (
     <form onSubmit={handleSubmit}>
       <Tabs defaultValue="titular" value={activeTab} onValueChange={setActiveTab} className="mb-6">
-        <TabsList className="grid grid-cols-7 w-full">
+        <TabsList className="grid grid-cols-8 w-full">
           <TabsTrigger value="titular">Datos Titular</TabsTrigger>
           <TabsTrigger value="instalador">Datos Instalador</TabsTrigger>
           <TabsTrigger value="instalacion">Datos Instalación</TabsTrigger>
@@ -73,6 +83,7 @@ const MemoriaTecnicaForm = ({ onSubmit, onChange }: MemoriaTecnicaFormProps) => 
           <TabsTrigger value="clasificacion">Clasificación</TabsTrigger>
           <TabsTrigger value="normativa">Normativa</TabsTrigger>
           <TabsTrigger value="descripcion">Descripción</TabsTrigger>
+          <TabsTrigger value="word">Documento</TabsTrigger>
         </TabsList>
         
         <TabsContent value="titular" className="mt-6">
@@ -131,7 +142,12 @@ const MemoriaTecnicaForm = ({ onSubmit, onChange }: MemoriaTecnicaFormProps) => 
               <h3 className="text-lg font-medium mb-4">10. DESCRIPCIÓN DE LA INSTALACIÓN FRIGORÍFICA</h3>
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="descripcionInstalacion">Descripción de la instalación</Label>
+                  <Label htmlFor="descripcionInstalacion">
+                    Descripción de la instalación 
+                    <span className="text-xs text-muted-foreground ml-2">
+                      (Usa &&texto&& para marcar entradas para el índice)
+                    </span>
+                  </Label>
                   <Textarea 
                     id="descripcionInstalacion"
                     className="min-h-[300px] mt-2"
@@ -143,6 +159,14 @@ const MemoriaTecnicaForm = ({ onSubmit, onChange }: MemoriaTecnicaFormProps) => 
               </div>
             </div>
           </Card>
+        </TabsContent>
+        
+        <TabsContent value="word" className="mt-6">
+          <WordDocumentTemplate 
+            onTemplateUploaded={onWordTemplateUploaded || (() => {})}
+            onDownloadDocument={onGenerateWordDocument || (() => {})}
+            hasTemplate={hasWordTemplate}
+          />
         </TabsContent>
       </Tabs>
       
@@ -158,7 +182,8 @@ const MemoriaTecnicaForm = ({ onSubmit, onChange }: MemoriaTecnicaFormProps) => 
               "datos_proyecto": "instalacion",
               "clasificacion": "datos_proyecto",
               "normativa": "clasificacion",
-              "descripcion": "normativa"
+              "descripcion": "normativa",
+              "word": "descripcion"
             }[activeTab];
             setActiveTab(prevTab);
           }}
@@ -167,7 +192,7 @@ const MemoriaTecnicaForm = ({ onSubmit, onChange }: MemoriaTecnicaFormProps) => 
           Anterior
         </Button>
         
-        {activeTab !== "descripcion" ? (
+        {activeTab !== "word" ? (
           <Button 
             type="button"
             onClick={() => {
@@ -178,7 +203,8 @@ const MemoriaTecnicaForm = ({ onSubmit, onChange }: MemoriaTecnicaFormProps) => 
                 "datos_proyecto": "clasificacion",
                 "clasificacion": "normativa",
                 "normativa": "descripcion",
-                "descripcion": "descripcion"
+                "descripcion": "word",
+                "word": "word"
               }[activeTab];
               setActiveTab(nextTab);
             }}
