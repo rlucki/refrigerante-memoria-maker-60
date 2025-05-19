@@ -1,5 +1,13 @@
 
 import React from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 interface MemoriaEvaporadoresProps {
   excelData?: any;
@@ -8,7 +16,7 @@ interface MemoriaEvaporadoresProps {
 const MemoriaEvaporadores: React.FC<MemoriaEvaporadoresProps> = ({ excelData }) => {
   // Extract data from Excel if available
   const evaporadoresData = React.useMemo(() => {
-    if (!excelData || !excelData.jsonData) return [];
+    if (!excelData || !excelData['RESUM LEGA']) return [];
     
     try {
       // Filter for rows between AJ1 and AQ15
@@ -44,7 +52,7 @@ const MemoriaEvaporadores: React.FC<MemoriaEvaporadoresProps> = ({ excelData }) 
 
   // Extract central negativa data if available
   const centralNegativaData = React.useMemo(() => {
-    if (!excelData || !excelData.jsonData) return [];
+    if (!excelData || !excelData['RESUM LEGA']) return [];
     
     try {
       // Filter for rows between AD1 and AH20
@@ -90,34 +98,34 @@ const MemoriaEvaporadores: React.FC<MemoriaEvaporadoresProps> = ({ excelData }) 
           
           {evaporadoresData.length > 0 ? (
             <div className="overflow-x-auto mt-4">
-              <table className="min-w-full border border-gray-300">
-                <thead>
-                  <tr className="bg-gray-100">
-                    <th className="border border-gray-300 px-3 py-2 text-xs text-left">Modelo</th>
-                    <th className="border border-gray-300 px-3 py-2 text-xs text-left">Potencia (W)</th>
-                    <th className="border border-gray-300 px-3 py-2 text-xs text-left">Cantidad</th>
-                    <th className="border border-gray-300 px-3 py-2 text-xs text-left">Temperatura (°C)</th>
-                    <th className="border border-gray-300 px-3 py-2 text-xs text-left">Desescarche</th>
-                    <th className="border border-gray-300 px-3 py-2 text-xs text-left">Ventiladores</th>
-                    <th className="border border-gray-300 px-3 py-2 text-xs text-left">Caudal (m³/h)</th>
-                    <th className="border border-gray-300 px-3 py-2 text-xs text-left">Ubicación</th>
-                  </tr>
-                </thead>
-                <tbody>
+              <Table className="w-full border-collapse">
+                <TableHeader>
+                  <TableRow className="bg-gray-100">
+                    <TableHead className="border border-gray-300 p-2 text-xs">Modelo</TableHead>
+                    <TableHead className="border border-gray-300 p-2 text-xs">Potencia (W)</TableHead>
+                    <TableHead className="border border-gray-300 p-2 text-xs">Cantidad</TableHead>
+                    <TableHead className="border border-gray-300 p-2 text-xs">Temperatura (°C)</TableHead>
+                    <TableHead className="border border-gray-300 p-2 text-xs">Desescarche</TableHead>
+                    <TableHead className="border border-gray-300 p-2 text-xs">Ventiladores</TableHead>
+                    <TableHead className="border border-gray-300 p-2 text-xs">Caudal (m³/h)</TableHead>
+                    <TableHead className="border border-gray-300 p-2 text-xs">Ubicación</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
                   {evaporadoresData.map((row, index) => (
-                    <tr key={index} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                      <td className="border border-gray-300 px-3 py-2 text-xs">{row.modelo}</td>
-                      <td className="border border-gray-300 px-3 py-2 text-xs">{row.potencia}</td>
-                      <td className="border border-gray-300 px-3 py-2 text-xs">{row.cantidad}</td>
-                      <td className="border border-gray-300 px-3 py-2 text-xs">{row.temperatura}</td>
-                      <td className="border border-gray-300 px-3 py-2 text-xs">{row.desescarche}</td>
-                      <td className="border border-gray-300 px-3 py-2 text-xs">{row.ventiladores}</td>
-                      <td className="border border-gray-300 px-3 py-2 text-xs">{row.caudal}</td>
-                      <td className="border border-gray-300 px-3 py-2 text-xs">{row.ubicacion}</td>
-                    </tr>
+                    <TableRow key={index} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                      <TableCell className="border border-gray-300 p-2 text-xs">{row.modelo}</TableCell>
+                      <TableCell className="border border-gray-300 p-2 text-xs">{row.potencia}</TableCell>
+                      <TableCell className="border border-gray-300 p-2 text-xs">{row.cantidad}</TableCell>
+                      <TableCell className="border border-gray-300 p-2 text-xs">{row.temperatura}</TableCell>
+                      <TableCell className="border border-gray-300 p-2 text-xs">{row.desescarche}</TableCell>
+                      <TableCell className="border border-gray-300 p-2 text-xs">{row.ventiladores}</TableCell>
+                      <TableCell className="border border-gray-300 p-2 text-xs">{row.caudal}</TableCell>
+                      <TableCell className="border border-gray-300 p-2 text-xs">{row.ubicacion}</TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
           ) : (
             <p className="italic text-gray-500">No se encontraron datos de evaporadores en el Excel.</p>
@@ -127,28 +135,28 @@ const MemoriaEvaporadores: React.FC<MemoriaEvaporadoresProps> = ({ excelData }) 
           
           {centralNegativaData.length > 0 ? (
             <div className="overflow-x-auto mt-4">
-              <table className="min-w-full border border-gray-300">
-                <thead>
-                  <tr className="bg-gray-100">
-                    <th className="border border-gray-300 px-3 py-2 text-xs text-left">Característica</th>
-                    <th className="border border-gray-300 px-3 py-2 text-xs text-left">Valor</th>
-                    <th className="border border-gray-300 px-3 py-2 text-xs text-left">Unidad</th>
-                    <th className="border border-gray-300 px-3 py-2 text-xs text-left">Observaciones</th>
-                    <th className="border border-gray-300 px-3 py-2 text-xs text-left">Referencia</th>
-                  </tr>
-                </thead>
-                <tbody>
+              <Table className="w-full border-collapse">
+                <TableHeader>
+                  <TableRow className="bg-gray-100">
+                    <TableHead className="border border-gray-300 p-2 text-xs">Característica</TableHead>
+                    <TableHead className="border border-gray-300 p-2 text-xs">Valor</TableHead>
+                    <TableHead className="border border-gray-300 p-2 text-xs">Unidad</TableHead>
+                    <TableHead className="border border-gray-300 p-2 text-xs">Observaciones</TableHead>
+                    <TableHead className="border border-gray-300 p-2 text-xs">Referencia</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
                   {centralNegativaData.map((row, index) => (
-                    <tr key={index} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                      <td className="border border-gray-300 px-3 py-2 text-xs">{row.caracteristica}</td>
-                      <td className="border border-gray-300 px-3 py-2 text-xs">{row.valor}</td>
-                      <td className="border border-gray-300 px-3 py-2 text-xs">{row.unidad}</td>
-                      <td className="border border-gray-300 px-3 py-2 text-xs">{row.observaciones}</td>
-                      <td className="border border-gray-300 px-3 py-2 text-xs">{row.referencia}</td>
-                    </tr>
+                    <TableRow key={index} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                      <TableCell className="border border-gray-300 p-2 text-xs">{row.caracteristica}</TableCell>
+                      <TableCell className="border border-gray-300 p-2 text-xs">{row.valor}</TableCell>
+                      <TableCell className="border border-gray-300 p-2 text-xs">{row.unidad}</TableCell>
+                      <TableCell className="border border-gray-300 p-2 text-xs">{row.observaciones}</TableCell>
+                      <TableCell className="border border-gray-300 p-2 text-xs">{row.referencia}</TableCell>
+                    </TableRow>
                   ))}
-                </tbody>
-              </table>
+                </TableBody>
+              </Table>
             </div>
           ) : (
             <p className="italic text-gray-500">No se encontraron datos de central negativa en el Excel.</p>
