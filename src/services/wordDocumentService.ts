@@ -34,7 +34,7 @@ export async function generateWordDocument(templateFile: File, memoriaData: Memo
             }),
             
             // Section 1: Datos del titular
-            createHeadingWithText("1. DATOS DEL TITULAR", 
+            ...createHeadingWithText("1. DATOS DEL TITULAR", 
               `${memoriaData.titular || ''}\n` +
               `NIF/CIF: ${memoriaData.nif || ''}\n` +
               `Dirección: ${memoriaData.direccion || ''}\n` +
@@ -45,7 +45,7 @@ export async function generateWordDocument(templateFile: File, memoriaData: Memo
             ),
             
             // Section 12: Descripción de la instalación
-            createHeadingWithText("12. DESCRIPCIÓN DE LA INSTALACIÓN FRIGORÍFICA", 
+            ...createHeadingWithText("12. DESCRIPCIÓN DE LA INSTALACIÓN FRIGORÍFICA", 
               memoriaData.descripcionInstalacion || ''
             ),
             
