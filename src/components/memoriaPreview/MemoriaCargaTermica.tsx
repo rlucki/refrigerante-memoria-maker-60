@@ -90,15 +90,21 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
         // Buscar datos en el área G-H
         for (const row of data) {
           if (row && 
-             (row["__EMPTY_6"] || row["Unnamed: 6"]) && 
-             (row["__EMPTY_6"] !== "MAQUINARIA INSTALADA" && 
-              row["__EMPTY_6"] !== "ELEMENTO" && 
-              row["__EMPTY_6"] !== "CENTRAL FRIGORÍFICA")) {
+             ((row["__EMPTY_6"] || row["Unnamed: 6"] || row["MAQUINARIA INSTALADA"]) && 
+              (row["__EMPTY_6"] !== "MAQUINARIA INSTALADA" && 
+               row["__EMPTY_6"] !== "ELEMENTO" && 
+               row["__EMPTY_6"] !== "CENTRAL FRIGORÍFICA"))) {
             
-            maquinaria.push({
-              elemento: row["__EMPTY_6"] || row["Unnamed: 6"] || "",
-              detalles: row["__EMPTY_7"] || row["Unnamed: 7"] || ""
-            });
+            const elemento = row["__EMPTY_6"] || row["Unnamed: 6"] || row["MAQUINARIA INSTALADA"] || "";
+            const detalles = row["__EMPTY_7"] || row["Unnamed: 7"] || row["ELEMENTO"] || "";
+            
+            // Solo agregar filas no vacías
+            if (elemento && elemento !== "MAQUINARIA INSTALADA" && elemento !== "ELEMENTO") {
+              maquinaria.push({
+                elemento: elemento,
+                detalles: detalles
+              });
+            }
           }
         }
         
@@ -111,17 +117,22 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
         
         // Buscar datos en el área J-O
         for (const row of data) {
-          if (row && 
-             (row["__EMPTY_9"] || row["Unnamed: 9"] || row["CENTRAL POSITIVA"]) && 
-             (row["__EMPTY_9"] !== "CENTRAL POSITIVA" && 
-              row["__EMPTY_9"] !== "CARACTERÍSTICA" && 
-              row["__EMPTY_9"] !== undefined)) {
+          if (row) {
+            // Intentar extraer los datos usando diferentes posibles nombres de columnas
+            const caracteristica = row["__EMPTY_9"] || row["Unnamed: 9"] || row["CENTRAL POSITIVA"] || row["CARACTERÍSTICA"] || "";
+            const medidas = row["__EMPTY_10"] || row["Unnamed: 10"] || row["MEDIDAS"] || "";
+            const observaciones = row["__EMPTY_14"] || row["Unnamed: 14"] || row["OBSERVACIONES"] || "";
             
-            centralPositiva.push({
-              caracteristica: row["__EMPTY_9"] || row["CENTRAL POSITIVA"] || row["Unnamed: 9"] || "",
-              medidas: row["__EMPTY_10"] || row["Unnamed: 10"] || row["__EMPTY_11"] || row["Unnamed: 11"] || "",
-              observaciones: row["__EMPTY_14"] || row["Unnamed: 14"] || ""
-            });
+            // Solo agregar filas no vacías y no encabezados
+            if (caracteristica && 
+                caracteristica !== "CENTRAL POSITIVA" && 
+                caracteristica !== "CARACTERÍSTICA") {
+              centralPositiva.push({
+                caracteristica,
+                medidas,
+                observaciones
+              });
+            }
           }
         }
         
@@ -131,7 +142,7 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
     }
     
     // Para datos en formato de hoja de cálculo
-    if (data["RESUM LEGA"]) {
+    if (data && data["RESUM LEGA"]) {
       const sheet = data["RESUM LEGA"];
       console.log(`Hoja RESUM LEGA encontrada para rango ${range.startCol}-${range.endCol}:`, sheet);
       
@@ -236,7 +247,7 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
   // Obtener datos para las tablas
   const positivosData = extractTableData(excelData, { startCol: 'A', endCol: 'E', startIndex: 1, endIndex: 60 });
   const negativosData = extractTableData(excelData, { startCol: 'Q', endCol: 'U', startIndex: 1, endIndex: 60 });
-  const maquinariaData = extractTableData(excelData, { startCol: 'G', endCol: 'H', startIndex: 1, endIndex: 13 });
+  const maquinariaData = extractTableData(excelData, { startCol: 'G', endCol: 'H', startIndex: 1, endIndex: 9 });
   const centralPositivaData = extractTableData(excelData, { startCol: 'J', endCol: 'O', startIndex: 1, endIndex: 20 });
   
   // Calcular sumatorios
