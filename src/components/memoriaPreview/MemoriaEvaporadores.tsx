@@ -86,7 +86,40 @@ const MemoriaEvaporadores: React.FC<MemoriaEvaporadoresProps> = ({ excelData }) 
   return (
     <div className="mb-8 max-w-[210mm] mx-auto bg-white min-h-[297mm] relative p-6">
       <div className="pb-20">
-        <h3 className="text-lg font-bold">14.12. EVAPORADORES</h3>
+        {/* First we show the Central Negativa section (14.3) */}
+        <h3 className="text-lg font-bold">14.3. CENTRAL NEGATIVA</h3>
+        
+        {centralNegativaData.length > 0 ? (
+          <div className="overflow-x-auto mt-4">
+            <Table className="w-full border-collapse">
+              <TableHeader>
+                <TableRow className="bg-gray-100">
+                  <TableHead className="border border-gray-300 p-2 text-xs">Característica</TableHead>
+                  <TableHead className="border border-gray-300 p-2 text-xs">Valor</TableHead>
+                  <TableHead className="border border-gray-300 p-2 text-xs">Unidad</TableHead>
+                  <TableHead className="border border-gray-300 p-2 text-xs">Observaciones</TableHead>
+                  <TableHead className="border border-gray-300 p-2 text-xs">Referencia</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {centralNegativaData.map((row, index) => (
+                  <TableRow key={index} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                    <TableCell className="border border-gray-300 p-2 text-xs">{row.caracteristica}</TableCell>
+                    <TableCell className="border border-gray-300 p-2 text-xs">{row.valor}</TableCell>
+                    <TableCell className="border border-gray-300 p-2 text-xs">{row.unidad}</TableCell>
+                    <TableCell className="border border-gray-300 p-2 text-xs">{row.observaciones}</TableCell>
+                    <TableCell className="border border-gray-300 p-2 text-xs">{row.referencia}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        ) : (
+          <p className="italic text-gray-500">No se encontraron datos de central negativa en el Excel.</p>
+        )}
+        
+        {/* Then we show the Evaporadores section (14.12) */}
+        <h3 className="text-lg font-bold mt-8">14.12. EVAPORADORES</h3>
         
         <div className="mt-4 text-sm text-justify">
           <p className="mb-4">
@@ -131,36 +164,19 @@ const MemoriaEvaporadores: React.FC<MemoriaEvaporadoresProps> = ({ excelData }) 
             <p className="italic text-gray-500">No se encontraron datos de evaporadores en el Excel.</p>
           )}
           
-          <h4 className="text-base font-bold mt-8 mb-3">14.3. CENTRAL NEGATIVA</h4>
-          
-          {centralNegativaData.length > 0 ? (
-            <div className="overflow-x-auto mt-4">
-              <Table className="w-full border-collapse">
-                <TableHeader>
-                  <TableRow className="bg-gray-100">
-                    <TableHead className="border border-gray-300 p-2 text-xs">Característica</TableHead>
-                    <TableHead className="border border-gray-300 p-2 text-xs">Valor</TableHead>
-                    <TableHead className="border border-gray-300 p-2 text-xs">Unidad</TableHead>
-                    <TableHead className="border border-gray-300 p-2 text-xs">Observaciones</TableHead>
-                    <TableHead className="border border-gray-300 p-2 text-xs">Referencia</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {centralNegativaData.map((row, index) => (
-                    <TableRow key={index} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                      <TableCell className="border border-gray-300 p-2 text-xs">{row.caracteristica}</TableCell>
-                      <TableCell className="border border-gray-300 p-2 text-xs">{row.valor}</TableCell>
-                      <TableCell className="border border-gray-300 p-2 text-xs">{row.unidad}</TableCell>
-                      <TableCell className="border border-gray-300 p-2 text-xs">{row.observaciones}</TableCell>
-                      <TableCell className="border border-gray-300 p-2 text-xs">{row.referencia}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          ) : (
-            <p className="italic text-gray-500">No se encontraron datos de central negativa en el Excel.</p>
-          )}
+          <div className="mt-6">
+            <p className="mb-4">
+              El desescarche en los evaporadores de las cámaras y de los muebles frigoríficos negativos se realiza mediante la aportación 
+              de calor por resistencias (desescarche eléctrico), mientras que en los evaporadores de los obradores y de los muebles 
+              frigoríficos positivos se realiza por aire, mediante el corte de la alimentación de refrigerante a éstos mientras 
+              los ventiladores están en funcionamiento.
+            </p>
+            
+            <p className="mb-4">
+              La separación de aleta para los evaporadores de cámaras de temperatura positiva es como mínimo de 6 mm. 
+              En los evaporadores de cámara de congelados es como mínimo de 7 mm.
+            </p>
+          </div>
         </div>
       </div>
     </div>
