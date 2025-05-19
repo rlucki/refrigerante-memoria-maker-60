@@ -17,11 +17,11 @@ const DescripcionInstalacionSection: React.FC<DescripcionInstalacionSectionProps
       <div className="p-6">
         <h3 className="text-lg font-medium mb-4">Datos de la instalación</h3>
         <div className="space-y-4">
-          {/* Clasificación de la instalación (duplicado) */}
+          {/* Clasificación de la instalación (bidireccional con ClasificacionSection) */}
           <div>
             <Label htmlFor="nivelInstalacionDesc">Clasificación de la instalación</Label>
             <Select 
-              defaultValue={formData?.nivelInstalacion || "Nivel 1"}
+              value={formData?.nivelInstalacion || "Nivel 1"}
               onValueChange={(value) => onChange("nivelInstalacion", value)}
             >
               <SelectTrigger id="nivelInstalacionDesc" className="mt-2">
@@ -35,7 +35,7 @@ const DescripcionInstalacionSection: React.FC<DescripcionInstalacionSectionProps
             </Select>
           </div>
 
-          {/* Refrigerante (duplicado) */}
+          {/* Refrigerante (bidireccional con ClasificacionSection) */}
           <div>
             <Label htmlFor="refrigeranteDesc">Refrigerante</Label>
             <Input 
@@ -51,7 +51,7 @@ const DescripcionInstalacionSection: React.FC<DescripcionInstalacionSectionProps
           <div>
             <Label className="mb-2 block">Tipo de ventilador</Label>
             <RadioGroup 
-              defaultValue={formData?.tipoVentilador || "helicoidal"}
+              value={formData?.tipoVentilador || "helicoidal"}
               onValueChange={(value) => onChange("tipoVentilador", value)}
               className="flex space-x-4"
             >
@@ -108,7 +108,7 @@ const DescripcionInstalacionSection: React.FC<DescripcionInstalacionSectionProps
           <div>
             <Label className="mb-2 block">¿Hay intercambiador IHX?</Label>
             <RadioGroup 
-              defaultValue={formData?.tieneIHX || "no"}
+              value={formData?.tieneIHX || "no"}
               onValueChange={(value) => onChange("tieneIHX", value)}
               className="flex space-x-4"
             >
@@ -127,7 +127,7 @@ const DescripcionInstalacionSection: React.FC<DescripcionInstalacionSectionProps
           <div>
             <Label className="mb-2 block">¿Tiene desrecalentador?</Label>
             <RadioGroup 
-              defaultValue={formData?.tieneDesrecalentador || "no"}
+              value={formData?.tieneDesrecalentador || "no"}
               onValueChange={(value) => onChange("tieneDesrecalentador", value)}
               className="flex space-x-4"
             >

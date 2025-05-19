@@ -64,13 +64,14 @@ const MemoriaTecnicaForm = ({
   return (
     <form onSubmit={handleSubmit}>
       <Tabs defaultValue={currentTab} value={currentTab} onValueChange={updateTab} className="mb-6">
-        <TabsList className="grid grid-cols-7 w-full">
+        <TabsList className="grid grid-cols-8 w-full">
           <TabsTrigger value="titular">Datos Titular</TabsTrigger>
           <TabsTrigger value="instalador">Datos Instalador</TabsTrigger>
           <TabsTrigger value="instalacion">Datos Instalación</TabsTrigger>
           <TabsTrigger value="datos_proyecto">Datos Proyecto</TabsTrigger>
           <TabsTrigger value="clasificacion">Clasificación</TabsTrigger>
           <TabsTrigger value="descripcion">Descripción</TabsTrigger>
+          <TabsTrigger value="datos_tecnicos">Datos Técnicos</TabsTrigger>
           <TabsTrigger value="normativa">Normativa</TabsTrigger>
         </TabsList>
         
@@ -98,7 +99,8 @@ const MemoriaTecnicaForm = ({
                     className="mt-2"
                     placeholder="Ej: Supermercado"
                     onChange={handleInputChange}
-                    defaultValue="Supermercado"
+                    defaultValue={formData.tipoInstalacion || "Supermercado"}
+                    value={formData.tipoInstalacion || ""}
                   />
                 </div>
                 <div>
@@ -108,7 +110,8 @@ const MemoriaTecnicaForm = ({
                     className="mt-2"
                     placeholder="Ej: Costa del Silencio (Arona)"
                     onChange={handleInputChange}
-                    defaultValue="Costa del Silencio (Arona)"
+                    defaultValue={formData.nombreProyecto || "Costa del Silencio (Arona)"}
+                    value={formData.nombreProyecto || ""}
                   />
                 </div>
               </div>
@@ -117,7 +120,7 @@ const MemoriaTecnicaForm = ({
         </TabsContent>
         
         <TabsContent value="clasificacion" className="mt-6">
-          <ClasificacionSection onChange={handleInputChange} />
+          <ClasificacionSection onChange={handleInputChange} formData={formData} />
         </TabsContent>
         
         <TabsContent value="descripcion" className="mt-6">
@@ -125,6 +128,10 @@ const MemoriaTecnicaForm = ({
             onChange={handleComplexChange} 
             formData={formData}
           />
+        </TabsContent>
+        
+        <TabsContent value="datos_tecnicos" className="mt-6">
+          <DatosTecnicosSection onChange={handleInputChange} />
         </TabsContent>
         
         <TabsContent value="normativa" className="mt-6">
@@ -144,7 +151,8 @@ const MemoriaTecnicaForm = ({
               "datos_proyecto": "instalacion",
               "clasificacion": "datos_proyecto",
               "descripcion": "clasificacion",
-              "normativa": "descripcion",
+              "datos_tecnicos": "descripcion",
+              "normativa": "datos_tecnicos",
             }[currentTab];
             updateTab(prevTab);
           }}
@@ -162,7 +170,8 @@ const MemoriaTecnicaForm = ({
               "instalacion": "datos_proyecto",
               "datos_proyecto": "clasificacion",
               "clasificacion": "descripcion",
-              "descripcion": "normativa",
+              "descripcion": "datos_tecnicos",
+              "datos_tecnicos": "normativa",
               "normativa": "normativa",
             }[currentTab];
             updateTab(nextTab);
