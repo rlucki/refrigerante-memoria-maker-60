@@ -105,7 +105,7 @@ const ExcelDataViewer: React.FC<ExcelDataViewerProps> = ({ data, title = "Datos 
                 <TableRow>
                   <TableHead className="w-10">#</TableHead>
                   {keys.map((key) => (
-                    <TableHead key={key as React.Key} className="whitespace-nowrap min-w-32">
+                    <TableHead key={key.toString()} className="whitespace-nowrap min-w-32">
                       {String(key)}
                     </TableHead>
                   ))}
@@ -116,7 +116,7 @@ const ExcelDataViewer: React.FC<ExcelDataViewerProps> = ({ data, title = "Datos 
                   <TableRow key={index}>
                     <TableCell>{index + 1}</TableCell>
                     {keys.map((key) => (
-                      <TableCell key={key as React.Key} className="whitespace-nowrap overflow-hidden text-ellipsis max-w-52">
+                      <TableCell key={key.toString()} className="whitespace-nowrap overflow-hidden text-ellipsis max-w-52">
                         {item[key as keyof typeof item] !== undefined ? String(item[key as keyof typeof item]) : ""}
                       </TableCell>
                     ))}
