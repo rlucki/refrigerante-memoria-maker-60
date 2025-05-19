@@ -57,6 +57,13 @@ const MemoriaTecnicaForm = ({
       onChange(field, value);
     }
   };
+
+  // Create an adapter function to match the expected signature
+  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (onChange) {
+      onChange(e.target.id, e.target.value);
+    }
+  };
   
   return (
     <form onSubmit={handleSubmit}>
@@ -123,7 +130,7 @@ const MemoriaTecnicaForm = ({
                     id="descripcionInstalacion"
                     className="w-full h-48 p-4 border rounded-md mt-2"
                     placeholder="Introduzca la descripción de la instalación frigorífica"
-                    onChange={(e) => handleComplexChange("descripcionInstalacion", e.target.value)}
+                    onChange={handleTextareaChange}
                   />
                 </div>
                 <div>
