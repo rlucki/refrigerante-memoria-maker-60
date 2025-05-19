@@ -11,6 +11,7 @@ import NormativaSection from "./formSections/NormativaSection";
 import ClasificacionSection from "./formSections/ClasificacionSection";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
+import { Textarea } from "./ui/textarea";
 
 interface MemoriaTecnicaFormProps {
   onSubmit: () => void;
@@ -60,6 +61,13 @@ const MemoriaTecnicaForm = ({
 
   // Create an adapter function to match the expected signature
   const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (onChange) {
+      onChange(e.target.id, e.target.value);
+    }
+  };
+
+  // Create an adapter function for select elements
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (onChange) {
       onChange(e.target.id, e.target.value);
     }
@@ -126,9 +134,9 @@ const MemoriaTecnicaForm = ({
               <div className="space-y-4">
                 <div>
                   <Label htmlFor="descripcionInstalacion">Descripción detallada</Label>
-                  <textarea
+                  <Textarea
                     id="descripcionInstalacion"
-                    className="w-full h-48 p-4 border rounded-md mt-2"
+                    className="w-full h-48 mt-2"
                     placeholder="Introduzca la descripción de la instalación frigorífica"
                     onChange={handleTextareaChange}
                   />
@@ -138,7 +146,7 @@ const MemoriaTecnicaForm = ({
                   <select
                     id="nivelInstalacion"
                     className="w-full p-2 border rounded-md mt-2"
-                    onChange={(e) => handleComplexChange("nivelInstalacion", e.target.value)}
+                    onChange={handleSelectChange}
                   >
                     <option value="Nivel 1">Nivel 1</option>
                     <option value="Nivel 2">Nivel 2</option>
