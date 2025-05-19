@@ -61,13 +61,12 @@ const MemoriaTecnicaForm = ({
   return (
     <form onSubmit={handleSubmit}>
       <Tabs defaultValue={currentTab} value={currentTab} onValueChange={updateTab} className="mb-6">
-        <TabsList className="grid grid-cols-6 w-full">
+        <TabsList className="grid grid-cols-5 w-full">
           <TabsTrigger value="titular">Datos Titular</TabsTrigger>
           <TabsTrigger value="instalador">Datos Instalador</TabsTrigger>
           <TabsTrigger value="instalacion">Datos Instalación</TabsTrigger>
           <TabsTrigger value="datos_proyecto">Datos Proyecto</TabsTrigger>
-          <TabsTrigger value="clasificacion">Clasificación</TabsTrigger>
-          <TabsTrigger value="normativa">Normativa</TabsTrigger>
+          <TabsTrigger value="descripcion_clasificacion">Descripción y Clasificación</TabsTrigger>
         </TabsList>
         
         <TabsContent value="titular" className="mt-6">
@@ -112,12 +111,38 @@ const MemoriaTecnicaForm = ({
           </Card>
         </TabsContent>
         
-        <TabsContent value="clasificacion" className="mt-6">
-          <ClasificacionSection onChange={handleInputChange} />
-        </TabsContent>
-        
-        <TabsContent value="normativa" className="mt-6">
-          <NormativaSection onChange={handleComplexChange} />
+        <TabsContent value="descripcion_clasificacion" className="mt-6">
+          <div className="space-y-6">
+            {/* Descripción de la instalación */}
+            <Card className="p-6">
+              <h3 className="text-lg font-medium mb-4">Descripción de la instalación</h3>
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="descripcionInstalacion">Descripción detallada</Label>
+                  <textarea
+                    id="descripcionInstalacion"
+                    className="w-full h-48 p-4 border rounded-md mt-2"
+                    placeholder="Introduzca la descripción de la instalación frigorífica"
+                    onChange={(e) => handleComplexChange("descripcionInstalacion", e.target.value)}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="nivelInstalacion">Nivel de instalación</Label>
+                  <select
+                    id="nivelInstalacion"
+                    className="w-full p-2 border rounded-md mt-2"
+                    onChange={(e) => handleComplexChange("nivelInstalacion", e.target.value)}
+                  >
+                    <option value="Nivel 1">Nivel 1</option>
+                    <option value="Nivel 2">Nivel 2</option>
+                  </select>
+                </div>
+              </div>
+            </Card>
+
+            {/* Clasificación */}
+            <ClasificacionSection onChange={handleComplexChange} />
+          </div>
         </TabsContent>
       </Tabs>
       
@@ -131,8 +156,7 @@ const MemoriaTecnicaForm = ({
               "instalador": "titular",
               "instalacion": "instalador",
               "datos_proyecto": "instalacion",
-              "clasificacion": "datos_proyecto",
-              "normativa": "clasificacion",
+              "descripcion_clasificacion": "datos_proyecto",
             }[currentTab];
             updateTab(prevTab);
           }}
@@ -148,13 +172,12 @@ const MemoriaTecnicaForm = ({
               "titular": "instalador",
               "instalador": "instalacion",
               "instalacion": "datos_proyecto",
-              "datos_proyecto": "clasificacion",
-              "clasificacion": "normativa",
-              "normativa": "normativa",
+              "datos_proyecto": "descripcion_clasificacion",
+              "descripcion_clasificacion": "descripcion_clasificacion",
             }[currentTab];
             updateTab(nextTab);
           }}
-          disabled={currentTab === "normativa"}
+          disabled={currentTab === "descripcion_clasificacion"}
         >
           Siguiente
         </Button>
