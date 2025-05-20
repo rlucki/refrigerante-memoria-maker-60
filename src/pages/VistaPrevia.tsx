@@ -1,19 +1,12 @@
 
 import { useState, useRef } from "react";
-import { Button } from "@/components/ui/button";
-import { ChevronLeft, Download } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import MemoriaTecnicaForm from "@/components/MemoriaTecnicaForm";
-import MemoriaPreview from "@/components/memoriaPreview/MemoriaPreview";
 import { toast } from "@/hooks/use-toast";
-import ExcelUploader from "@/components/ExcelUploader";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import WordDocumentTemplate from "@/components/WordDocumentTemplate";
-import ExcelDataViewer from "@/components/ExcelDataViewer";
 import { generateWordDocument } from "@/services/wordDocumentService";
+import Header from "@/components/vista-previa/Header";
+import FormSection from "@/components/vista-previa/FormSection";
+import PreviewSection from "@/components/vista-previa/PreviewSection";
 
 const VistaPrevia = () => {
-  const navigate = useNavigate();
   const [memoriaData, setMemoriaData] = useState({
     // Datos titular
     titular: "DINOSOL SUPERMERCADOS S.L.",
@@ -216,66 +209,26 @@ El refrigerante, a alta presión, se expansiona hasta la presión de intermedia 
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      <header className="bg-white shadow-sm py-4 px-6 md:px-10 border-b sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={() => navigate('/')}
-            >
-              <ChevronLeft />
-            </Button>
-            <h1 className="text-2xl font-bold text-gray-800">Vista Previa de Memoria Técnica</h1>
-          </div>
-          {wordTemplate && (
-            <Button 
-              onClick={handleGenerateWordDocument}
-              className="flex gap-2 items-center"
-            >
-              <Download size={16} /> Descargar Word
-            </Button>
-          )}
-        </div>
-      </header>
+      <Header 
+        hasWordTemplate={!!wordTemplate} 
+        onGenerateWordDocument={handleGenerateWordDocument} 
+      />
       
       <div className="flex-1 flex flex-col lg:flex-row">
         {/* Left side - Form */}
         <div className="w-full lg:w-1/2 p-4 overflow-auto border-r" style={{ height: 'calc(100vh - 126px)' }} ref={formContainerRef}>
-          <div className="max-w-2xl mx-auto">
-            <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="h-12 mb-6">
-                <TabsTrigger value="form" className="data-[state=active]:border-b-2 data-[state=active]:border-primary">
-                  Formulario
-                </TabsTrigger>
-                <TabsTrigger value="word" className="data-[state=active]:border-b-2 data-[state=active]:border-primary">
-                  Base word
-                </TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="form" className="mt-6">
-                <MemoriaTecnicaForm 
-                  onSubmit={() => {}} 
-                  onChange={handleFormChange}
-                  onWordTemplateUploaded={handleWordTemplateUpload}
-                  onGenerateWordDocument={handleGenerateWordDocument}
-                  hasWordTemplate={!!wordTemplate}
-                  activeTab={activeSubTab}
-                  setActiveTab={setActiveSubTab}
-                  onCalculationsChange={handleCalculationsChange}
-                  onExcelUpload={handleExcelUpload}
-                />
-              </TabsContent>
-              
-              <TabsContent value="word" className="mt-6">
-                <WordDocumentTemplate 
-                  onTemplateUploaded={handleWordTemplateUpload}
-                  onDownloadDocument={handleGenerateWordDocument}
-                  hasTemplate={!!wordTemplate}
-                />
-              </TabsContent>
-            </Tabs>
-          </div>
+          <FormSection 
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            activeSubTab={activeSubTab}
+            setActiveSubTab={setActiveSubTab}
+            onFormChange={handleFormChange}
+            onCalculationsChange={handleCalculationsChange}
+            onExcelUpload={handleExcelUpload}
+            onWordTemplateUploaded={handleWordTemplateUpload}
+            onGenerateWordDocument={handleGenerateWordDocument}
+            hasWordTemplate={!!wordTemplate}
+          />
         </div>
         
         {/* Right side - Preview */}
@@ -284,44 +237,12 @@ El refrigerante, a alta presión, se expansiona hasta la presión de intermedia 
           style={{ height: 'calc(100vh - 126px)' }}
           ref={previewContainerRef}
         >
-          <div 
-            ref={previewRef} 
-            className="pdf-preview-container"
-          >
-            <style>
-              {`
-                .memoria-preview-container.continuous-flow > div {
-                  min-height: auto;
-                  max-height: none;
-                  height: auto;
-                  page-break-after: auto;
-                }
-                
-                .memoria-preview-container {
-                  padding-bottom: 40px;
-                }
-                
-                .memory-preview-page {
-                  margin-bottom: 20px;
-                }
-                
-                /* Ensure content is always visible */
-                .mb-8 {
-                  margin-bottom: 2rem !important;
-                }
-                
-                /* Better spacing between sections */
-                h3, h4 {
-                  margin-top: 1.5rem !important;
-                }
-              `}
-            </style>
-            <MemoriaPreview 
-              data={memoriaData} 
-              calculationsData={calculationsData}
-              excelData={excelData}
-            />
-          </div>
+          <PreviewSection 
+            memoriaData={memoriaData}
+            calculationsData={calculationsData}
+            excelData={excelData}
+            previewRef={previewRef}
+          />
         </div>
       </div>
     </div>

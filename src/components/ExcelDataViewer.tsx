@@ -194,7 +194,7 @@ const ExcelDataViewer: React.FC<ExcelDataViewerProps> = ({ data, title = "Datos 
     
     // Función para comparar columnas como A, B, C... Z, AA, AB, etc.
     const compareColumns = (a: string, b: string): number => {
-      // Si son de longitud diferente, las columnas más cortas van primero
+      // Si son de longitud diferente, las columnas más largas van después (AA > Z)
       if (a.length !== b.length) {
         return a.length - b.length;
       }
