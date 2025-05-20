@@ -154,38 +154,41 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
     }
   });
   
+  // ACTUALIZADO: Rango correcto para Central Positiva (14.1)
   const centralPositivaData = extractTableData(excelData, {
     sheet: "RESUM LEGA",
-    startCol: "J",
-    endCol: "O",
-    startRow: 1,
-    endRow: 20,
-    mappings: {
-      caracteristica: "J",
-      medidas: "K",
-      observaciones: "O"
-    }
-  });
-  
-  const compresoresParalelosData = extractTableData(excelData, {
-    sheet: "RESUM LEGA",
     startCol: "W",
-    endCol: "Z",
+    endCol: "AB",
     startRow: 1,
     endRow: 20,
     mappings: {
       caracteristica: "W",
       medidas: "X",
-      observaciones: "Z" // Combinamos Y+Z en observaciones si fuera necesario
+      observaciones: "AB"
     }
   });
   
+  // ACTUALIZADO: Rango correcto para Compresores Paralelos (14.2)
+  const compresoresParalelosData = extractTableData(excelData, {
+    sheet: "RESUM LEGA",
+    startCol: "AS",
+    endCol: "AW",
+    startRow: 1,
+    endRow: 18,
+    mappings: {
+      caracteristica: "AS",
+      medidas: "AT",
+      observaciones: "AW"
+    }
+  });
+  
+  // ACTUALIZADO: Rango correcto para Central Negativa (14.3)
   const centralNegativaData = extractTableData(excelData, {
     sheet: "RESUM LEGA",
     startCol: "AD",
     endCol: "AH",
     startRow: 1,
-    endRow: 22,
+    endRow: 19,
     mappings: {
       caracteristica: "AD",
       medidas: "AE",
@@ -346,7 +349,7 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
                     <TableHeader>
                       <TableRow className="bg-blue-100">
                         <TableHead colSpan={3} className="border border-gray-300 p-2 text-center font-bold">
-                          CENTRAL INTERMEDIA
+                          CENTRAL POSITIVA
                         </TableHead>
                       </TableRow>
                     </TableHeader>
