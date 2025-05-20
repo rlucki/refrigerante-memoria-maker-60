@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Upload, Download, FileText } from "lucide-react";
+import { Upload, Download, FileText, AlertTriangle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 interface WordDocumentTemplateProps {
@@ -89,6 +89,13 @@ const WordDocumentTemplate = ({
           Genera un documento Word con el contenido de la memoria técnica respetando el formato de la plantilla.
           Los títulos marcados con "&&" se incluirán en el índice del documento.
         </p>
+        
+        <div className="bg-amber-50 border border-amber-200 rounded p-3 mb-4 flex gap-2">
+          <AlertTriangle size={16} className="text-amber-500 mt-1 flex-shrink-0" />
+          <p className="text-xs text-amber-700">
+            El formato del documento generado puede variar respecto al HTML. La conversión de tablas y elementos complejos es limitada.
+          </p>
+        </div>
         
         <Button 
           onClick={onDownloadDocument} 
