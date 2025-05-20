@@ -1,5 +1,3 @@
-/* src/components/memoriaPreview/MemoriaEvaporadores.tsx */
-
 import React from "react";
 import {
   Table,
@@ -14,110 +12,106 @@ interface MemoriaEvaporadoresProps {
   excelData?: any;
 }
 
-/* helper para adjuntar la unidad */
-const withUnit = (v: string | number, unit: string) =>
-  v !== "" && v !== undefined && v !== null ? `${v} ${unit}` : "";
-
-const MemoriaEvaporadores: React.FC<MemoriaEvaporadoresProps> = ({
-  excelData,
-}) => {
-  /* ─── Extraer datos ─── */
-  const data = React.useMemo(() => {
-    if (!excelData?.["RESUM LEGA"]) return [];
-    const sh = excelData["RESUM LEGA"];
-    const out: any[] = [];
-
-    /* filas 2-15 (fila 1 = cabecera) */
-    for (let r = 2; r <= 15; r++) {
-      const row = {
-        cantidad:      sh[`AJ${r}`]?.v ?? "",   // “1”
-        denominacion:  sh[`AK${r}`]?.v ?? "",
-        modelo:        sh[`AL${r}`]?.v ?? "",
-        volInt:        sh[`AM${r}`]?.v ?? "",
-        superficie:    sh[`AN${r}`]?.v ?? "",
-        caudal:        sh[`AO${r}`]?.v ?? "",
-        potencia:      sh[`AP${r}`]?.v ?? "",
-        sepAleta:      sh[`AQ${r}`]?.v ?? "",
-      };
-      if (row.denominacion || row.modelo) out.push(row);
+const MemoriaEvaporadores: React.FC<MemoriaEvaporadoresProps> = ({ excelData }) => {
+  // Extract data from Excel if available
+  const evaporadoresData = React.useMemo(() => {
+    if (!excelData || !excelData['RESUM LEGA']) return [];
+    
+    try {
+      // Filter for rows between AJ1 and AQ15
+      const evaporadoresRows = [];
+      
+      // Process the Excel data to extract evaporadores information
+      if (excelData['RESUM LEGA']) {
+        for (let i = 1; i <= 15; i++) {
+          const rowData = {
+            modelo: excelData['RESUM LEGA'][AJ${i}]?.v || '',
+            potencia: excelData['RESUM LEGA'][AK${i}]?.v || '',
+            cantidad: excelData['RESUM LEGA'][AL${i}]?.v || '',
+            temperatura: excelData['RESUM LEGA'][AM${i}]?.v || '',
+            desescarche: excelData['RESUM LEGA'][AN${i}]?.v || '',
+            ventiladores: excelData['RESUM LEGA'][AO${i}]?.v || '',
+            caudal: excelData['RESUM LEGA'][AP${i}]?.v || '',
+            ubicacion: excelData['RESUM LEGA'][AQ${i}]?.v || '',
+          };
+          
+          // Only add rows that have data (at least model or power)
+          if (rowData.modelo || rowData.potencia) {
+            evaporadoresRows.push(rowData);
+          }
+        }
+      }
+      
+      return evaporadoresRows;
+    } catch (error) {
+      console.error("Error extracting evaporadores data:", error);
+      return [];
     }
-    return out;
   }, [excelData]);
 
   return (
     <div className="mb-8 max-w-[210mm] mx-auto bg-white min-h-[297mm] relative p-6">
-      <h3 className="text-lg font-bold mb-4">14.12. EVAPORADORES</h3>
-
-      <p className="text-sm text-justify mb-4">
-        En cada cámara se instala un evaporador convenientemente dimensionado y
-        dotado de ventiladores axiales y baterías de intercambio con tubos de
-        cobre y aletas de aluminio, cuya separación está en función de la
-        temperatura interior deseada. Están diseñados para soportar las
-        presiones de trabajo alcanzadas por el refrigerante. Los evaporadores
-        instalados son los siguientes:
-      </p>
-
-      {data.length ? (
-        <div className="overflow-x-auto">
-          <Table className="w-full border-collapse text-xs">
-            <TableHeader>
-              <TableRow className="bg-gray-100">
-                <TableHead className="border p-2">Cant.</TableHead>
-                <TableHead className="border p-2">Denominación</TableHead>
-                <TableHead className="border p-2">Modelo</TableHead>
-                <TableHead className="border p-2">Vol.&nbsp;int.</TableHead>
-                <TableHead className="border p-2">Superficie</TableHead>
-                <TableHead className="border p-2">Caudal&nbsp;(m³/h)</TableHead>
-                <TableHead className="border p-2">Potencia</TableHead>
-                <TableHead className="border p-2">Sep.&nbsp;aleta</TableHead>
-              </TableRow>
-            </TableHeader>
-
-            <TableBody>
-              {data.map((r, i) => (
-                <TableRow key={i} className={i % 2 ? "bg-gray-50" : ""}>
-                  <TableCell className="border p-2 text-center">
-                    {r.cantidad}
-                  </TableCell>
-                  <TableCell className="border p-2">{r.denominacion}</TableCell>
-                  <TableCell className="border p-2">{r.modelo}</TableCell>
-                  <TableCell className="border p-2 text-center">
-                    {withUnit(r.volInt, "dm³")}
-                  </TableCell>
-                  <TableCell className="border p-2 text-center">
-                    {withUnit(r.superficie, "m²")}
-                  </TableCell>
-                  <TableCell className="border p-2 text-center">
-                    {withUnit(r.caudal, "m³/h")}
-                  </TableCell>
-                  <TableCell className="border p-2 text-center">
-                    {withUnit(r.potencia, "W")}
-                  </TableCell>
-                  <TableCell className="border p-2 text-center">
-                    {withUnit(r.sepAleta, "mm")}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+      <div className="pb-20">
+        {/* Only keep the EVAPORADORES section (14.12) */}
+        <h3 className="text-lg font-bold">14.12. EVAPORADORES</h3>
+        
+        <div className="mt-4 text-sm text-justify">
+          <p className="mb-4">
+            En cada cámara se instala un evaporador convenientemente dimensionado y dotado de ventiladores 
+            axiales y baterías de intercambio con tubos de cobre y aletas de aluminio, cuya separación 
+            está en función de la temperatura interior deseada. Están diseñados para soportar las presiones 
+            de trabajo alcanzadas por el refrigerante. Los evaporadores instalados son los siguientes:
+          </p>
+          
+          {evaporadoresData.length > 0 ? (
+            <div className="overflow-x-auto mt-4">
+              <Table className="w-full border-collapse">
+                <TableHeader>
+                  <TableRow className="bg-gray-100">
+                    <TableHead className="border border-gray-300 p-2 text-xs">Modelo</TableHead>
+                    <TableHead className="border border-gray-300 p-2 text-xs">Potencia (W)</TableHead>
+                    <TableHead className="border border-gray-300 p-2 text-xs">Cantidad</TableHead>
+                    <TableHead className="border border-gray-300 p-2 text-xs">Temperatura (°C)</TableHead>
+                    <TableHead className="border border-gray-300 p-2 text-xs">Desescarche</TableHead>
+                    <TableHead className="border border-gray-300 p-2 text-xs">Ventiladores</TableHead>
+                    <TableHead className="border border-gray-300 p-2 text-xs">Caudal (m³/h)</TableHead>
+                    <TableHead className="border border-gray-300 p-2 text-xs">Ubicación</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {evaporadoresData.map((row, index) => (
+                    <TableRow key={index} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                      <TableCell className="border border-gray-300 p-2 text-xs">{row.modelo}</TableCell>
+                      <TableCell className="border border-gray-300 p-2 text-xs">{row.potencia}</TableCell>
+                      <TableCell className="border border-gray-300 p-2 text-xs">{row.cantidad}</TableCell>
+                      <TableCell className="border border-gray-300 p-2 text-xs">{row.temperatura}</TableCell>
+                      <TableCell className="border border-gray-300 p-2 text-xs">{row.desescarche}</TableCell>
+                      <TableCell className="border border-gray-300 p-2 text-xs">{row.ventiladores}</TableCell>
+                      <TableCell className="border border-gray-300 p-2 text-xs">{row.caudal}</TableCell>
+                      <TableCell className="border border-gray-300 p-2 text-xs">{row.ubicacion}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          ) : (
+            <p className="italic text-gray-500">No se encontraron datos de evaporadores en el Excel.</p>
+          )}
+          
+          <div className="mt-6">
+            <p className="mb-4">
+              El desescarche en los evaporadores de las cámaras y de los muebles frigoríficos negativos se realiza mediante la aportación 
+              de calor por resistencias (desescarche eléctrico), mientras que en los evaporadores de los obradores y de los muebles 
+              frigoríficos positivos se realiza por aire, mediante el corte de la alimentación de refrigerante a éstos mientras 
+              los ventiladores están en funcionamiento.
+            </p>
+            
+            <p className="mb-4">
+              La separación de aleta para los evaporadores de cámaras de temperatura positiva es como mínimo de 6 mm. 
+              En los evaporadores de cámara de congelados es como mínimo de 7 mm.
+            </p>
+          </div>
         </div>
-      ) : (
-        <p className="italic text-gray-500">
-          No se encontraron datos de evaporadores en el Excel.
-        </p>
-      )}
-
-      {/* párrafos finales sin cambios */}
-      <div className="text-sm mt-6 space-y-4 text-justify">
-        <p>
-          El desescarche en los evaporadores de las cámaras y de los muebles
-          frigoríficos negativos se realiza mediante la aportación de calor por
-          resistencias …
-        </p>
-        <p>
-          La separación de aleta para los evaporadores de cámaras de temperatura
-          positiva es como mínimo de 6&nbsp;mm. …
-        </p>
       </div>
     </div>
   );
