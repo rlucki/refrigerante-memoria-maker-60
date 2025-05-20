@@ -19,7 +19,6 @@ import {
   ImageRun,
   TextRun,
   PageNumber,
-  IImageOptions,
 } from "docx";
 
 /* ───── helper: pie con logo + nº página ───── */
@@ -125,16 +124,19 @@ export async function buildWord(opts: {
   });
 
   /* 5️⃣  fusionar la parte renderizada y la nueva sección */
-  const finalZip = PizZip(renderedBuf); // Fixed: Removed .load() as it's not needed when passing arraybuffer directly
+  const finalZip = PizZip(renderedBuf);
   
-  // Fixed Document constructor to properly create a new document with sections
+  // Create a document with the same sections as the original doc
   const finalDoc = new Document({
     sections: doc.sections,
   });
   
+  // Convert the document to a string and use it to replace the content in the ZIP
+  const finalDocXml = await Packer.toString(finalDoc);
+  
   finalZip.file(
     "word/document.xml",
-    await Packer.toString(finalDoc) // reemplaza contenido
+    finalDocXml
   );
 
   /* 6️⃣  descargar */
