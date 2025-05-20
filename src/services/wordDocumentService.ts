@@ -1,4 +1,3 @@
-
 /*  src/services/wordDocumentService.ts
     Genera un DOCX desde el navegador (sin instalar paquetes con npm).
     – Usa módulos ES servidos por CDN (https://esm.sh)
@@ -46,23 +45,11 @@ async function buildFooter(logoUrl?: string) {
 }
 
 /* ───── API principal ───── */
-export async function generateWordDocument(wordTemplate: File, memoriaData: any): Promise<Blob> {
-  // Convertir el archivo a ArrayBuffer
-  const templateArrayBuffer = await wordTemplate.arrayBuffer();
-  const htmlPreview = document.querySelector("#preview")?.innerHTML || "";
-  
-  return await buildWord({
-    templateArrayBuffer,
-    htmlPreview,
-    logoUrl: undefined // Opcional: URL del logo para el pie de página
-  });
-}
-
 export async function buildWord(opts: {
   templateArrayBuffer: ArrayBuffer; // plantilla .docx en ArrayBuffer
   htmlPreview: string;             // innerHTML del div #preview
   logoUrl?: string;                // URL/logo opcional
-}): Promise<Blob> {
+}) {
   const { templateArrayBuffer, htmlPreview, logoUrl } = opts;
 
   /* 1️⃣  extraer títulos marcados */
@@ -137,10 +124,9 @@ export async function buildWord(opts: {
     await Packer.toString(finalDoc) // reemplaza contenido
   );
 
-  /* 6️⃣  crear blob para descargar */
+  /* 6️⃣  descargar */
   const blob = new Blob([finalZip.generate({ type: "arraybuffer" })], {
     type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
   });
-  
-  return blob;
+  saveAs(blob, "MemoriaTecnica.docx");
 }
