@@ -1,91 +1,132 @@
-import React from "react";
-import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableRow,
-  TableHead,
-  TableCell,
-} from "@/components/ui/table";
-import { extractTableData } from "../utils/excelUtils";
+/**
+ * excelUtils.ts
+ * Utilidades para leer y procesar datos de Excel (SheetJS u objeto plano)
+ */
 
-interface Props {
-  excelData?: any;
-}
+import * as XLSX from "xlsx";
 
-const CentralPositivaSection: React.FC<Props> = ({ excelData }) => {
-  /*  RANGO REAL (col J-O, filas 2-25)  */
-  const data = extractTableData(excelData, {
-    sheet: "RESUM LEGA",
-    startCol: "J",
-    endCol: "O",
-    startRow: 2,   // salta la fila de título "CENTRAL INTERMEDIA"
-    endRow: 25,
-    mappings: {
-      caracteristica: "J",
-      c1: "K",
-      c2: "L",
-      c3: "M",
-      c4: "N",
-      total: "O",
-    },
-  });
+/* ──────────────────────  CONVERSIÓN DE COLUMNAS  ────────────────────── */
 
-  return (
-    <div className="mt-8">
-      <h4 className="text-md font-bold">14.1. CENTRAL POSITIVA</h4>
-      <p className="mt-2">
-        Se trata de una central frigorífica formada por compresores
-        semiherméticos alternativos accionados mediante un motor eléctrico
-        trifásico. Sus características técnicas son las siguientes:
-      </p>
+// "A" → 0, "Z" → 25, "AA" → 26, …
+export const columnLetterToIndex = (label: string): number => {
+  let idx = 0;
+  for (let i = 0; i < label.length; i++) {
+    idx = idx * 26 + label.toUpperCase().charCodeAt(i) - 64;
+  }
+  return idx - 1; // 0-based
+};
 
-      {data.length ? (
-        <div className="mt-4 overflow-x-auto">
-          <Table
-            className="w-full border-collapse text-sm"
-            style={{ tableLayout: "fixed" }}
-          >
-            {/* Cabecera */}
-            <TableHeader>
-              <TableRow className="bg-blue-100">
-                <TableHead className="border p-2 min-w-[150px]" />
-                {["Cº 1", "Cº 2", "Cº 3", "Cº 4", "TOTAL"].map((h) => (
-                  <TableHead key={h} className="border p-2 text-center">
-                    {h}
-                  </TableHead>
-                ))}
-              </TableRow>
-            </TableHeader>
+// 0 → "A", 27 → "AB"
+export const indexToColumnLetter = (n: number): string => {
+  let s = "";
+  n++;
+  while (n > 0) {
+    const r = (n - 1) % 26;
+    s = String.fromCharCode(65 + r) + s;
+    n = Math.floor((n - 1) / 26);
+  }
+  return s;
+};
 
-            {/* Filas */}
-            <TableBody>
-              {data.map((row, i) => (
-                <TableRow key={i} className={i % 2 ? "bg-gray-50" : ""}>
-                  <TableCell className="border p-2">
-                    {row.caracteristica}
-                  </TableCell>
+/* ───────────────────  LIMPIEZA Y FORMATEO DE VALORES  ────────────────── */
 
-                  {["c1", "c2", "c3", "c4", "total"].map((k) => (
-                    <TableCell
-                      key={k}
-                      className="border p-2 text-center"
-                    >
-                      {row[k]}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      ) : (
-        <p className="mt-4 italic">
-          No se encontraron datos de la central positiva en el archivo Excel.
-        </p>
-      )}
-    </div>
+const clean = (v: any) => {
+  if (v === "/" || v === "-") return "";
+  const num = parseFloat(String(v).replace(",", "."));
+  return Number.isFinite(num) ? num.toFixed(1) : v; // 1 decimal
+};
+
+/* ─────────────────────  EXTRACCIÓN DE RANGOS  ───────────────────────── */
+
+export const extractDataFromRange = (
+  sheet: XLSX.WorkSheet,
+  startCol: string,
+  endCol: string,
+  startRow: number,
+  endRow: number,
+  columnMapping: Record<string, string>
+) => {
+  if (!sheet) return [];
+
+  const result: any[] = [];
+  console.log(
+    `Extrayendo datos del rango ${startCol}${startRow}-${endCol}${endRow}`
+  );
+
+  for (let r = startRow; r <= endRow; r++) {
+    // ¿la fila contiene algo?
+    const hasData = Object.values(columnMapping).some((col) => {
+      const cell = sheet[`${col.toUpperCase()}${r}`];
+      return cell && cell.v !== undefined && cell.v !== "";
+    });
+    if (!hasData) continue;
+
+    const row: Record<string, any> = {};
+    for (const [key, col] of Object.entries(columnMapping)) {
+      const cell = sheet[`${col.toUpperCase()}${r}`];
+      row[key] = clean(cell?.v);
+    }
+
+    // descartar cabeceras
+    const first = String(row[Object.keys(row)[0]]).toUpperCase();
+    const CABECERAS = [
+      "DENOMINACIÓN",
+      "CENTRAL FRIGORÍFICA",
+      "CARACTERÍSTICA",
+      "MAQUINARIA INSTALADA",
+      "ELEMENTO",
+      "CENTRAL POSITIVA",
+      "CENTRAL INTERMEDIA", //  ← rótulo de la positiva en Excel
+      "CENTRAL NEGATIVA",
+      "COMPRESORES PARALELOS",
+    ];
+    if (CABECERAS.includes(first)) continue;
+
+    result.push(row);
+  }
+
+  return result;
+};
+
+/* ─────────────────────  API PRINCIPAL  ──────────────────────────────── */
+
+export const extractTableData = (
+  workbook: any,
+  opts: {
+    sheet: string;
+    startCol: string;
+    endCol: string;
+    startRow: number;
+    endRow: number;
+    mappings: Record<string, string>;
+  }
+) => {
+  if (!workbook) return [];
+
+  const sheet = workbook.Sheets
+    ? workbook.Sheets[opts.sheet] // workbook completo
+    : workbook[opts.sheet]; // objeto plano
+
+  if (!sheet) {
+    console.warn(`No se encontró la hoja "${opts.sheet}"`);
+    return [];
+  }
+
+  return extractDataFromRange(
+    sheet,
+    opts.startCol,
+    opts.endCol,
+    opts.startRow,
+    opts.endRow,
+    opts.mappings
   );
 };
 
-export default CentralPositivaSection;
+/* ─────────────────────  UTILIDAD DE SUMA  ───────────────────────────── */
+
+export const calculateSum = (rows: any[], field = "cargaT") =>
+  rows.reduce((sum, r) => {
+    const v =
+      typeof r[field] === "number" ? r[field] : parseFloat(r[field] ?? "");
+    return sum + (Number.isFinite(v) ? v : 0);
+  }, 0);

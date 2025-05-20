@@ -1,28 +1,33 @@
 import React from "react";
 import {
-  Table, TableHeader, TableBody,
-  TableRow, TableHead, TableCell,
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
 } from "@/components/ui/table";
 import { extractTableData } from "../utils/excelUtils";
 
-interface CentralPositivaSectionProps {
+interface Props {
   excelData?: any;
 }
 
-const CentralPositivaSection: React.FC<CentralPositivaSectionProps> = ({ excelData }) => {
+const CentralPositivaSection: React.FC<Props> = ({ excelData }) => {
+  /*  RANGO REAL (col J-O, filas 2-25)  */
   const data = extractTableData(excelData, {
     sheet: "RESUM LEGA",
     startCol: "J",
-    endCol:   "O",
-    startRow: 2,    // ← si tu primera fila útil es la 2
-    endRow:   25,
+    endCol: "O",
+    startRow: 2,   // salta la fila de título "CENTRAL INTERMEDIA"
+    endRow: 25,
     mappings: {
-      caracteristica: "J", // texto
-      c1: "K",             // compresor 1
-      c2: "L",             // compresor 2
-      c3: "M",             // compresor 3
-      c4: "N",             // compresor 4  (elimínalo si no existe)
-      total: "O",          // total
+      caracteristica: "J",
+      c1: "K",
+      c2: "L",
+      c3: "M",
+      c4: "N",
+      total: "O",
     },
   });
 
@@ -37,27 +42,38 @@ const CentralPositivaSection: React.FC<CentralPositivaSectionProps> = ({ excelDa
 
       {data.length ? (
         <div className="mt-4 overflow-x-auto">
-          <Table className="w-full border-collapse">
+          <Table
+            className="w-full border-collapse text-sm"
+            style={{ tableLayout: "fixed" }}
+          >
+            {/* Cabecera */}
             <TableHeader>
               <TableRow className="bg-blue-100">
-                <TableHead className="border p-2" />
-                <TableHead className="border p-2 text-center">Cº&nbsp;1</TableHead>
-                <TableHead className="border p-2 text-center">Cº&nbsp;2</TableHead>
-                <TableHead className="border p-2 text-center">Cº&nbsp;3</TableHead>
-                <TableHead className="border p-2 text-center">Cº&nbsp;4</TableHead>
-                <TableHead className="border p-2 text-center">TOTAL</TableHead>
+                <TableHead className="border p-2 min-w-[150px]" />
+                {["Cº 1", "Cº 2", "Cº 3", "Cº 4", "TOTAL"].map((h) => (
+                  <TableHead key={h} className="border p-2 text-center">
+                    {h}
+                  </TableHead>
+                ))}
               </TableRow>
             </TableHeader>
 
+            {/* Filas */}
             <TableBody>
               {data.map((row, i) => (
-                <TableRow key={i}>
-                  <TableCell className="border p-2">{row.caracteristica}</TableCell>
-                  <TableCell className="border p-2">{row.c1}</TableCell>
-                  <TableCell className="border p-2">{row.c2}</TableCell>
-                  <TableCell className="border p-2">{row.c3}</TableCell>
-                  <TableCell className="border p-2">{row.c4}</TableCell>
-                  <TableCell className="border p-2">{row.total}</TableCell>
+                <TableRow key={i} className={i % 2 ? "bg-gray-50" : ""}>
+                  <TableCell className="border p-2">
+                    {row.caracteristica}
+                  </TableCell>
+
+                  {["c1", "c2", "c3", "c4", "total"].map((k) => (
+                    <TableCell
+                      key={k}
+                      className="border p-2 text-center"
+                    >
+                      {row[k]}
+                    </TableCell>
+                  ))}
                 </TableRow>
               ))}
             </TableBody>
