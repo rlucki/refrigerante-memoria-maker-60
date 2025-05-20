@@ -1,4 +1,3 @@
-
 import React from "react";
 import { BlockMath } from "react-katex";
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
