@@ -120,8 +120,6 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
           if (row) {
             // Intentar extraer los datos usando diferentes posibles nombres de columnas
             const caracteristica = row["__EMPTY_9"] || row["Unnamed: 9"] || row["CENTRAL POSITIVA"] || row["CARACTERÍSTICA"] || row["CENTRAL INTERMEDIA"] || "";
-            const medidas = row["__EMPTY_10"] || row["Unnamed: 10"] || row["MEDIDAS"] || "";
-            const observaciones = row["__EMPTY_14"] || row["Unnamed: 14"] || row["OBSERVACIONES"] || row["__EMPTY_15"] || "";
             
             // Solo agregar filas no vacías y no encabezados
             if (caracteristica && 
@@ -129,7 +127,9 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
                 caracteristica !== "CENTRAL INTERMEDIA" &&
                 caracteristica !== "CARACTERÍSTICA") {
               
-              // Añadir todos los valores intermedios para completar la tabla
+              const medidas = row["__EMPTY_10"] || row["Unnamed: 10"] || row["MEDIDAS"] || "";
+              const observaciones = row["__EMPTY_14"] || row["Unnamed: 14"] || row["OBSERVACIONES"] || row["__EMPTY_15"] || "";
+              
               centralPositiva.push({
                 caracteristica,
                 medidas,
@@ -151,13 +151,14 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
           if (row) {
             // Intentar extraer los datos usando diferentes posibles nombres de columnas
             const caracteristica = row["__EMPTY_22"] || row["Unnamed: 22"] || row["COMPRESORES PARALELOS"] || row["CARACTERÍSTICA"] || "";
-            const medidas = row["__EMPTY_23"] || row["Unnamed: 23"] || row["MEDIDAS"] || "";
-            const observaciones = row["__EMPTY_25"] || row["Unnamed: 25"] || row["OBSERVACIONES"] || "";
             
             // Solo agregar filas no vacías y no encabezados
             if (caracteristica && 
                 caracteristica !== "COMPRESORES PARALELOS" && 
                 caracteristica !== "CARACTERÍSTICA") {
+              
+              const medidas = row["__EMPTY_23"] || row["Unnamed: 23"] || row["MEDIDAS"] || "";
+              const observaciones = row["__EMPTY_25"] || row["Unnamed: 25"] || row["OBSERVACIONES"] || "";
               
               // Añadir la presión en la columna de observaciones si está disponible
               const obsColumn = row["__EMPTY_24"] ? `${row["__EMPTY_24"]} / ${observaciones}`.trim() : observaciones;
@@ -174,30 +175,34 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
         console.log("Filas procesadas para compresores paralelos:", compresoresParalelos);
         return compresoresParalelos;
       }
-      // Para la tabla de Central Negativa (AB-AF)
-      else if (range.startCol === 'AB' && range.endCol === 'AF') {
+      // Para la tabla de Central Negativa (AD-AH)
+      else if (range.startCol === 'AD' && range.endCol === 'AH') {
         const centralNegativa = [];
         
-        // Buscar datos en el área AB-AF
+        // Buscar datos en el área AD-AH
         for (const row of data) {
           if (row) {
             // Intentar extraer los datos usando diferentes posibles nombres de columnas
-            const caracteristica = row["__EMPTY_27"] || row["Unnamed: 27"] || row["CENTRAL NEGATIVA"] || row["CARACTERÍSTICA"] || "";
-            const medidas = row["__EMPTY_28"] || row["Unnamed: 28"] || row["MEDIDAS"] || "";
-            const observaciones = row["__EMPTY_31"] || row["Unnamed: 31"] || row["OBSERVACIONES"] || row["__EMPTY_32"] || "";
+            const característicaValue = row["CENTRAL NEGATIVA"] || row["__EMPTY_29"] || row["Unnamed: 29"] || row["CARACTERÍSTICA"] || "";
             
             // Solo agregar filas no vacías y no encabezados
-            if (caracteristica && 
-                caracteristica !== "CENTRAL NEGATIVA" && 
-                caracteristica !== "CARACTERÍSTICA") {
+            if (característicaValue && 
+                característicaValue !== "CENTRAL NEGATIVA" && 
+                característicaValue !== "CARACTERÍSTICA" &&
+                característicaValue !== "Nº de compresores" &&
+                característicaValue !== "Refrigerante" &&
+                característicaValue !== "Marca compresores" &&
+                característicaValue !== "Tipo compresores") {
               
-              // Añadir la presión en la columna de observaciones si está disponible
-              const obsColumn = row["__EMPTY_29"] ? `${row["__EMPTY_29"]} / ${observaciones}`.trim() : observaciones;
+              // Para valores en columnas AD hasta AH
+              const medidasValue = row["R-744"] || row["__EMPTY_30"] || row["Unnamed: 30"] || row["MEDIDAS"] || "";
+              const temperaturaPColumn = row["__EMPTY_31"] || row["Unnamed: 31"] || "";
+              const observacionesValue = row["__EMPTY_34"] || row["Unnamed: 34"] || row["OBSERVACIONES"] || "";
               
               centralNegativa.push({
-                caracteristica,
-                medidas,
-                observaciones: obsColumn
+                caracteristica: característicaValue,
+                medidas: medidasValue,
+                observaciones: observacionesValue
               });
             }
           }
@@ -285,21 +290,10 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
               sheet[caracteristicaKey].v !== "CENTRAL INTERMEDIA" &&
               sheet[caracteristicaKey].v !== "CARACTERÍSTICA") {
             
-            const medidas = sheet[`K${i}`]?.v || sheet[`L${i}`]?.v || "";
-            
-            // Añadir columna de presión si está disponible
-            let presionValor = sheet[`L${i}`]?.v || "";
-            let observaciones = sheet[`O${i}`]?.v || "";
-            
-            // Si hay presión, añadirla a observaciones
-            if (presionValor && presionValor !== medidas) {
-              observaciones = `${presionValor} / ${observaciones}`.trim();
-            }
-            
             rows.push({
               caracteristica: sheet[caracteristicaKey].v || "",
-              medidas: medidas,
-              observaciones: observaciones
+              medidas: sheet[`K${i}`]?.v || "",
+              observaciones: sheet[`O${i}`]?.v || ""
             });
           }
         }
@@ -328,26 +322,24 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
           }
         }
       }
-      else if (range.startCol === 'AB' && range.endCol === 'AF') {
-        // Para la tabla de central negativa
+      else if (range.startCol === 'AD' && range.endCol === 'AH') {
+        // Para la tabla de central negativa (corregido para AD-AH)
         for (let i = range.startIndex; i <= range.endIndex; i++) {
-          const caracteristicaKey = `AB${i}`;
+          const caracteristicaKey = `AD${i}`;
           
           if (sheet[caracteristicaKey] && sheet[caracteristicaKey].v && 
               sheet[caracteristicaKey].v !== "CENTRAL NEGATIVA" &&
-              sheet[caracteristicaKey].v !== "CARACTERÍSTICA") {
+              sheet[caracteristicaKey].v !== "CARACTERÍSTICA" &&
+              sheet[caracteristicaKey].v !== "Nº de compresores" &&
+              sheet[caracteristicaKey].v !== "Refrigerante" &&
+              sheet[caracteristicaKey].v !== "Marca compresores" &&
+              sheet[caracteristicaKey].v !== "Tipo compresores") {
             
-            const medidas = sheet[`AC${i}`]?.v || "";
-            const presion = sheet[`AD${i}`]?.v || "";
-            const observaciones = sheet[`AF${i}`]?.v || "";
-            
-            // Combinar presión con observaciones si existe
-            const obsColumn = presion ? `${presion} / ${observaciones}`.trim() : observaciones;
-            
+            // Extracción directa de los valores sin incluir encabezados
             rows.push({
               caracteristica: sheet[caracteristicaKey].v || "",
-              medidas: medidas,
-              observaciones: obsColumn
+              medidas: sheet[`AE${i}`]?.v || "",
+              observaciones: sheet[`AH${i}`]?.v || ""
             });
           }
         }
@@ -377,7 +369,7 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
   const maquinariaData = extractTableData(excelData, { startCol: 'G', endCol: 'H', startIndex: 1, endIndex: 9 });
   const centralPositivaData = extractTableData(excelData, { startCol: 'J', endCol: 'O', startIndex: 1, endIndex: 20 });
   const compresoresParalelosData = extractTableData(excelData, { startCol: 'W', endCol: 'Z', startIndex: 1, endIndex: 20 });
-  const centralNegativaData = extractTableData(excelData, { startCol: 'AB', endCol: 'AF', startIndex: 1, endIndex: 20 });
+  const centralNegativaData = extractTableData(excelData, { startCol: 'AD', endCol: 'AH', startIndex: 1, endIndex: 22 });
   
   // Calcular sumatorios
   const sumPositivos = calculateSum(positivosData);
@@ -535,11 +527,6 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
                           CENTRAL INTERMEDIA
                         </TableHead>
                       </TableRow>
-                      <TableRow className="bg-blue-100">
-                        <TableHead className="border border-gray-300 p-2">CARACTERÍSTICA</TableHead>
-                        <TableHead className="border border-gray-300 p-2">MEDIDAS</TableHead>
-                        <TableHead className="border border-gray-300 p-2">OBSERVACIONES</TableHead>
-                      </TableRow>
                     </TableHeader>
                     <TableBody>
                       {centralPositivaData.map((row, index) => (
@@ -573,11 +560,6 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
                           COMPRESORES PARALELOS
                         </TableHead>
                       </TableRow>
-                      <TableRow className="bg-blue-100">
-                        <TableHead className="border border-gray-300 p-2">CARACTERÍSTICA</TableHead>
-                        <TableHead className="border border-gray-300 p-2">MEDIDAS</TableHead>
-                        <TableHead className="border border-gray-300 p-2">OBSERVACIONES</TableHead>
-                      </TableRow>
                     </TableHeader>
                     <TableBody>
                       {compresoresParalelosData.map((row, index) => (
@@ -610,11 +592,6 @@ const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) 
                         <TableHead colSpan={3} className="border border-gray-300 p-2 text-center font-bold">
                           CENTRAL NEGATIVA
                         </TableHead>
-                      </TableRow>
-                      <TableRow className="bg-blue-100">
-                        <TableHead className="border border-gray-300 p-2">CARACTERÍSTICA</TableHead>
-                        <TableHead className="border border-gray-300 p-2">MEDIDAS</TableHead>
-                        <TableHead className="border border-gray-300 p-2">OBSERVACIONES</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>

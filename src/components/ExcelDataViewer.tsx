@@ -168,27 +168,44 @@ const ExcelDataViewer: React.FC<ExcelDataViewerProps> = ({ data, title = "Datos 
     const rows: Set<number> = new Set();
     const columns: Set<string> = new Set();
     
+    // Función para detectar si un cellId contiene una columna multi-letra (como AA, AB, etc.)
+    const extractColumnAndRow = (cellId: string): { column: string, row: number } | null => {
+      // Detecta columnas como A, B, C... Z, AA, AB, etc.
+      const match = cellId.match(/^([A-Z]+)(\d+)$/);
+      if (!match) return null;
+      
+      return {
+        column: match[1],
+        row: parseInt(match[2], 10)
+      };
+    };
+    
     Object.entries(sheetData).forEach(([cellId, cellData]: [string, any]) => {
       if (cellId !== '!ref' && cellId !== '!margins' && typeof cellId === 'string') {
-        // Extraer columna (letras) y fila (números)
-        const colMatch = cellId.match(/^[A-Z]+/);
-        const rowMatch = cellId.match(/\d+$/);
+        const parsed = extractColumnAndRow(cellId);
         
-        if (colMatch && rowMatch) {
-          const col = colMatch[0];
-          const row = parseInt(rowMatch[0], 10);
-          
-          columns.add(col);
-          rows.add(row);
-          
+        if (parsed) {
+          columns.add(parsed.column);
+          rows.add(parsed.row);
           cells[cellId] = cellData;
         }
       }
     });
     
+    // Función para comparar columnas como A, B, C... Z, AA, AB, etc.
+    const compareColumns = (a: string, b: string): number => {
+      // Si son de longitud diferente, las columnas más cortas van primero
+      if (a.length !== b.length) {
+        return a.length - b.length;
+      }
+      
+      // Si son de la misma longitud, comparar lexicográficamente
+      return a.localeCompare(b);
+    };
+    
     // Convertir sets a arrays ordenados
     const sortedRows = Array.from(rows).sort((a, b) => a - b);
-    const sortedColumns = Array.from(columns).sort();
+    const sortedColumns = Array.from(columns).sort(compareColumns);
     
     // Rango de filas a mostrar
     const maxRowsToShow = 100; // Aumentado para ver más datos
