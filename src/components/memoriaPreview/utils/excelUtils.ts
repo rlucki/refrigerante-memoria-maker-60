@@ -1,108 +1,137 @@
-
 /**
  * Utility functions for Excel data processing
  */
 
-// Function to convert column letter to index number
+import * as XLSX from "xlsx";
+
+/* ──────────────────────────────────────────────────────────── */
+/* Conversión de columnas                                       */
+/* ──────────────────────────────────────────────────────────── */
+
+// "A" → 0, "Z" → 25, "AA" → 26, "AB" → 27…
 export const columnLetterToIndex = (columnLetter: string): number => {
   let result = 0;
   for (let i = 0; i < columnLetter.length; i++) {
-    result = result * 26 + columnLetter.charCodeAt(i) - 64;
+    result = result * 26 + columnLetter.toUpperCase().charCodeAt(i) - 64;
   }
-  return result;
+  return result - 1;                  //  👈  ¡0-based!
 };
 
-// Function to convert index number to column letter
+// 0 → "A", 27 → "AB"  (útil si lo necesitas para tests)
 export const indexToColumnLetter = (index: number): string => {
-  let columnLetter = '';
+  let columnLetter = "";
+  index++;                            //  pasamos a 1-based temporalmente
   while (index > 0) {
     const remainder = (index - 1) % 26;
     columnLetter = String.fromCharCode(65 + remainder) + columnLetter;
     index = Math.floor((index - 1) / 26);
   }
-  return columnLetter || 'A';
+  return columnLetter;
 };
 
-// Extract data from a specific range of cells
+/* ──────────────────────────────────────────────────────────── */
+/* Lectura de rangos                                            */
+/* ──────────────────────────────────────────────────────────── */
+
+// Lee un bloque y devuelve un array de objetos según mappings
 export const extractDataFromRange = (
-  sheet: any, 
-  startCol: string, 
-  endCol: string, 
-  startRow: number, 
-  endRow: number,
-  columnMapping: { [key: string]: string }
-): any[] => {
-  if (!sheet) return [];
-  
-  const result = [];
-  const startColIndex = columnLetterToIndex(startCol);
-  const endColIndex = columnLetterToIndex(endCol);
-  
-  console.log(`Extrayendo datos del rango ${startCol}${startRow}-${endCol}${endRow}`);
-  
-  for (let row = startRow; row <= endRow; row++) {
-    // Determine if the row contains valid data
-    const hasValidData = Object.keys(columnMapping).some(key => {
-      const colLetter = columnMapping[key];
-      const cellKey = `${colLetter}${row}`;
-      return sheet[cellKey] && sheet[cellKey].v !== undefined;
-    });
-    
-    // Only process rows with at least one data point
-    if (hasValidData) {
-      const rowData: any = {};
-      
-      // Extract data according to column mapping
-      Object.keys(columnMapping).forEach(key => {
-        const colLetter = columnMapping[key];
-        const cellKey = `${colLetter}${row}`;
-        rowData[key] = sheet[cellKey]?.v;
-      });
-      
-      // Filter rows with specific headers
-      const firstColumnValue = rowData[Object.keys(rowData)[0]];
-      if (firstColumnValue && 
-          !["DENOMINACIÓN", "CENTRAL FRIGORÍFICA", "CARACTERÍSTICA", 
-            "MAQUINARIA INSTALADA", "ELEMENTO", "CENTRAL POSITIVA", 
-            "CENTRAL INTERMEDIA", "CENTRAL NEGATIVA", 
-            "COMPRESORES PARALELOS"].includes(firstColumnValue)) {
-        result.push(rowData);
-      }
-    }
-  }
-  
-  return result;
-};
-
-// Extract table data from a specified range with column mappings
-export const extractTableData = (data: any, options: {
-  sheet: string,
+  sheet: XLSX.WorkSheet,
   startCol: string,
   endCol: string,
   startRow: number,
   endRow: number,
-  mappings: { [key: string]: string }
-}): any[] => {
-  if (!data) return [];
-  
-  console.log(`Procesando datos Excel para rango ${options.startCol}-${options.endCol}:`, data);
-  
-  // For data in spreadsheet format
-  if (data && data[options.sheet]) {
-    const sheet = data[options.sheet];
-    return extractDataFromRange(sheet, options.startCol, options.endCol, options.startRow, options.endRow, options.mappings);
+  columnMapping: { [key: string]: string }
+): any[] => {
+  if (!sheet) return [];
+
+  const result: any[] = [];
+  console.log(
+    `Extrayendo datos del rango ${startCol}${startRow}-${endCol}${endRow}`
+  );
+
+  for (let row = startRow; row <= endRow; row++) {
+    // ¿Hay algún dato en esta fila?
+    const hasValidData = Object.values(columnMapping).some((col) => {
+      const cellKey = `${col.toUpperCase()}${row}`;
+      return sheet[cellKey] && sheet[cellKey].v !== undefined;
+    });
+
+    if (!hasValidData) continue;
+
+    const rowData: Record<string, any> = {};
+    // Extraemos cada campo
+    for (const [key, colLetter] of Object.entries(columnMapping)) {
+      const cellKey = `${colLetter.toUpperCase()}${row}`;
+      rowData[key] = sheet[cellKey]?.v;
+    }
+
+    // Filtramos cabeceras irrelevantes
+    const first = rowData[Object.keys(rowData)[0]];
+    if (
+      first &&
+      [
+        "DENOMINACIÓN",
+        "CENTRAL FRIGORÍFICA",
+        "CARACTERÍSTICA",
+        "MAQUINARIA INSTALADA",
+        "ELEMENTO",
+        "CENTRAL POSITIVA",
+        "CENTRAL INTERMEDIA",
+        "CENTRAL NEGATIVA",
+        "COMPRESORES PARALELOS",
+      ].includes(String(first).toUpperCase())
+    ) {
+      continue;
+    }
+
+    result.push(rowData);
   }
-  
-  console.log(`No se encontró la hoja ${options.sheet} en los datos Excel`);
-  return [];
+
+  return result;
 };
 
-// Calculate sum of values in a specified field
-export const calculateSum = (data: any[], field: string = "cargaT"): number => {
-  return data.reduce((sum, row) => {
-    const value = typeof row[field] === 'number' ? row[field] : 
-                 (typeof row[field] === 'string' && !isNaN(parseFloat(row[field]))) ? 
-                 parseFloat(row[field]) : 0;
-    return sum + value;
-  }, 0);
+/* ──────────────────────────────────────────────────────────── */
+/* Wrapper de alto nivel                                        */
+/* ──────────────────────────────────────────────────────────── */
+
+export const extractTableData = (
+  workbook: XLSX.WorkBook,
+  options: {
+    sheet: string;
+    startCol: string;
+    endCol: string;
+    startRow: number;
+    endRow: number;
+    mappings: { [key: string]: string };
+  }
+): any[] => {
+  if (!workbook) return [];
+
+  const sheet = workbook.Sheets[options.sheet];
+  if (!sheet) {
+    console.warn(`No se encontró la hoja "${options.sheet}"`);
+    return [];
+  }
+
+  return extractDataFromRange(
+    sheet,
+    options.startCol,
+    options.endCol,
+    options.startRow,
+    options.endRow,
+    options.mappings
+  );
 };
+
+/* ──────────────────────────────────────────────────────────── */
+/* Sumas rápidas, por si las necesitas                           */
+/* ──────────────────────────────────────────────────────────── */
+
+export const calculateSum = (data: any[], field = "cargaT"): number =>
+  data.reduce((sum, row) => {
+    const v =
+      typeof row[field] === "number"
+        ? row[field]
+        : parseFloat(row[field] ?? "");
+    return sum + (Number.isFinite(v) ? v : 0);
+  }, 0);
