@@ -1,4 +1,3 @@
-
 import React from "react";
 import {
   Table,
@@ -16,126 +15,98 @@ interface MemoriaEvaporadoresProps {
 const MemoriaEvaporadores: React.FC<MemoriaEvaporadoresProps> = ({
   excelData,
 }) => {
-  /* ─── extraer datos ─── */
-  const evaporadoresData = React.useMemo(() => {
+  /* ─── extraer filas AJ2:AQ15 ─── */
+  const datos = React.useMemo(() => {
     if (!excelData?.["RESUM LEGA"]) return [];
 
     const sh = excelData["RESUM LEGA"];
-    const rows: any[] = [];
+    const out: any[] = [];
 
-    /*  ⚠️  Empieza en la fila 2 (salta la cabecera UNIDADES…)  */
     for (let i = 2; i <= 15; i++) {
       const row = {
-        modelo:       sh[`AJ${i}`]?.v || "",
-        potencia:     sh[`AK${i}`]?.v || "",
-        cantidad:     sh[`AL${i}`]?.v || "",
-        temperatura:  sh[`AM${i}`]?.v || "",
-        desescarche:  sh[`AN${i}`]?.v || "",
-        ventiladores: sh[`AO${i}`]?.v || "",
-        caudal:       sh[`AP${i}`]?.v || "",
-        ubicacion:    sh[`AQ${i}`]?.v || "",
+        unidades:     sh[`AJ${i}`]?.v ?? "",
+        denominacion: sh[`AK${i}`]?.v ?? "",
+        modelo:       sh[`AL${i}`]?.v ?? "",
+        volInt:       sh[`AM${i}`]?.v ?? "",
+        superficie:   sh[`AN${i}`]?.v ?? "",
+        caudal:       sh[`AO${i}`]?.v ?? "",
+        potencia:     sh[`AP${i}`]?.v ?? "",
+        sepAleta:     sh[`AQ${i}`]?.v ?? "",
       };
-
-      /* añade solo si hay datos reales */
-      if (row.modelo || row.potencia) rows.push(row);
+      if (row.denominacion || row.modelo) out.push(row);
     }
-
-    return rows;
+    return out;
   }, [excelData]);
 
-  /* ─── render ─── */
   return (
     <div className="mb-8 max-w-[210mm] mx-auto bg-white min-h-[297mm] relative p-6">
-      <div className="pb-20">
-        <h3 className="text-lg font-bold" data-heading="&&14.12. EVAPORADORES">
-          14.12. EVAPORADORES
-        </h3>
+      <h3 className="text-lg font-bold" data-heading="&&14.12. EVAPORADORES">
+        14.12. EVAPORADORES
+      </h3>
 
-        <div className="mt-4 text-sm text-justify">
-          <p className="mb-4">
-            En cada cámara se instala un evaporador convenientemente
-            dimensionado…
-          </p>
+      <p className="text-sm text-justify mb-4">
+        En cada cámara se instala un evaporador convenientemente dimensionado…
+      </p>
 
-          {evaporadoresData.length ? (
-            <div className="overflow-x-auto mt-4">
-              <Table className="w-full border-collapse">
-                <TableHeader>
-                  <TableRow className="bg-gray-100">
-                    <TableHead className="border p-2 text-xs">Modelo</TableHead>
-                    <TableHead className="border p-2 text-xs">
-                      Potencia&nbsp;(W)
-                    </TableHead>
-                    <TableHead className="border p-2 text-xs">Cantidad</TableHead>
-                    <TableHead className="border p-2 text-xs">
-                      Temperatura&nbsp;(°C)
-                    </TableHead>
-                    <TableHead className="border p-2 text-xs">
-                      Desescarche
-                    </TableHead>
-                    <TableHead className="border p-2 text-xs">
-                      Ventiladores
-                    </TableHead>
-                    <TableHead className="border p-2 text-xs">
-                      Caudal&nbsp;(m³/h)
-                    </TableHead>
-                    <TableHead className="border p-2 text-xs">Ubicación</TableHead>
-                  </TableRow>
-                </TableHeader>
+      {datos.length ? (
+        <div className="overflow-x-auto">
+          <Table className="w-full border-collapse text-xs">
+            <TableHeader>
+              <TableRow className="bg-gray-100">
+                <TableHead className="border p-2">Unidades</TableHead>
+                <TableHead className="border p-2">Denominación</TableHead>
+                <TableHead className="border p-2">Modelo</TableHead>
+                <TableHead className="border p-2">Vol. int.</TableHead>
+                <TableHead className="border p-2">Superficie</TableHead>
+                <TableHead className="border p-2">Caudal&nbsp;(m³/h)</TableHead>
+                <TableHead className="border p-2">Potencia&nbsp;(W)</TableHead>
+                <TableHead className="border p-2">Sep. aleta&nbsp;(mm)</TableHead>
+              </TableRow>
+            </TableHeader>
 
-                <TableBody>
-                  {evaporadoresData.map((r, idx) => (
-                    <TableRow
-                      key={idx}
-                      className={idx % 2 ? "bg-gray-50" : "bg-white"}
-                    >
-                      <TableCell className="border p-2 text-xs">
-                        {r.modelo}
-                      </TableCell>
-                      <TableCell className="border p-2 text-xs">
-                        {r.potencia}
-                      </TableCell>
-                      <TableCell className="border p-2 text-xs">
-                        {r.cantidad}
-                      </TableCell>
-                      <TableCell className="border p-2 text-xs">
-                        {r.temperatura}
-                      </TableCell>
-                      <TableCell className="border p-2 text-xs">
-                        {r.desescarche}
-                      </TableCell>
-                      <TableCell className="border p-2 text-xs">
-                        {r.ventiladores}
-                      </TableCell>
-                      <TableCell className="border p-2 text-xs">
-                        {r.caudal}
-                      </TableCell>
-                      <TableCell className="border p-2 text-xs">
-                        {r.ubicacion}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          ) : (
-            <p className="italic text-gray-500">
-              No se encontraron datos de evaporadores en el Excel.
-            </p>
-          )}
-
-          {/* texto final sin cambios */}
-          <div className="mt-6 space-y-4">
-            <p>
-              El desescarche en los evaporadores de las cámaras y de los muebles
-              frigoríficos negativos se realiza…
-            </p>
-            <p>
-              La separación de aleta para los evaporadores de cámaras de
-              temperatura positiva es como mínimo de 6&nbsp;mm…
-            </p>
-          </div>
+            <TableBody>
+              {datos.map((r, i) => (
+                <TableRow key={i} className={i % 2 ? "bg-gray-50" : ""}>
+                  <TableCell className="border p-2 text-center">
+                    {r.unidades}
+                  </TableCell>
+                  <TableCell className="border p-2">{r.denominacion}</TableCell>
+                  <TableCell className="border p-2">{r.modelo}</TableCell>
+                  <TableCell className="border p-2 text-center">
+                    {r.volInt && `${r.volInt} dm³`}
+                  </TableCell>
+                  <TableCell className="border p-2 text-center">
+                    {r.superficie && `${r.superficie} m²`}
+                  </TableCell>
+                  <TableCell className="border p-2 text-center">
+                    {r.caudal && `${r.caudal} m³/h`}
+                  </TableCell>
+                  <TableCell className="border p-2 text-center">
+                    {r.potencia && `${r.potencia} W`}
+                  </TableCell>
+                  <TableCell className="border p-2 text-center">
+                    {r.sepAleta && `${r.sepAleta} mm`}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </div>
+      ) : (
+        <p className="italic text-gray-500">
+          No se encontraron datos de evaporadores en el Excel.
+        </p>
+      )}
+
+      {/* párrafos finales sin cambios */}
+      <div className="text-sm mt-6 space-y-4 text-justify">
+        <p>
+          El desescarche en los evaporadores de las cámaras y de los muebles…
+        </p>
+        <p>
+          La separación de aleta para los evaporadores de cámaras de temperatura
+          positiva es como mínimo de 6&nbsp;mm…
+        </p>
       </div>
     </div>
   );
