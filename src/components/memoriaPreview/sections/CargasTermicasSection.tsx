@@ -8,40 +8,36 @@ interface CargasTermicasSectionProps {
 }
 
 const CargasTermicasSection: React.FC<CargasTermicasSectionProps> = ({ excelData }) => {
-  // Get data for the tables - now with safer handling of undefined data
-  const positivosData = React.useMemo(() => {
-    return extractTableData(excelData, {
-      sheet: "RESUM LEGA",
-      startCol: "A",
-      endCol: "E",
-      startRow: 1,
-      endRow: 60,
-      mappings: {
-        denominacion: "A",
-        modulos: "B",
-        modVol: "C",
-        temperatura: "D",
-        cargaT: "E"
-      }
-    });
-  }, [excelData]);
+  // Get data for the tables
+  const positivosData = extractTableData(excelData, {
+    sheet: "RESUM LEGA",
+    startCol: "A",
+    endCol: "E",
+    startRow: 1,
+    endRow: 60,
+    mappings: {
+      denominacion: "A",
+      modulos: "B",
+      modVol: "C",
+      temperatura: "D",
+      cargaT: "E"
+    }
+  });
   
-  const negativosData = React.useMemo(() => {
-    return extractTableData(excelData, {
-      sheet: "RESUM LEGA",
-      startCol: "Q",
-      endCol: "U",
-      startRow: 1,
-      endRow: 60,
-      mappings: {
-        denominacion: "Q",
-        modulos: "R",
-        modVol: "S",
-        temperatura: "T",
-        cargaT: "U"
-      }
-    });
-  }, [excelData]);
+  const negativosData = extractTableData(excelData, {
+    sheet: "RESUM LEGA",
+    startCol: "Q",
+    endCol: "U",
+    startRow: 1,
+    endRow: 60,
+    mappings: {
+      denominacion: "Q",
+      modulos: "R",
+      modVol: "S",
+      temperatura: "T",
+      cargaT: "U"
+    }
+  });
   
   // Calculate sums
   const sumPositivos = calculateSum(positivosData);
@@ -100,7 +96,7 @@ const CargasTermicasSection: React.FC<CargasTermicasSectionProps> = ({ excelData
           <p className="mt-4 italic">No se encontraron datos de servicios positivos en el archivo Excel.</p>
         )}
         
-        {negativosData.length > 0 ? (
+        {negativosData.length > 0 && (
           <div className="mt-8 overflow-x-auto">
             <Table className="w-full border-collapse">
               <TableHeader>
@@ -140,8 +136,6 @@ const CargasTermicasSection: React.FC<CargasTermicasSectionProps> = ({ excelData
               </TableBody>
             </Table>
           </div>
-        ) : (
-          <p className="mt-4 italic">No se encontraron datos de servicios negativos en el archivo Excel.</p>
         )}
         
         {!positivosData.length && !negativosData.length && (

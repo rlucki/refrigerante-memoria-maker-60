@@ -7,35 +7,46 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { extractTableData } from "./utils/excelUtils";
 
 interface MemoriaEvaporadoresProps {
   excelData?: any;
 }
 
 const MemoriaEvaporadores: React.FC<MemoriaEvaporadoresProps> = ({ excelData }) => {
-  // Extract data from Excel if available using useMemo to prevent unnecessary recalculations
+  // Extract data from Excel if available
   const evaporadoresData = React.useMemo(() => {
-    // Use the extractTableData function for consistency with other components
-    const data = extractTableData(excelData, {
-      sheet: "RESUM LEGA",
-      startCol: "AJ",
-      endCol: "AQ",
-      startRow: 1,
-      endRow: 15,
-      mappings: {
-        modelo: "AJ",
-        potencia: "AK",
-        cantidad: "AL",
-        temperatura: "AM",
-        desescarche: "AN",
-        ventiladores: "AO",
-        caudal: "AP",
-        ubicacion: "AQ",
-      }
-    });
+    if (!excelData || !excelData['RESUM LEGA']) return [];
     
-    return data;
+    try {
+      // Filter for rows between AJ1 and AQ15
+      const evaporadoresRows = [];
+      
+      // Process the Excel data to extract evaporadores information
+      if (excelData['RESUM LEGA']) {
+        for (let i = 1; i <= 15; i++) {
+          const rowData = {
+            modelo: excelData['RESUM LEGA'][`AJ${i}`]?.v || '',
+            potencia: excelData['RESUM LEGA'][`AK${i}`]?.v || '',
+            cantidad: excelData['RESUM LEGA'][`AL${i}`]?.v || '',
+            temperatura: excelData['RESUM LEGA'][`AM${i}`]?.v || '',
+            desescarche: excelData['RESUM LEGA'][`AN${i}`]?.v || '',
+            ventiladores: excelData['RESUM LEGA'][`AO${i}`]?.v || '',
+            caudal: excelData['RESUM LEGA'][`AP${i}`]?.v || '',
+            ubicacion: excelData['RESUM LEGA'][`AQ${i}`]?.v || '',
+          };
+          
+          // Only add rows that have data (at least model or power)
+          if (rowData.modelo || rowData.potencia) {
+            evaporadoresRows.push(rowData);
+          }
+        }
+      }
+      
+      return evaporadoresRows;
+    } catch (error) {
+      console.error("Error extracting evaporadores data:", error);
+      return [];
+    }
   }, [excelData]);
 
   return (

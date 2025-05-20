@@ -8,20 +8,17 @@ interface MaquinariaSectionProps {
 }
 
 const MaquinariaSection: React.FC<MaquinariaSectionProps> = ({ excelData }) => {
-  // Use useMemo to avoid unnecessary recalculations
-  const maquinariaData = React.useMemo(() => {
-    return extractTableData(excelData, {
-      sheet: "RESUM LEGA",
-      startCol: "G",
-      endCol: "H",
-      startRow: 1,
-      endRow: 9,
-      mappings: {
-        elemento: "G",
-        detalles: "H"
-      }
-    });
-  }, [excelData]);
+  const maquinariaData = extractTableData(excelData, {
+    sheet: "RESUM LEGA",
+    startCol: "G",
+    endCol: "H",
+    startRow: 1,
+    endRow: 9,
+    mappings: {
+      elemento: "G",
+      detalles: "H"
+    }
+  });
 
   return (
     <div className="mb-6">
