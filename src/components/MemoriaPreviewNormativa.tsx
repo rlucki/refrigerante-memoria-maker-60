@@ -1,3 +1,4 @@
+
 import React from "react";
 
 interface RegulationItem {
@@ -141,7 +142,7 @@ const MemoriaPreviewNormativa: React.FC<MemoriaPreviewNormativaProps> = ({
 
     return (
       <div className="mb-6">
-        <h4 className="font-semibold text-base mb-2">{category.title}</h4>
+        <h4 className="font-semibold text-base mb-2" data-heading={category.title}>{category.title}</h4>
         <ul className="list-none pl-0 space-y-3">
           {category.regulations.map((reg, idx) => (
             <li key={idx} className="flex flex-col">
@@ -163,7 +164,7 @@ const MemoriaPreviewNormativa: React.FC<MemoriaPreviewNormativaProps> = ({
     <div className="mb-8 mx-auto p-6">
       {/* Sección 10 – Reglamentos */}
       <section>
-        <h3 className="text-lg font-bold mb-3">10. REGLAMENTOS DE APLICACIÓN</h3>
+        <h3 className="text-lg font-bold mb-3" data-heading="10. REGLAMENTOS DE APLICACIÓN">10. REGLAMENTOS DE APLICACIÓN</h3>
         <p className="text-sm mb-4">
           Para la elaboración de este documento y para la ejecución de la instalación,
           se deberán tener en cuenta, entre otras, las siguientes disposiciones:

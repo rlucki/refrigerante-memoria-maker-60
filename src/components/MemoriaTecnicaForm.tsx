@@ -157,7 +157,10 @@ const MemoriaTecnicaForm = ({
         
         <TabsContent value="descripcion_clasificacion" className="mt-6">
           <div className="space-y-6">
-            {/* Formulario de cálculos (Movido de la pestaña Excel) */}
+            {/* Nueva sección de Normativa agregada aquí */}
+            <NormativaSection onChange={handleInputChange} />
+            
+            {/* Calculadora */}
             <Card className="p-6">
               <h3 className="text-lg font-medium mb-4">Configuración de Compresores y Equipos</h3>
               <div className="space-y-6">
@@ -221,7 +224,7 @@ const MemoriaTecnicaForm = ({
               </div>
             </Card>
 
-            {/* Uploader de Excel con visualizador (Movido de la pestaña Excel) */}
+            {/* Uploader de Excel con visualizador */}
             {onExcelUpload && (
               <Card className="p-6">
                 <h3 className="text-lg font-medium mb-4">Cargar archivo Excel</h3>
