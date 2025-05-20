@@ -101,11 +101,10 @@ const MemoriaEvaporadores: React.FC<MemoriaEvaporadoresProps> = ({
       {/* párrafos finales sin cambios */}
       <div className="text-sm mt-6 space-y-4 text-justify">
         <p>
-          El desescarche en los evaporadores de las cámaras y de los muebles…
+          El desescarche en los evaporadores de las cámaras y de los muebles frigoríficos negativos se realiza mediante la aportación de calor por resistencias (desescarche eléctrico), mientras que en los evaporadores de los obradores y de los muebles frigoríficos positivos se realiza por aire, mediante el corte de la alimentación de refrigerante a éstos mientras los ventiladores están en funcionamiento.
         </p>
         <p>
-          La separación de aleta para los evaporadores de cámaras de temperatura
-          positiva es como mínimo de 6&nbsp;mm…
+          La separación de aleta para los evaporadores de cámaras de temperatura positiva es como mínimo de 6 mm. En los evaporadores de cámara de congelados es como mínimo de 7 mm.&nbsp;mm…
         </p>
       </div>
     </div>
