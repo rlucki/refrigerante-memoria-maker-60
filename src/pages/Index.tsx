@@ -1,120 +1,85 @@
-import React from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 
-interface MemoriaEvaporadoresProps {
-  excelData?: any;
-}
+import { useState } from "react";
+import MemoriaTecnicaForm from "@/components/MemoriaTecnicaForm";
+import { Button } from "@/components/ui/button";
+import { FileText, Eye } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
+import { Link } from "react-router-dom";
 
-const MemoriaEvaporadores: React.FC<MemoriaEvaporadoresProps> = ({ excelData }) => {
-  // Extract data from Excel if available
-  const evaporadoresData = React.useMemo(() => {
-    if (!excelData || !excelData['RESUM LEGA']) return [];
-    
-    try {
-      // Filter for rows between AJ1 and AQ15
-      const evaporadoresRows = [];
-      
-      // Process the Excel data to extract evaporadores information
-      if (excelData['RESUM LEGA']) {
-        for (let i = 1; i <= 15; i++) {
-          const rowData = {
-            modelo: excelData['RESUM LEGA'][AJ${i}]?.v || '',
-            potencia: excelData['RESUM LEGA'][AK${i}]?.v || '',
-            cantidad: excelData['RESUM LEGA'][AL${i}]?.v || '',
-            temperatura: excelData['RESUM LEGA'][AM${i}]?.v || '',
-            desescarche: excelData['RESUM LEGA'][AN${i}]?.v || '',
-            ventiladores: excelData['RESUM LEGA'][AO${i}]?.v || '',
-            caudal: excelData['RESUM LEGA'][AP${i}]?.v || '',
-            ubicacion: excelData['RESUM LEGA'][AQ${i}]?.v || '',
-          };
-          
-          // Only add rows that have data (at least model or power)
-          if (rowData.modelo || rowData.potencia) {
-            evaporadoresRows.push(rowData);
-          }
-        }
-      }
-      
-      return evaporadoresRows;
-    } catch (error) {
-      console.error("Error extracting evaporadores data:", error);
-      return [];
-    }
-  }, [excelData]);
+const Index = () => {
+  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+
+  const handleFormSubmit = () => {
+    setIsFormSubmitted(true);
+    toast({
+      title: "Memoria técnica generada",
+      description: "Se ha generado correctamente la memoria técnica.",
+    });
+  };
 
   return (
-    <div className="mb-8 max-w-[210mm] mx-auto bg-white min-h-[297mm] relative p-6">
-      <div className="pb-20">
-        {/* Only keep the EVAPORADORES section (14.12) */}
-        <h3 className="text-lg font-bold">14.12. EVAPORADORES</h3>
-        
-        <div className="mt-4 text-sm text-justify">
-          <p className="mb-4">
-            En cada cámara se instala un evaporador convenientemente dimensionado y dotado de ventiladores 
-            axiales y baterías de intercambio con tubos de cobre y aletas de aluminio, cuya separación 
-            está en función de la temperatura interior deseada. Están diseñados para soportar las presiones 
-            de trabajo alcanzadas por el refrigerante. Los evaporadores instalados son los siguientes:
-          </p>
-          
-          {evaporadoresData.length > 0 ? (
-            <div className="overflow-x-auto mt-4">
-              <Table className="w-full border-collapse">
-                <TableHeader>
-                  <TableRow className="bg-gray-100">
-                    <TableHead className="border border-gray-300 p-2 text-xs">Modelo</TableHead>
-                    <TableHead className="border border-gray-300 p-2 text-xs">Potencia (W)</TableHead>
-                    <TableHead className="border border-gray-300 p-2 text-xs">Cantidad</TableHead>
-                    <TableHead className="border border-gray-300 p-2 text-xs">Temperatura (°C)</TableHead>
-                    <TableHead className="border border-gray-300 p-2 text-xs">Desescarche</TableHead>
-                    <TableHead className="border border-gray-300 p-2 text-xs">Ventiladores</TableHead>
-                    <TableHead className="border border-gray-300 p-2 text-xs">Caudal (m³/h)</TableHead>
-                    <TableHead className="border border-gray-300 p-2 text-xs">Ubicación</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {evaporadoresData.map((row, index) => (
-                    <TableRow key={index} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                      <TableCell className="border border-gray-300 p-2 text-xs">{row.modelo}</TableCell>
-                      <TableCell className="border border-gray-300 p-2 text-xs">{row.potencia}</TableCell>
-                      <TableCell className="border border-gray-300 p-2 text-xs">{row.cantidad}</TableCell>
-                      <TableCell className="border border-gray-300 p-2 text-xs">{row.temperatura}</TableCell>
-                      <TableCell className="border border-gray-300 p-2 text-xs">{row.desescarche}</TableCell>
-                      <TableCell className="border border-gray-300 p-2 text-xs">{row.ventiladores}</TableCell>
-                      <TableCell className="border border-gray-300 p-2 text-xs">{row.caudal}</TableCell>
-                      <TableCell className="border border-gray-300 p-2 text-xs">{row.ubicacion}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          ) : (
-            <p className="italic text-gray-500">No se encontraron datos de evaporadores en el Excel.</p>
-          )}
-          
-          <div className="mt-6">
-            <p className="mb-4">
-              El desescarche en los evaporadores de las cámaras y de los muebles frigoríficos negativos se realiza mediante la aportación 
-              de calor por resistencias (desescarche eléctrico), mientras que en los evaporadores de los obradores y de los muebles 
-              frigoríficos positivos se realiza por aire, mediante el corte de la alimentación de refrigerante a éstos mientras 
-              los ventiladores están en funcionamiento.
-            </p>
-            
-            <p className="mb-4">
-              La separación de aleta para los evaporadores de cámaras de temperatura positiva es como mínimo de 6 mm. 
-              En los evaporadores de cámara de congelados es como mínimo de 7 mm.
-            </p>
+    <div className="min-h-screen bg-gray-50">
+      <header className="bg-white shadow-sm py-4 px-6 md:px-10 border-b">
+        <div className="max-w-7xl mx-auto flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            <img 
+              src="/lovable-uploads/0849350b-e654-4690-a2e5-da51a316f627.png" 
+              alt="COLDsulting Logo" 
+              className="h-16" 
+            />
+            <h1 className="text-2xl font-bold text-gray-800">LEGALIZATOR</h1>
+          </div>
+          <div className="flex gap-3">
+            <Link to="/plantilla">
+              <Button variant="outline" className="flex items-center gap-2">
+                <FileText size={18} />
+                <span>Ver Plantilla</span>
+              </Button>
+            </Link>
+            <Link to="/vista-previa">
+              <Button className="flex items-center gap-2">
+                <Eye size={18} />
+                <span>Vista Previa</span>
+              </Button>
+            </Link>
           </div>
         </div>
-      </div>
+      </header>
+      
+      <main className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        <div className="bg-white shadow rounded-lg mb-6">
+          <div className="p-6 border-b border-gray-200">
+            <h2 className="text-lg font-medium text-gray-900">Formulario de Datos para Memoria Técnica</h2>
+            <p className="mt-1 text-sm text-gray-500">
+              Complete los siguientes campos para generar automáticamente la memoria técnica descriptiva de instalación frigorífica.
+            </p>
+          </div>
+          <div className="p-6">
+            <MemoriaTecnicaForm onSubmit={handleFormSubmit} />
+          </div>
+        </div>
+        
+        {isFormSubmitted && (
+          <div className="bg-white shadow rounded-lg">
+            <div className="p-6 border-b border-gray-200">
+              <h2 className="text-lg font-medium text-gray-900">Memoria Técnica Generada</h2>
+              <p className="mt-1 text-sm text-gray-500">
+                La memoria técnica ha sido generada con éxito. Puede descargarla o visualizarla.
+              </p>
+            </div>
+            <div className="p-6 flex gap-4">
+              <Button className="bg-green-600 hover:bg-green-700">
+                Descargar Memoria
+              </Button>
+              <Button variant="outline">
+                Vista Previa
+              </Button>
+            </div>
+          </div>
+        )}
+      </main>
     </div>
   );
 };
 
-export default MemoriaEvaporadores;
+export default Index;
