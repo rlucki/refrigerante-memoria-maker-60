@@ -126,8 +126,10 @@ export async function buildWord(opts: {
 
   /* 5️⃣  fusionar la parte renderizada y la nueva sección */
   const finalZip = PizZip(renderedBuf); // Fixed: Removed .load() as it's not needed when passing arraybuffer directly
+  
+  // Fixed Document constructor to properly create a new document with sections
   const finalDoc = new Document({
-    sections: doc.sections, // Fix: Explicitly pass sections property
+    sections: doc.sections,
   });
   
   finalZip.file(
