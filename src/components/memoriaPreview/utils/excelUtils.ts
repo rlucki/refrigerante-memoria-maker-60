@@ -1,22 +1,20 @@
 /**
- * excelUtils.ts
- * Utilidades para leer y procesar datos de Excel (SheetJS u objeto plano)
+ * excelUtils.ts – SOLO utilidades TypeScript, sin JSX
  */
 
 import * as XLSX from "xlsx";
 
-/* ──────────────────────  CONVERSIÓN DE COLUMNAS  ────────────────────── */
+/* ───────────── Conversión de letras de columna ───────────── */
 
-// "A" → 0, "Z" → 25, "AA" → 26, …
+// "A" → 0, "AA" → 26 …
 export const columnLetterToIndex = (label: string): number => {
   let idx = 0;
   for (let i = 0; i < label.length; i++) {
     idx = idx * 26 + label.toUpperCase().charCodeAt(i) - 64;
   }
-  return idx - 1; // 0-based
+  return idx - 1;          // 0-based
 };
 
-// 0 → "A", 27 → "AB"
 export const indexToColumnLetter = (n: number): string => {
   let s = "";
   n++;
@@ -28,7 +26,7 @@ export const indexToColumnLetter = (n: number): string => {
   return s;
 };
 
-/* ───────────────────  LIMPIEZA Y FORMATEO DE VALORES  ────────────────── */
+/* ───────────── Limpieza / formateo de valores ───────────── */
 
 const clean = (v: any) => {
   if (v === "/" || v === "-") return "";
@@ -36,7 +34,7 @@ const clean = (v: any) => {
   return Number.isFinite(num) ? num.toFixed(1) : v; // 1 decimal
 };
 
-/* ─────────────────────  EXTRACCIÓN DE RANGOS  ───────────────────────── */
+/* ───────────── Extrae filas de un rango ───────────── */
 
 export const extractDataFromRange = (
   sheet: XLSX.WorkSheet,
@@ -44,55 +42,54 @@ export const extractDataFromRange = (
   endCol: string,
   startRow: number,
   endRow: number,
-  columnMapping: Record<string, string>
+  mapping: Record<string, string>
 ) => {
   if (!sheet) return [];
 
-  const result: any[] = [];
-  console.log(
-    `Extrayendo datos del rango ${startCol}${startRow}-${endCol}${endRow}`
-  );
+  const out: any[] = [];
 
   for (let r = startRow; r <= endRow; r++) {
-    // ¿la fila contiene algo?
-    const hasData = Object.values(columnMapping).some((col) => {
-      const cell = sheet[`${col.toUpperCase()}${r}`];
-      return cell && cell.v !== undefined && cell.v !== "";
+    // ¿hay algo en la fila?
+    const has = Object.values(mapping).some((col) => {
+      const c = sheet[`${col.toUpperCase()}${r}`];
+      return c && c.v !== undefined && c.v !== "";
     });
-    if (!hasData) continue;
+    if (!has) continue;
 
     const row: Record<string, any> = {};
-    for (const [key, col] of Object.entries(columnMapping)) {
+    for (const [key, col] of Object.entries(mapping)) {
       const cell = sheet[`${col.toUpperCase()}${r}`];
       row[key] = clean(cell?.v);
     }
 
-    // descartar cabeceras
+    // descartar cabeceras que no queremos
     const first = String(row[Object.keys(row)[0]]).toUpperCase();
-    const CABECERAS = [
-      "DENOMINACIÓN",
-      "CENTRAL FRIGORÍFICA",
-      "CARACTERÍSTICA",
-      "MAQUINARIA INSTALADA",
-      "ELEMENTO",
-      "CENTRAL POSITIVA",
-      "CENTRAL INTERMEDIA", //  ← rótulo de la positiva en Excel
-      "CENTRAL NEGATIVA",
-      "COMPRESORES PARALELOS",
-    ];
-    if (CABECERAS.includes(first)) continue;
+    if (
+      [
+        "DENOMINACIÓN",
+        "CENTRAL FRIGORÍFICA",
+        "CARACTERÍSTICA",
+        "MAQUINARIA INSTALADA",
+        "ELEMENTO",
+        "CENTRAL POSITIVA",
+        "CENTRAL INTERMEDIA", // ← título que aparece en tu Excel
+        "CENTRAL NEGATIVA",
+        "COMPRESORES PARALELOS",
+      ].includes(first)
+    )
+      continue;
 
-    result.push(row);
+    out.push(row);
   }
 
-  return result;
+  return out;
 };
 
-/* ─────────────────────  API PRINCIPAL  ──────────────────────────────── */
+/* ───────────── API principal que usa la utilidad ───────────── */
 
 export const extractTableData = (
-  workbook: any,
-  opts: {
+  wb: any,
+  o: {
     sheet: string;
     startCol: string;
     endCol: string;
@@ -101,32 +98,29 @@ export const extractTableData = (
     mappings: Record<string, string>;
   }
 ) => {
-  if (!workbook) return [];
+  if (!wb) return [];
 
-  const sheet = workbook.Sheets
-    ? workbook.Sheets[opts.sheet] // workbook completo
-    : workbook[opts.sheet]; // objeto plano
-
+  const sheet = wb.Sheets ? wb.Sheets[o.sheet] : wb[o.sheet];
   if (!sheet) {
-    console.warn(`No se encontró la hoja "${opts.sheet}"`);
+    console.warn(`No se encontró la hoja "${o.sheet}"`);
     return [];
   }
 
   return extractDataFromRange(
     sheet,
-    opts.startCol,
-    opts.endCol,
-    opts.startRow,
-    opts.endRow,
-    opts.mappings
+    o.startCol,
+    o.endCol,
+    o.startRow,
+    o.endRow,
+    o.mappings
   );
 };
 
-/* ─────────────────────  UTILIDAD DE SUMA  ───────────────────────────── */
+/* ───────────── Suma rápida (opcional) ───────────── */
 
 export const calculateSum = (rows: any[], field = "cargaT") =>
-  rows.reduce((sum, r) => {
+  rows.reduce((s, r) => {
     const v =
       typeof r[field] === "number" ? r[field] : parseFloat(r[field] ?? "");
-    return sum + (Number.isFinite(v) ? v : 0);
+    return s + (Number.isFinite(v) ? v : 0);
   }, 0);

@@ -14,12 +14,12 @@ interface Props {
 }
 
 const CentralPositivaSection: React.FC<Props> = ({ excelData }) => {
-  /*  RANGO REAL (col J-O, filas 2-25)  */
+  /* Rango real J-O */
   const data = extractTableData(excelData, {
     sheet: "RESUM LEGA",
     startCol: "J",
     endCol: "O",
-    startRow: 2,   // salta la fila de título "CENTRAL INTERMEDIA"
+    startRow: 2,   // debajo del título
     endRow: 25,
     mappings: {
       caracteristica: "J",
@@ -46,7 +46,6 @@ const CentralPositivaSection: React.FC<Props> = ({ excelData }) => {
             className="w-full border-collapse text-sm"
             style={{ tableLayout: "fixed" }}
           >
-            {/* Cabecera */}
             <TableHeader>
               <TableRow className="bg-blue-100">
                 <TableHead className="border p-2 min-w-[150px]" />
@@ -58,14 +57,12 @@ const CentralPositivaSection: React.FC<Props> = ({ excelData }) => {
               </TableRow>
             </TableHeader>
 
-            {/* Filas */}
             <TableBody>
               {data.map((row, i) => (
                 <TableRow key={i} className={i % 2 ? "bg-gray-50" : ""}>
                   <TableCell className="border p-2">
                     {row.caracteristica}
                   </TableCell>
-
                   {["c1", "c2", "c3", "c4", "total"].map((k) => (
                     <TableCell
                       key={k}
