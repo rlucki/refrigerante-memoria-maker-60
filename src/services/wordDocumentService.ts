@@ -19,6 +19,7 @@ import {
   ImageRun,
   TextRun,
   PageNumber,
+  IImageOptions,
 } from "docx";
 
 /* ───── helper: pie con logo + nº página ───── */
@@ -28,7 +29,11 @@ async function buildFooter(logoUrl?: string) {
     try {
       const buf = await (await fetch(logoUrl)).arrayBuffer();
       runs.push(
-        new ImageRun({ data: buf, transformation: { width: 80, height: 40 } }),
+        new ImageRun({
+          data: buf,
+          transformation: { width: 80, height: 40 },
+          type: "png", // Add required type property
+        }),
         new TextRun("   ")
       );
     } catch (error) {
@@ -121,7 +126,9 @@ export async function buildWord(opts: {
 
   /* 5️⃣  fusionar la parte renderizada y la nueva sección */
   const finalZip = PizZip.load(renderedBuf);
-  const finalDoc = new Document(doc);
+  const finalDoc = new Document({
+    sections: doc.sections, // Fix: Explicitly pass sections property
+  });
   finalZip.file(
     "word/document.xml",
     await Packer.toString(finalDoc) // reemplaza contenido
