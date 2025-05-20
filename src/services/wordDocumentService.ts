@@ -1,10 +1,4 @@
 
-/*  src/services/wordDocumentService.ts
-    Genera un DOCX desde el navegador.
-    – Inserta: contenido HTML de la vista previa, títulos data-heading (TOC),
-      pie con logo y numeración de página.
-*/
-
 import PizZip from "pizzip";
 import Docxtemplater from "docxtemplater";
 import htmlToDocx from "html-to-docx";
@@ -98,37 +92,41 @@ export async function buildWord(opts: {
   /* 4️⃣  construir documento final con TOC y pie */
   const footer = await buildFooter(logoUrl);
 
+  // Save the sections configuration separately to avoid type issues
+  const docSections = [
+    {
+      properties: {},
+      footers: footer ? { default: footer } : undefined,
+      children: [], // el contenido viene de la plantilla renderizada
+    },
+    {
+      properties: {},
+      children: [
+        new Paragraph({
+          text: "ÍNDICE",
+          heading: HeadingLevel.HEADING_1,
+          alignment: "center",
+        }),
+        new TableOfContents("Índice", {
+          hyperlink: true,
+          headingStyleRange: "1-9",
+        }),
+        ...headingParas,
+      ],
+    },
+  ];
+
+  // Create the document with the sections
   const doc = new Document({
-    sections: [
-      {
-        properties: {},
-        footers: footer ? { default: footer } : undefined,
-        children: [], // el contenido viene de la plantilla renderizada
-      },
-      {
-        properties: {},
-        children: [
-          new Paragraph({
-            text: "ÍNDICE",
-            heading: HeadingLevel.HEADING_1,
-            alignment: "center",
-          }),
-          new TableOfContents("Índice", {
-            hyperlink: true,
-            headingStyleRange: "1-9",
-          }),
-          ...headingParas,
-        ],
-      },
-    ],
+    sections: docSections,
   });
 
   /* 5️⃣  fusionar la parte renderizada y la nueva sección */
   const finalZip = PizZip(renderedBuf);
   
-  // Create a document with the same sections as the original doc
+  // Create a document with the same sections configuration
   const finalDoc = new Document({
-    sections: doc.sections,
+    sections: docSections,
   });
   
   // Convert the document to a string and use it to replace the content in the ZIP
