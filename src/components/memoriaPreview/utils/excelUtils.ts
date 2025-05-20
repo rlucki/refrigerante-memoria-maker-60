@@ -1,18 +1,17 @@
 /**
- * excelUtils.ts – SOLO utilidades TypeScript, sin JSX
+ * excelUtils.ts – SOLO utilidades para leer Excel (sin JSX)
  */
 
 import * as XLSX from "xlsx";
 
-/* ───────────── Conversión de letras de columna ───────────── */
+/* ── Conversión de letras de columna ── */
 
-// "A" → 0, "AA" → 26 …
 export const columnLetterToIndex = (label: string): number => {
   let idx = 0;
   for (let i = 0; i < label.length; i++) {
     idx = idx * 26 + label.toUpperCase().charCodeAt(i) - 64;
   }
-  return idx - 1;          // 0-based
+  return idx - 1;                 // 0-based
 };
 
 export const indexToColumnLetter = (n: number): string => {
@@ -26,15 +25,15 @@ export const indexToColumnLetter = (n: number): string => {
   return s;
 };
 
-/* ───────────── Limpieza / formateo de valores ───────────── */
+/* ── Limpieza y formateo ── */
 
 const clean = (v: any) => {
   if (v === "/" || v === "-") return "";
   const num = parseFloat(String(v).replace(",", "."));
-  return Number.isFinite(num) ? num.toFixed(1) : v; // 1 decimal
+  return Number.isFinite(num) ? num.toFixed(1) : v;   // 1 decimal
 };
 
-/* ───────────── Extrae filas de un rango ───────────── */
+/* ── Extraer filas de un rango ── */
 
 export const extractDataFromRange = (
   sheet: XLSX.WorkSheet,
@@ -49,7 +48,6 @@ export const extractDataFromRange = (
   const out: any[] = [];
 
   for (let r = startRow; r <= endRow; r++) {
-    // ¿hay algo en la fila?
     const has = Object.values(mapping).some((col) => {
       const c = sheet[`${col.toUpperCase()}${r}`];
       return c && c.v !== undefined && c.v !== "";
@@ -57,27 +55,24 @@ export const extractDataFromRange = (
     if (!has) continue;
 
     const row: Record<string, any> = {};
-    for (const [key, col] of Object.entries(mapping)) {
+    for (const [k, col] of Object.entries(mapping)) {
       const cell = sheet[`${col.toUpperCase()}${r}`];
-      row[key] = clean(cell?.v);
+      row[k] = clean(cell?.v);
     }
 
-    // descartar cabeceras que no queremos
     const first = String(row[Object.keys(row)[0]]).toUpperCase();
-    if (
-      [
-        "DENOMINACIÓN",
-        "CENTRAL FRIGORÍFICA",
-        "CARACTERÍSTICA",
-        "MAQUINARIA INSTALADA",
-        "ELEMENTO",
-        "CENTRAL POSITIVA",
-        "CENTRAL INTERMEDIA", // ← título que aparece en tu Excel
-        "CENTRAL NEGATIVA",
-        "COMPRESORES PARALELOS",
-      ].includes(first)
-    )
-      continue;
+    const CABECERAS = [
+      "DENOMINACIÓN",
+      "CENTRAL FRIGORÍFICA",
+      "CARACTERÍSTICA",
+      "MAQUINARIA INSTALADA",
+      "ELEMENTO",
+      "CENTRAL POSITIVA",
+      "CENTRAL INTERMEDIA", // título en tu Excel
+      "CENTRAL NEGATIVA",
+      "COMPRESORES PARALELOS",
+    ];
+    if (CABECERAS.includes(first)) continue;
 
     out.push(row);
   }
@@ -85,7 +80,7 @@ export const extractDataFromRange = (
   return out;
 };
 
-/* ───────────── API principal que usa la utilidad ───────────── */
+/* ── API principal ── */
 
 export const extractTableData = (
   wb: any,
@@ -99,13 +94,11 @@ export const extractTableData = (
   }
 ) => {
   if (!wb) return [];
-
   const sheet = wb.Sheets ? wb.Sheets[o.sheet] : wb[o.sheet];
   if (!sheet) {
     console.warn(`No se encontró la hoja "${o.sheet}"`);
     return [];
   }
-
   return extractDataFromRange(
     sheet,
     o.startCol,
@@ -116,7 +109,7 @@ export const extractTableData = (
   );
 };
 
-/* ───────────── Suma rápida (opcional) ───────────── */
+/* ── Suma opcional ── */
 
 export const calculateSum = (rows: any[], field = "cargaT") =>
   rows.reduce((s, r) => {
