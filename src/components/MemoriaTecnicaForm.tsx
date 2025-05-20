@@ -10,6 +10,7 @@ import DatosTecnicosSection from "./formSections/DatosTecnicosSection";
 import ClasificacionSection from "./formSections/ClasificacionSection";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
+import ExcelUploader from "./ExcelUploader";
 
 interface MemoriaTecnicaFormProps {
   onSubmit: () => void;
@@ -95,19 +96,14 @@ const MemoriaTecnicaForm = ({
   return (
     <form onSubmit={handleSubmit}>
       <Tabs defaultValue={currentTab} value={currentTab} onValueChange={updateTab} className="mb-6">
-        <TabsList className="grid grid-cols-4 w-full">
+        <TabsList className="grid grid-cols-3 w-full">
           <TabsTrigger value="titular">Datos Titular</TabsTrigger>
-          <TabsTrigger value="instalador">Datos Instalador</TabsTrigger>
           <TabsTrigger value="instalacion">Datos Instalación</TabsTrigger>
           <TabsTrigger value="datos_proyecto">Datos Proyecto</TabsTrigger>
         </TabsList>
         
         <TabsContent value="titular" className="mt-6">
           <DatosTitularSection onChange={handleInputChange} />
-        </TabsContent>
-        
-        <TabsContent value="instalador" className="mt-6">
-          <DatosInstaladorSection onChange={handleInputChange} />
         </TabsContent>
         
         <TabsContent value="instalacion" className="mt-6">
@@ -122,7 +118,7 @@ const MemoriaTecnicaForm = ({
         </TabsContent>
         
         <TabsContent value="datos_proyecto" className="mt-6">
-          <Card>
+          <Card className="p-6 mb-6">
             <div className="p-6">
               <h3 className="text-lg font-medium mb-4">Datos del Proyecto</h3>
               <div className="space-y-4">
@@ -149,6 +145,12 @@ const MemoriaTecnicaForm = ({
               </div>
             </div>
           </Card>
+          
+          <DatosInstaladorSection onChange={handleInputChange} />
+          
+          <div className="mt-6">
+            <ExcelUploader onDataLoaded={onExcelUpload || (() => {})} />
+          </div>
         </TabsContent>
       </Tabs>
       
@@ -159,8 +161,7 @@ const MemoriaTecnicaForm = ({
           onClick={() => {
             const prevTab = {
               "titular": "titular",
-              "instalador": "titular",
-              "instalacion": "instalador",
+              "instalacion": "titular",
               "datos_proyecto": "instalacion",
             }[currentTab];
             updateTab(prevTab);
@@ -174,8 +175,7 @@ const MemoriaTecnicaForm = ({
           type="button"
           onClick={() => {
             const nextTab = {
-              "titular": "instalador",
-              "instalador": "instalacion",
+              "titular": "instalacion",
               "instalacion": "datos_proyecto",
               "datos_proyecto": "datos_proyecto",
             }[currentTab];
@@ -191,3 +191,4 @@ const MemoriaTecnicaForm = ({
 };
 
 export default MemoriaTecnicaForm;
+
