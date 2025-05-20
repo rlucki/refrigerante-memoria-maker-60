@@ -1,4 +1,8 @@
+// src/components/memoriaPreview/sections/MemoriaSoportaciones.tsx
+
 import React from "react";
+import { BlockMath } from "react-katex";
+import "katex/dist/katex.min.css";
 
 const MemoriaSoportaciones: React.FC = () => {
   return (
@@ -24,9 +28,9 @@ const MemoriaSoportaciones: React.FC = () => {
 
           <p>
             Las distancias entre soportes estarán en función de los diámetros,
-            debiendo tomar atención en cambios de dirección y previo a conexiones
-            de electroválvulas o válvulas de expansión electrónica, con una
-            separación máxima entre soportes según la tabla siguiente:
+            debiendo tomar atención en cambios de dirección y previo a
+            conexiones de electroválvulas o válvulas de expansión electrónica,
+            con una separación máxima entre soportes según la tabla siguiente:
           </p>
 
           {/* Tabla de soportaciones 3 columnas */}
@@ -51,36 +55,30 @@ const MemoriaSoportaciones: React.FC = () => {
                   <td className="border border-gray-300 p-2">
                     De 1/4&quot; a 5/8&quot;
                   </td>
-                  <td className="border border-gray-300 p-2 text-center">
-                    1,2
-                  </td>
+                  <td className="border border-gray-300 p-2 text-center">1,2</td>
                 </tr>
                 <tr className="bg-gray-50">
                   <td className="border border-gray-300 p-2">15 a 22 recocido</td>
                   <td className="border border-gray-300 p-2">
                     De 5/8&quot; a 7/8&quot;
                   </td>
-                  <td className="border border-gray-300 p-2 text-center">
-                    2
-                  </td>
+                  <td className="border border-gray-300 p-2 text-center">2</td>
                 </tr>
                 <tr>
-                  <td className="border border-gray-300 p-2">22 a &lt; 54 recocido</td>
+                  <td className="border border-gray-300 p-2">
+                    22 a &lt; 54 recocido
+                  </td>
                   <td className="border border-gray-300 p-2">
                     De 7/8&quot; a 2 1/8&quot;
                   </td>
-                  <td className="border border-gray-300 p-2 text-center">
-                    3
-                  </td>
+                  <td className="border border-gray-300 p-2 text-center">3</td>
                 </tr>
                 <tr className="bg-gray-50">
                   <td className="border border-gray-300 p-2">54 a 56 recocido</td>
                   <td className="border border-gray-300 p-2">
                     De 2 1/8&quot; a 3 1/8&quot;
                   </td>
-                  <td className="border border-gray-300 p-2 text-center">
-                    4
-                  </td>
+                  <td className="border border-gray-300 p-2 text-center">4</td>
                 </tr>
               </tbody>
             </table>
@@ -96,20 +94,23 @@ const MemoriaSoportaciones: React.FC = () => {
           </p>
 
           <p>
-            Todo el trazado de tuberías se ha diseñado siguiendo los criterios técnicos
-            que minimicen las pérdidas de carga y por lo tanto el consumo eléctrico,
-            garantizando a la vez el retorno de aceite al compresor, con especial cuidado
-            en los tramos verticales generales, en los que se han diseñado dobles montantes
-            para garantizar velocidades mínimas a cargas parciales.
+            Todo el trazado de tuberías se ha diseñado siguiendo los criterios
+            técnicos que minimicen las pérdidas de carga y por lo tanto el consumo
+            eléctrico, garantizando a la vez el retorno de aceite al compresor, con
+            especial cuidado en los tramos verticales generales, en los que se han
+            diseñado dobles montantes para garantizar velocidades mínimas a cargas
+            parciales.
           </p>
 
-          {/* Nueva tabla de velocidades y pérdidas */}
+          {/* Tabla de velocidades y pérdidas */}
           <div className="mt-4 mb-6 overflow-x-auto">
             <table className="w-full border-collapse border border-gray-300 text-sm">
               <thead>
                 <tr className="bg-gray-100">
                   <th className="border border-gray-300 p-2">Tipo</th>
-                  <th className="border border-gray-300 p-2 text-center">Velocidad (m/s)</th>
+                  <th className="border border-gray-300 p-2 text-center">
+                    Velocidad (m/s)
+                  </th>
                   <th className="border border-gray-300 p-2 text-center">
                     Pérdida de carga máxima (K)
                   </th>
@@ -123,12 +124,16 @@ const MemoriaSoportaciones: React.FC = () => {
                 </tr>
                 <tr className="bg-gray-50">
                   <td className="border border-gray-300 p-2">Líquido</td>
-                  <td className="border border-gray-300 p-2 text-center">0,5 – 1,0</td>
+                  <td className="border border-gray-300 p-2 text-center">
+                    0,5 – 1,0
+                  </td>
                   <td className="border border-gray-300 p-2 text-center">0,5</td>
                 </tr>
                 <tr>
                   <td className="border border-gray-300 p-2">Caída Líquido</td>
-                  <td className="border border-gray-300 p-2 text-center">0,2 – 0,4</td>
+                  <td className="border border-gray-300 p-2 text-center">
+                    0,2 – 0,4
+                  </td>
                   <td className="border border-gray-300 p-2 text-center">0,2</td>
                 </tr>
                 <tr className="bg-gray-50">
@@ -157,64 +162,76 @@ const MemoriaSoportaciones: React.FC = () => {
               de conductividad térmica, su baja permeabilidad al vapor de agua, y su
               resistencia al envejecimiento y la eficacia de la barrera de vapor.
             </p>
-            <p>
-              El espesor del aislante se ha determinado teniendo en cuenta:
-            </p>
+            <p>El espesor del aislante se ha determinado teniendo en cuenta:</p>
             <ul className="list-disc pl-6 space-y-1 text-sm">
               <li>
-                La temperatura y humedad relativa del aire ambiente en el lugar de emplazamiento.
+                La temperatura y humedad relativa del aire ambiente en el lugar de
+                emplazamiento.
               </li>
               <li>
-                La diferencia de temperatura entre la superficie fría a aislar y la normal del aire ambiente.
+                La diferencia de temperatura entre la superficie fría a aislar y la
+                normal del aire ambiente.
               </li>
               <li>
                 La conductividad térmica del material aislante seleccionado.
               </li>
               <li>
-                La forma y características del componente a aislar (pared plana o diámetro de la tubería).
+                La forma y características del componente a aislar (pared plana o
+                diámetro de la tubería).
               </li>
             </ul>
 
-            <p>
-              Los materiales aislantes cumplen los requisitos siguientes:
-            </p>
+            <p>Los materiales aislantes cumplen los requisitos siguientes:</p>
             <ul className="list-disc pl-6 space-y-1 text-sm">
               <li>Coeficiente de conductividad térmica bajo.</li>
-              <li>Factores de resistencia a la absorción y difusión del vapor de agua altos.</li>
-              <li>Buena resistencia a la inflamabilidad, a la descomposición y al envejecimiento.</li>
-              <li>Buena resistencia mecánica, especialmente en los puntos de soportación de tuberías.</li>
+              <li>
+                Factores de resistencia a la absorción y difusión del vapor de agua
+                altos.
+              </li>
+              <li>
+                Buena resistencia a la inflamabilidad, a la descomposición y al
+                envejecimiento.
+              </li>
+              <li>
+                Buena resistencia mecánica, especialmente en los puntos de soportación
+                de tuberías.
+              </li>
               <li>
                 Mantienen sus propiedades a temperaturas entre –70 y +120ºC.
               </li>
               <li>
-                Cuando el aislamiento discurra a la intemperie, estará debidamente protegido.
+                Cuando el aislamiento discurra a la intemperie, estará debidamente
+                protegido.
               </li>
             </ul>
 
             <p>
               Para su cálculo, es muy importante garantizar la ausencia de condensaciones
               en exterior de la tubería y minimizar las pérdidas por transmisión, de
-              ahí que los espesores instalados cubren las necesidades obtenidas a partir
-              de la siguiente ecuación que permite calcular la temperatura superficial:
+              ahí que los espesores instalados cubren las necesidades obtenidas a
+              partir de la siguiente ecuación:
             </p>
 
-            {/* Bloque monoespaciado con la fórmula */}
-            <pre className="bg-gray-100 p-4 text-sm overflow-auto">
-{`           Q = (te - ti)
-               -------------------------------
-           1/(2·π)·(1/(hi·ri) + 1/λ·ln(r2/r1) + 1/(he·r2))
-           
-           equivalente a:
-           
-           Q = (te - tse)
-               -------------------
-               1/(2·π·he·r2)
-`}
-            </pre>
+            {/* Fórmula con KaTeX */}
+            <div className="my-4 overflow-x-auto">
+              <BlockMath
+                math={String.raw`
+                  Q \;=\;
+                  \frac{\,t_e - t_i\,}
+                       {\displaystyle
+                         \frac{1}{2\pi}\bigl(
+                           \tfrac{1}{h_i r_i}
+                           + \tfrac{1}{\lambda}\ln\!\tfrac{r_2}{r_1}
+                           + \tfrac{1}{h_e r_2}
+                         \bigr)
+                       }
+                  \;=\;
+                  \frac{\,t_e - t_{se}\,}{2\pi\,h_e\,r_2}
+                `}
+              />
+            </div>
 
-            <p>
-              En donde:
-            </p>
+            <p>En donde:</p>
             <table className="w-full border-collapse border border-gray-300 text-sm mb-4">
               <thead>
                 <tr className="bg-gray-100">
@@ -272,9 +289,9 @@ const MemoriaSoportaciones: React.FC = () => {
 
             <p>
               Todas las tuberías de aspiración han sido aisladas mediante coquilla
-              elastomérica, cuyo espesor mínimo es de 19 mm y está en función del fluido
-              y de su temperatura, en aras de evitar la condensación de la humedad
-              ambiental.
+              elastomérica, cuyo espesor mínimo es de 19 mm y está en función del
+              fluido y de su temperatura, en aras de evitar la condensación de la
+              humedad ambiental.
             </p>
           </div>
         </div>
