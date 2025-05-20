@@ -7,11 +7,11 @@ const MemoriaSobrepresiones: React.FC = () => {
       <div className="pb-20">
         {/* Sección 22 - PROTECCIÓN CONTRA SOBREPRESIONES */}
         <div className="mb-6">
-          <h3 className="text-lg font-bold">22. PROTECCIÓN CONTRA SOBREPRESIONES</h3>
+          <h3 className="text-lg font-bold" data-heading="&&22. PROTECCIÓN CONTRA SOBREPRESIONES">22. PROTECCIÓN CONTRA SOBREPRESIONES</h3>
           
           {/* Subsección 22.4 - VÁLVULAS DE SEGURIDAD */}
           <div className="mt-4 mb-6">
-            <h4 className="text-base font-bold">22.4.	VÁLVULAS DE SEGURIDAD - CAPACIDAD DE DESCARGA</h4>
+            <h4 className="text-base font-bold" data-heading="&&22.4. VÁLVULAS DE SEGURIDAD - CAPACIDAD DE DESCARGA">22.4.	VÁLVULAS DE SEGURIDAD - CAPACIDAD DE DESCARGA</h4>
             <div className="mt-3 text-sm text-justify">
               <p className="mb-3">
                 Los recipientes....
@@ -118,7 +118,7 @@ const MemoriaSobrepresiones: React.FC = () => {
           
           {/* Nueva sección 22.6 - DESCARGA DE LAS VÁLVULAS DE SEGURIDAD */}
           <div className="mt-6 mb-6">
-            <h4 className="text-base font-bold">22.6. DESCARGA DE LAS VÁLVULAS DE SEGURIDAD</h4>
+            <h4 className="text-base font-bold" data-heading="&&22.6. DESCARGA DE LAS VÁLVULAS DE SEGURIDAD">22.6. DESCARGA DE LAS VÁLVULAS DE SEGURIDAD</h4>
             <div className="mt-3 text-sm text-justify">
               <p className="mb-4">
                 Las tuberías de descarga....

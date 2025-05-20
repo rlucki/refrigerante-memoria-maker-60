@@ -36,7 +36,7 @@ const MemoriaSecciones1a9: React.FC<MemoriaSecciones1a9Props> = ({ data }) => {
       <div className="pb-20">
         {/* Sección 1 - OBJETO */}
         <div className="mb-6">
-          <h3 className="text-lg font-bold">1. OBJETO</h3>
+          <h3 className="text-lg font-bold" data-heading="&&1. OBJETO">1. OBJETO</h3>
           <p className="text-sm mt-2 text-justify">
             El objeto de este proyecto es el de describir la instalación frigorífica dedicada a la conservación
             de productos perecederos en un {data.tipoInstalacion || "supermercado"}, del que es su titular {data.titular || "DINOSOL SUPERMERCADOS, S.L."},
@@ -47,7 +47,7 @@ const MemoriaSecciones1a9: React.FC<MemoriaSecciones1a9Props> = ({ data }) => {
 
         {/* Sección 2 - ALCANCE */}
         <div className="mb-6">
-          <h3 className="text-lg font-bold">2. ALCANCE</h3>
+          <h3 className="text-lg font-bold" data-heading="&&2. ALCANCE">2. ALCANCE</h3>
           <p className="text-sm mt-2 text-justify">
             Queda fuera del alcance de este proyecto las instalaciones de que dispone la industria y que
             intervienen de forma directa o indirecta en el funcionamiento de los equipos objeto de este proyecto,
@@ -61,7 +61,7 @@ const MemoriaSecciones1a9: React.FC<MemoriaSecciones1a9Props> = ({ data }) => {
 
         {/* Sección 3 - ANTECEDENTES */}
         <div className="mb-6">
-          <h3 className="text-lg font-bold">3. ANTECEDENTES</h3>
+          <h3 className="text-lg font-bold" data-heading="&&3. ANTECEDENTES">3. ANTECEDENTES</h3>
           <p className="text-sm mt-2 text-justify">
             No existen antecedentes administrativos de la instalación objeto de este proyecto y,
             por lo tanto, se tramitará como nueva instalación.
@@ -70,7 +70,7 @@ const MemoriaSecciones1a9: React.FC<MemoriaSecciones1a9Props> = ({ data }) => {
 
         {/* Sección 4 - TITULAR */}
         <div className="mb-6">
-          <h3 className="text-lg font-bold">4. TITULAR</h3>
+          <h3 className="text-lg font-bold" data-heading="&&4. TITULAR">4. TITULAR</h3>
           <div className="text-sm mt-2">
             <table className="w-full border-collapse">
               <tbody>
@@ -97,7 +97,7 @@ const MemoriaSecciones1a9: React.FC<MemoriaSecciones1a9Props> = ({ data }) => {
 
         {/* Sección 5 - DOMICILIO A EFECTOS DE NOTIFICACIONES */}
         <div className="mb-6">
-          <h3 className="text-lg font-bold">5. DOMICILIO A EFECTOS DE NOTIFICACIONES</h3>
+          <h3 className="text-lg font-bold" data-heading="&&5. DOMICILIO A EFECTOS DE NOTIFICACIONES">5. DOMICILIO A EFECTOS DE NOTIFICACIONES</h3>
           <div className="text-sm mt-2">
             <table className="w-full border-collapse">
               <tbody>
@@ -119,7 +119,7 @@ const MemoriaSecciones1a9: React.FC<MemoriaSecciones1a9Props> = ({ data }) => {
 
         {/* Sección 6 - UBICACIÓN DE LA INSTALACIÓN */}
         <div className="mb-6">
-          <h3 className="text-lg font-bold">6. UBICACIÓN DE LA INSTALACIÓN</h3>
+          <h3 className="text-lg font-bold" data-heading="&&6. UBICACIÓN DE LA INSTALACIÓN">6. UBICACIÓN DE LA INSTALACIÓN</h3>
           <div className="text-sm mt-2">
             <table className="w-full border-collapse">
               <tbody>
@@ -142,7 +142,7 @@ const MemoriaSecciones1a9: React.FC<MemoriaSecciones1a9Props> = ({ data }) => {
 
         {/* Sección 7 - TÉCNICO AUTOR DEL PROYECTO */}
         <div className="mb-6">
-          <h3 className="text-lg font-bold">7. TÉCNICO AUTOR DEL PROYECTO</h3>
+          <h3 className="text-lg font-bold" data-heading="&&7. TÉCNICO AUTOR DEL PROYECTO">7. TÉCNICO AUTOR DEL PROYECTO</h3>
           <div className="text-sm mt-2">
             <table className="w-full border-collapse">
               <tbody>
@@ -185,7 +185,7 @@ const MemoriaSecciones1a9: React.FC<MemoriaSecciones1a9Props> = ({ data }) => {
 
         {/* Sección 8 - EMPRESA INSTALADORA */}
         <div className="mb-6">
-          <h3 className="text-lg font-bold">8. EMPRESA INSTALADORA</h3>
+          <h3 className="text-lg font-bold" data-heading="&&8. EMPRESA INSTALADORA">8. EMPRESA INSTALADORA</h3>
           <div className="text-sm mt-2">
             <table className="w-full border-collapse">
               <tbody>
@@ -223,7 +223,7 @@ const MemoriaSecciones1a9: React.FC<MemoriaSecciones1a9Props> = ({ data }) => {
 
         {/* Sección 9 - ACTIVIDAD */}
         <div className="mb-6">
-          <h3 className="text-lg font-bold">9. ACTIVIDAD</h3>
+          <h3 className="text-lg font-bold" data-heading="&&9. ACTIVIDAD">9. ACTIVIDAD</h3>
           <p className="text-sm mt-2 text-justify">
             Supermercado para la venta al público de productos alimentarios perecederos, así como otros productos.
           </p>

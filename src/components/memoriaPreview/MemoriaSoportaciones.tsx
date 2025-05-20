@@ -7,7 +7,7 @@ const MemoriaSoportaciones: React.FC = () => {
       <div className="pb-20">
         {/* Sección 17.3 - SUPORTACIONES */}
         <div className="mb-6">
-          <h3 className="text-lg font-bold">17.3. SUPORTACIONES</h3>
+          <h3 className="text-lg font-bold" data-heading="&&17.3. SUPORTACIONES">17.3. SUPORTACIONES</h3>
           
           <div className="mt-4 text-sm text-justify space-y-4">
             <p>

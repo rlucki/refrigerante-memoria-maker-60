@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Upload, Download, FileText, AlertTriangle } from "lucide-react";
+import { Upload, Download, FileText, AlertTriangle, Info } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 interface WordDocumentTemplateProps {
@@ -85,10 +85,18 @@ const WordDocumentTemplate = ({
       
       <div className="bg-white p-6 rounded-md shadow-sm border mt-6">
         <h3 className="text-lg font-bold mb-4">Generar documento Word</h3>
-        <p className="text-sm text-muted-foreground mb-6">
+        <p className="text-sm text-muted-foreground mb-4">
           Genera un documento Word con el contenido de la memoria técnica respetando el formato de la plantilla.
           Los títulos marcados con "&&" se incluirán en el índice del documento.
         </p>
+        
+        <div className="bg-blue-50 border border-blue-200 rounded p-3 mb-4 flex gap-2">
+          <Info size={16} className="text-blue-500 mt-1 flex-shrink-0" />
+          <p className="text-xs text-blue-700">
+            Los títulos numerados como "1. OBJETO", "17.1. TUBERÍAS", etc. ahora están marcados automáticamente para incluirse en el índice. 
+            El índice se generará después de la primera página en el documento Word.
+          </p>
+        </div>
         
         <div className="bg-amber-50 border border-amber-200 rounded p-3 mb-4 flex gap-2">
           <AlertTriangle size={16} className="text-amber-500 mt-1 flex-shrink-0" />
