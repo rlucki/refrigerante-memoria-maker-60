@@ -1,84 +1,14 @@
 
 /*  src/services/wordDocumentService.ts
-    Genera un DOCX desde el navegador (sin instalar paquetes con npm).
-    – Usa módulos ES servidos por CDN (https://esm.sh)
+    Genera un DOCX desde el navegador.
     – Inserta: contenido HTML de la vista previa, títulos data-heading (TOC),
       pie con logo y numeración de página.
 */
 
-// Declare module interfaces to handle imported modules
-declare module 'https://esm.sh/pizzip@3.2.5/dist/pizzip.esm.js' {
-  export default class PizZip {
-    constructor(data?: ArrayBuffer);
-    file(path: string, data: any): void;
-    generate(options: { type: string }): ArrayBuffer;
-    load(data: ArrayBuffer): PizZip;
-  }
-}
-
-declare module 'https://esm.sh/docxtemplater@3.39.1/build/docxtemplater.esm.js' {
-  export default class Docxtemplater {
-    constructor(zip: any, options?: any);
-    setData(data: any): void;
-    render(): void;
-    getZip(): any;
-  }
-}
-
-declare module 'https://esm.sh/html-to-docx@2.4.0' {
-  export default function htmlToDocx(html: string, options?: any): Promise<any>;
-}
-
-declare module 'https://esm.sh/file-saver@2.0.5' {
-  export function saveAs(data: Blob, filename: string): void;
-}
-
-declare module 'https://esm.sh/docx@8.1.2' {
-  export class Document {
-    constructor(options: any);
-  }
-  
-  export class Packer {
-    static toString(doc: Document): Promise<string>;
-    static toBuffer(doc: Document): Promise<ArrayBuffer>;
-  }
-  
-  export class Paragraph {
-    constructor(options: any);
-  }
-  
-  export enum HeadingLevel {
-    HEADING_1 = 'Heading1',
-    HEADING_2 = 'Heading2',
-  }
-  
-  export class TableOfContents {
-    constructor(title: string, options: any);
-  }
-  
-  export class Footer {
-    constructor(options: any);
-  }
-  
-  export class ImageRun {
-    constructor(options: any);
-  }
-  
-  export class TextRun {
-    constructor(text: string);
-  }
-  
-  export class PageNumber {
-    static get CURRENT(): any;
-    static get TOTAL_PAGES(): any;
-  }
-}
-
-/* ────────  Imports ESM desde CDN  ──────── */
-import PizZip from "https://esm.sh/pizzip@3.2.5/dist/pizzip.esm.js";
-import Docxtemplater from "https://esm.sh/docxtemplater@3.39.1/build/docxtemplater.esm.js";
-import htmlToDocx from "https://esm.sh/html-to-docx@2.4.0";
-import { saveAs } from "https://esm.sh/file-saver@2.0.5";
+import PizZip from "pizzip";
+import Docxtemplater from "docxtemplater";
+import htmlToDocx from "html-to-docx";
+import { saveAs } from "file-saver";
 import {
   Document,
   Packer,
@@ -87,9 +17,9 @@ import {
   TableOfContents,
   Footer,
   ImageRun,
-  PageNumber,
   TextRun,
-} from "https://esm.sh/docx@8.1.2";
+  PageNumber,
+} from "docx";
 
 /* ───── helper: pie con logo + nº página ───── */
 async function buildFooter(logoUrl?: string) {
