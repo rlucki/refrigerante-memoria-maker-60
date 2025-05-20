@@ -1,162 +1,91 @@
-/**
- * excelUtils.ts
- * Utilidades para leer y procesar datos de Excel (SheetJS / objeto plano)
- */
+import React from "react";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@/components/ui/table";
+import { extractTableData } from "../utils/excelUtils";
 
-import * as XLSX from "xlsx";
+interface Props {
+  excelData?: any;
+}
 
-/* ══════════════════════════  CONVERSIÓN DE COLUMNAS  ═════════════════════════ */
+const CentralPositivaSection: React.FC<Props> = ({ excelData }) => {
+  /*  RANGO REAL (col J-O, filas 2-25)  */
+  const data = extractTableData(excelData, {
+    sheet: "RESUM LEGA",
+    startCol: "J",
+    endCol: "O",
+    startRow: 2,   // salta la fila de título "CENTRAL INTERMEDIA"
+    endRow: 25,
+    mappings: {
+      caracteristica: "J",
+      c1: "K",
+      c2: "L",
+      c3: "M",
+      c4: "N",
+      total: "O",
+    },
+  });
 
-// "A" → 0, "Z" → 25, "AA" → 26, "AB" → 27…
-export const columnLetterToIndex = (label: string): number => {
-  let idx = 0;
-  for (let i = 0; i < label.length; i++) {
-    idx = idx * 26 + label.toUpperCase().charCodeAt(i) - 64;
-  }
-  return idx - 1; // 0-based
-};
+  return (
+    <div className="mt-8">
+      <h4 className="text-md font-bold">14.1. CENTRAL POSITIVA</h4>
+      <p className="mt-2">
+        Se trata de una central frigorífica formada por compresores
+        semiherméticos alternativos accionados mediante un motor eléctrico
+        trifásico. Sus características técnicas son las siguientes:
+      </p>
 
-// 0 → "A", 27 → "AB"
-export const indexToColumnLetter = (index: number): string => {
-  let s = "";
-  index++; // a 1-based
-  while (index > 0) {
-    const r = (index - 1) % 26;
-    s = String.fromCharCode(65 + r) + s;
-    index = Math.floor((index - 1) / 26);
-  }
-  return s;
-};
+      {data.length ? (
+        <div className="mt-4 overflow-x-auto">
+          <Table
+            className="w-full border-collapse text-sm"
+            style={{ tableLayout: "fixed" }}
+          >
+            {/* Cabecera */}
+            <TableHeader>
+              <TableRow className="bg-blue-100">
+                <TableHead className="border p-2 min-w-[150px]" />
+                {["Cº 1", "Cº 2", "Cº 3", "Cº 4", "TOTAL"].map((h) => (
+                  <TableHead key={h} className="border p-2 text-center">
+                    {h}
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
 
-/* ═════════════════════════════  RANGO → ARRAY OBJ  ═══════════════════════════ */
+            {/* Filas */}
+            <TableBody>
+              {data.map((row, i) => (
+                <TableRow key={i} className={i % 2 ? "bg-gray-50" : ""}>
+                  <TableCell className="border p-2">
+                    {row.caracteristica}
+                  </TableCell>
 
-/**
- * Devuelve un array de objetos de acuerdo con el mapeo columna-campo.
- */
-export const extractDataFromRange = (
-  sheet: XLSX.WorkSheet,
-  startCol: string,
-  endCol: string,
-  startRow: number,
-  endRow: number,
-  columnMapping: Record<string, string>
-): any[] => {
-  if (!sheet) return [];
-
-  const out: any[] = [];
-  console.log(
-    `Extrayendo datos ${startCol}${startRow}:${endCol}${endRow}`
-  );
-
-  for (let row = startRow; row <= endRow; row++) {
-    const hasData = Object.values(columnMapping).some((col) => {
-      const cell = sheet[`${col.toUpperCase()}${row}`];
-      return cell && cell.v !== undefined && cell.v !== "";
-    });
-    if (!hasData) continue;
-
-    const record: Record<string, any> = {};
-    for (const [key, col] of Object.entries(columnMapping)) {
-      record[key] = sheet[`${col.toUpperCase()}${row}`]?.v ?? "";
-    }
-
-    // Excluir cabeceras
-    const first = record[Object.keys(record)[0]];
-    if (
-      first &&
-      [
-        "DENOMINACIÓN",
-        "CENTRAL FRIGORÍFICA",
-        "CARACTERÍSTICA",
-        "MAQUINARIA INSTALADA",
-        "ELEMENTO",
-        "CENTRAL POSITIVA",
-        "CENTRAL INTERMEDIA",
-        "CENTRAL NEGATIVA",
-        "COMPRESORES PARALELOS",
-      ].includes(String(first).toUpperCase())
-    )
-      continue;
-
-    out.push(record);
-  }
-
-  return out;
-};
-
-/* ═════════════════════════════  RANGO → MATRIZ  ═════════════════════════════ */
-
-/**
- * Devuelve TODAS las celdas de un rectángulo como matriz bidimensional.
- * Útil si el nº de columnas varía (p.ej. compresores 1…N).
- */
-export const extractMatrix = (
-  sheet: XLSX.WorkSheet,
-  startCol: string,
-  endCol: string,
-  startRow: number,
-  endRow: number
-): any[][] => {
-  if (!sheet) return [];
-
-  const matrix: any[][] = [];
-  const cStart = columnLetterToIndex(startCol);
-  const cEnd = columnLetterToIndex(endCol);
-
-  for (let r = startRow; r <= endRow; r++) {
-    const row: any[] = [];
-    for (let c = cStart; c <= cEnd; c++) {
-      const colL = indexToColumnLetter(c);
-      const cell = sheet[`${colL}${r}`];
-      row.push(cell ? cell.v : "");
-    }
-    if (row.some((v) => v !== "")) matrix.push(row);
-  }
-  return matrix;
-};
-
-/* ═══════════════════════  ENVOLTORIO PRINCIPAL  ═════════════════════════════ */
-
-export const extractTableData = (
-  workbook: any,
-  opts: {
-    sheet: string;
-    startCol: string;
-    endCol: string;
-    startRow: number;
-    endRow: number;
-    mappings: Record<string, string>;
-  }
-) => {
-  if (!workbook) return [];
-
-  // Soporta workbook (SheetJS) o “objeto plano” con hojas
-  const sheet = workbook.Sheets
-    ? workbook.Sheets[opts.sheet]
-    : workbook[opts.sheet];
-
-  if (!sheet) {
-    console.warn(`Hoja "${opts.sheet}" no encontrada`);
-    return [];
-  }
-
-  return extractDataFromRange(
-    sheet,
-    opts.startCol,
-    opts.endCol,
-    opts.startRow,
-    opts.endRow,
-    opts.mappings
+                  {["c1", "c2", "c3", "c4", "total"].map((k) => (
+                    <TableCell
+                      key={k}
+                      className="border p-2 text-center"
+                    >
+                      {row[k]}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      ) : (
+        <p className="mt-4 italic">
+          No se encontraron datos de la central positiva en el archivo Excel.
+        </p>
+      )}
+    </div>
   );
 };
 
-/* ════════════════════════════════  UTIL EXTRA  ══════════════════════════════ */
-
-export const calculateSum = (data: any[], field = "cargaT"): number =>
-  data.reduce((sum, row) => {
-    const v =
-      typeof row[field] === "number"
-        ? row[field]
-        : parseFloat(row[field] ?? "");
-    return sum + (Number.isFinite(v) ? v : 0);
-  }, 0);
+export default CentralPositivaSection;
