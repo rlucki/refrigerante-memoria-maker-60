@@ -1,153 +1,118 @@
+// src/components/memoriaPreview/utils/excelUtils.ts
+
 /**
- * excelUtils.ts – utilidades para leer Excel y formatear valores
- * (sin JSX)
+ * Utility functions for Excel data processing
  */
 
-import * as XLSX from "xlsx";
-
-/* ────────────────── Conversión de columnas ────────────────── */
-
-// "A" → 0, "AA" → 26…
-export const columnLetterToIndex = (label: string): number => {
-  let idx = 0;
-  for (let i = 0; i < label.length; i++) {
-    idx = idx * 26 + label.toUpperCase().charCodeAt(i) - 64;
+// Convertir letra de columna a índice (A→1, B→2, …, Z→26, AA→27…)
+export const columnLetterToIndex = (columnLetter: string): number => {
+  let result = 0;
+  for (let i = 0; i < columnLetter.length; i++) {
+    result = result * 26 + columnLetter.charCodeAt(i) - 64;
   }
-  return idx - 1; // 0-based
+  return result;
 };
-export const indexToColumnLetter = (n: number): string => {
-  let s = "";
-  n++;
-  while (n > 0) {
-    const r = (n - 1) % 26;
-    s = String.fromCharCode(65 + r) + s;
-    n = Math.floor((n - 1) / 26);
+
+// Convertir índice a letra de columna
+export const indexToColumnLetter = (index: number): string => {
+  let columnLetter = '';
+  while (index > 0) {
+    const remainder = (index - 1) % 26;
+    columnLetter = String.fromCharCode(65 + remainder) + columnLetter;
+    index = Math.floor((index - 1) / 26);
   }
-  return s;
+  return columnLetter || 'A';
 };
 
-/* ─────────────── Reglas de formato (dec, unidad) ─────────────── */
-
-const FORMAT_RULES: Record<string, { dec: number; unit: string }> = {
-  "POTENCIA FRIGORÍFICA": { dec: 1, unit: "kW" },
-  "POTENCIA ABSORBIDA": { dec: 1, unit: "W" },
-  "POTENCIA ABSORBIDA MÁXIMA": { dec: 1, unit: "W" },
-  COP: { dec: 2, unit: "" },
-  "CAUDAL MÁSICO": { dec: 1, unit: "kg/h" },
-  "DESPLAZAMIENTO VOLUMÉTRICO": { dec: 1, unit: "m³/h" },
-  "INTENSIDAD A RÉGIMEN": { dec: 0, unit: "A" },
-  "INTENSIDAD MÁXIMA": { dec: 0, unit: "A" },
-  "TEMP. PRESIÓN ABSOLUTA EVAPORACIÓN": { dec: 1, unit: "°C" },
-  "TEMP. / PRESIÓN ABSOLUTA DESCARGA": { dec: 1, unit: "°C" },
-  "TEMPERATURA SALIDA GAS COOLER": { dec: 1, unit: "°C" },
-  // añade más si las necesitas
-};
-
-/* ─────────────── Limpieza / formateo ─────────────── */
-
-const clean = (raw: any, label: string) => {
-  if (raw === "/" || raw === "-") return "";      // oculta barras y guiones
-
-  const rule = FORMAT_RULES[label.toUpperCase()] || { dec: 1, unit: "" };
-  const num = parseFloat(String(raw).replace(",", "."));
-
-  if (Number.isFinite(num) && num === 0) return "";          // oculta ceros
-  if (!Number.isFinite(num)) return raw;                     // deja texto
-
-  const val = num.toFixed(rule.dec);
-  return rule.unit ? `${val} ${rule.unit}` : val;
-};
-
-/* ─────────────── Extraer filas de un rango ─────────────── */
-
+// Extraer datos de un rango definido, usando cell.w (formateado) o cell.v (valor)
 export const extractDataFromRange = (
-  sheet: XLSX.WorkSheet,
+  sheet: any,
   startCol: string,
   endCol: string,
   startRow: number,
   endRow: number,
-  mapping: Record<string, string>
-) => {
+  columnMapping: { [key: string]: string }
+): any[] => {
   if (!sheet) return [];
 
-  const out: any[] = [];
-  const charKey = Object.keys(mapping)[0]; // primera clave = texto
+  const result: any[] = [];
+  const startColIndex = columnLetterToIndex(startCol);
+  const endColIndex   = columnLetterToIndex(endCol);
 
-  for (let r = startRow; r <= endRow; r++) {
-    // ¿hay datos?
-    const has = Object.values(mapping).some((col) => {
-      const c = sheet[`${col.toUpperCase()}${r}`];
-      return c && c.v !== undefined && c.v !== "";
+  for (let row = startRow; row <= endRow; row++) {
+    // ¿Esta fila tiene al menos un dato útil?
+    const hasValidData = Object.values(columnMapping).some(colLetter => {
+      const cellKey = `${colLetter}${row}`;
+      const cell = sheet[cellKey];
+      return cell && (cell.w !== undefined || cell.v !== undefined);
     });
-    if (!has) continue;
 
-    const row: Record<string, any> = {};
-    const labelCell = sheet[`${mapping[charKey].toUpperCase()}${r}`];
-    row[charKey] = labelCell?.v ?? "";
+    if (!hasValidData) continue;
 
-    for (const [k, col] of Object.entries(mapping)) {
-      if (k === charKey) continue;
-      const cell = sheet[`${col.toUpperCase()}${r}`];
-      row[k] = clean(cell?.v, row[charKey]);
+    const rowData: any = {};
+
+    // Para cada campo usamos la celda formateada (w) si existe, o v si no
+    for (const [field, colLetter] of Object.entries(columnMapping)) {
+      const cellKey = `${colLetter}${row}`;
+      const cell = sheet[cellKey];
+      if (cell) {
+        // .w = “formatted text” (lo que ves en Excel), .v = valor bruto
+        rowData[field] = cell.w !== undefined ? cell.w : cell.v;
+      } else {
+        rowData[field] = '';
+      }
     }
 
-    // descartar títulos
-    const L = String(row[charKey]).toUpperCase();
-    if (
-      [
-        "DENOMINACIÓN",
-        "CENTRAL FRIGORÍFICA",
-        "CARACTERÍSTICA",
-        "MAQUINARIA INSTALADA",
-        "ELEMENTO",
-        "CENTRAL POSITIVA",
-        "CENTRAL INTERMEDIA",
-        "CENTRAL NEGATIVA",
-        "COMPRESORES PARALELOS",
-      ].includes(L)
-    )
-      continue;
-
-    out.push(row);
+    // Filtrar encabezados (títulos de sección) para no incluirlos
+    const firstValue = rowData[Object.keys(rowData)[0]];
+    if (firstValue && ![
+      "DENOMINACIÓN", "CENTRAL FRIGORÍFICA", "CARACTERÍSTICA",
+      "MAQUINARIA INSTALADA", "ELEMENTO", "CENTRAL POSITIVA",
+      "CENTRAL INTERMEDIA", "CENTRAL NEGATIVA", "COMPRESORES PARALELOS"
+    ].includes(firstValue.toString().toUpperCase())) {
+      result.push(rowData);
+    }
   }
 
-  return out;
+  return result;
 };
 
-/* ─────────────── API principal ─────────────── */
+// extractTableData llama a extractDataFromRange para una hoja concreta
+export const extractTableData = (data: any, options: {
+  sheet: string;
+  startCol: string;
+  endCol: string;
+  startRow: number;
+  endRow: number;
+  mappings: { [key: string]: string };
+}): any[] => {
+  if (!data) return [];
 
-export const extractTableData = (
-  wb: any,
-  o: {
-    sheet: string;
-    startCol: string;
-    endCol: string;
-    startRow: number;
-    endRow: number;
-    mappings: Record<string, string>;
-  }
-) => {
-  if (!wb) return [];
-  const sheet = wb.Sheets ? wb.Sheets[o.sheet] : wb[o.sheet];
+  const sheet = data[options.sheet];
   if (!sheet) {
-    console.warn(`No se encontró la hoja "${o.sheet}"`);
+    console.warn(`Hoja "${options.sheet}" no encontrada en el Excel.`);
     return [];
   }
+
   return extractDataFromRange(
     sheet,
-    o.startCol,
-    o.endCol,
-    o.startRow,
-    o.endRow,
-    o.mappings
+    options.startCol,
+    options.endCol,
+    options.startRow,
+    options.endRow,
+    options.mappings
   );
 };
 
-/* ─────────────── Suma opcional ─────────────── */
-
-export const calculateSum = (rows: any[], field = "cargaT") =>
-  rows.reduce((s, r) => {
-    const v =
-      typeof r[field] === "number" ? r[field] : parseFloat(r[field] ?? "");
-    return s + (Number.isFinite(v) ? v : 0);
+// Suma valores numéricos de un campo concreto (no afecta aquí)
+export const calculateSum = (data: any[], field: string = "cargaT"): number => {
+  return data.reduce((sum, row) => {
+    const v = row[field];
+    const num = typeof v === 'number'
+      ? v
+      : typeof v === 'string' && !isNaN(parseFloat(v))
+        ? parseFloat(v)
+        : 0;
+    return sum + num;
   }, 0);
+};
