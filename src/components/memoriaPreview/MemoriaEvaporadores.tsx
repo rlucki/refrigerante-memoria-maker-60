@@ -1,4 +1,3 @@
-
 import React from "react";
 import {
   Table,
@@ -50,76 +49,11 @@ const MemoriaEvaporadores: React.FC<MemoriaEvaporadoresProps> = ({ excelData }) 
     }
   }, [excelData]);
 
-  // Extract central negativa data if available
-  const centralNegativaData = React.useMemo(() => {
-    if (!excelData || !excelData['RESUM LEGA']) return [];
-    
-    try {
-      // Filter for rows between AD1 and AH20
-      const centralNegativaRows = [];
-      
-      // Process the Excel data to extract central negativa information
-      if (excelData['RESUM LEGA']) {
-        for (let i = 1; i <= 20; i++) {
-          const rowData = {
-            caracteristica: excelData['RESUM LEGA'][`AD${i}`]?.v || '',
-            valor: excelData['RESUM LEGA'][`AE${i}`]?.v || '',
-            unidad: excelData['RESUM LEGA'][`AF${i}`]?.v || '',
-            observaciones: excelData['RESUM LEGA'][`AG${i}`]?.v || '',
-            referencia: excelData['RESUM LEGA'][`AH${i}`]?.v || '',
-          };
-          
-          // Only add rows that have data
-          if (rowData.caracteristica || rowData.valor) {
-            centralNegativaRows.push(rowData);
-          }
-        }
-      }
-      
-      return centralNegativaRows;
-    } catch (error) {
-      console.error("Error extracting central negativa data:", error);
-      return [];
-    }
-  }, [excelData]);
-
   return (
     <div className="mb-8 max-w-[210mm] mx-auto bg-white min-h-[297mm] relative p-6">
       <div className="pb-20">
-        {/* First we show the Central Negativa section (14.3) */}
-        <h3 className="text-lg font-bold">14.3. CENTRAL NEGATIVA</h3>
-        
-        {centralNegativaData.length > 0 ? (
-          <div className="overflow-x-auto mt-4">
-            <Table className="w-full border-collapse">
-              <TableHeader>
-                <TableRow className="bg-gray-100">
-                  <TableHead className="border border-gray-300 p-2 text-xs">Característica</TableHead>
-                  <TableHead className="border border-gray-300 p-2 text-xs">Valor</TableHead>
-                  <TableHead className="border border-gray-300 p-2 text-xs">Unidad</TableHead>
-                  <TableHead className="border border-gray-300 p-2 text-xs">Observaciones</TableHead>
-                  <TableHead className="border border-gray-300 p-2 text-xs">Referencia</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {centralNegativaData.map((row, index) => (
-                  <TableRow key={index} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                    <TableCell className="border border-gray-300 p-2 text-xs">{row.caracteristica}</TableCell>
-                    <TableCell className="border border-gray-300 p-2 text-xs">{row.valor}</TableCell>
-                    <TableCell className="border border-gray-300 p-2 text-xs">{row.unidad}</TableCell>
-                    <TableCell className="border border-gray-300 p-2 text-xs">{row.observaciones}</TableCell>
-                    <TableCell className="border border-gray-300 p-2 text-xs">{row.referencia}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        ) : (
-          <p className="italic text-gray-500">No se encontraron datos de central negativa en el Excel.</p>
-        )}
-        
-        {/* Then immediately after we show the Evaporadores section (14.12) */}
-        <h3 className="text-lg font-bold mt-8">14.12. EVAPORADORES</h3>
+        {/* Only keep the EVAPORADORES section (14.12) */}
+        <h3 className="text-lg font-bold">14.12. EVAPORADORES</h3>
         
         <div className="mt-4 text-sm text-justify">
           <p className="mb-4">

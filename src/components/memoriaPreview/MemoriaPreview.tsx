@@ -9,12 +9,12 @@ import MemoriaClasificacionGas from "./MemoriaClasificacionGas";
 import MemoriaInstalacion from "./MemoriaInstalacion";
 import MemoriaDescripcion from "./MemoriaDescripcion";
 import MemoriaCargaTermica from "./MemoriaCargaTermica";
+import MemoriaEvaporadores from "./MemoriaEvaporadores";
 import MemoriaInstalacionElectrica from "./MemoriaInstalacionElectrica";
 import MemoriaTuberias from "./MemoriaTuberias";
 import MemoriaSoportaciones from "./MemoriaSoportaciones";
 import MemoriaSobrepresiones from "./MemoriaSobrepresiones";
 import MemoriaCargaRefrigerante from "./MemoriaCargaRefrigerante";
-import MemoriaEvaporadores from "./MemoriaEvaporadores";
 
 interface MemoriaPreviewProps {
   data: {
@@ -95,10 +95,10 @@ const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1, 
       <MemoriaInstalacion data={data} />
       <MemoriaDescripcion data={data} calculationsData={calculationsData} />
       <MemoriaCargaTermica excelData={excelData} />
+      <MemoriaEvaporadores excelData={excelData} />
       <MemoriaInstalacionElectrica />
       <MemoriaTuberias />
       <MemoriaSoportaciones />
-      <MemoriaEvaporadores excelData={excelData} />
       <MemoriaSobrepresiones />
       <MemoriaCargaRefrigerante />
     </div>
