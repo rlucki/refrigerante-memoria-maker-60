@@ -5,7 +5,7 @@
     – pie de página con logo + nº de página
 */
 
-import PizZip from "pizzip";
+import PizZip from "pizzip/browser";
 import Docxtemplater from "docxtemplater";
 import htmlToDocx from "html-to-docx";
 import { saveAs } from "file-saver";
