@@ -46,6 +46,13 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           h3, h4 {
             margin-top: 1.5rem !important;
           }
+          
+          /* Make sure katex formulas are properly displayed */
+          .katex-display {
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 0.5rem 0;
+          }
         `}
       </style>
       <MemoriaPreview 
