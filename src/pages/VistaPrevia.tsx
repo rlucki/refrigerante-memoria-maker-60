@@ -1,7 +1,7 @@
 
 import { useState, useRef } from "react";
 import { toast } from "@/hooks/use-toast";
-import { generateWordDocument } from "@/services/wordDocumentService";
+import { buildWord } from "@/services/wordDocumentService";
 import Header from "@/components/vista-previa/Header";
 import FormSection from "@/components/vista-previa/FormSection";
 import PreviewSection from "@/components/vista-previa/PreviewSection";
@@ -181,17 +181,18 @@ El refrigerante, a alta presión, se expansiona hasta la presión de intermedia 
     }
     
     try {
-      const docBlob = await generateWordDocument(wordTemplate, memoriaData);
+      if (!previewRef.current) {
+        throw new Error("No se encuentra la vista previa");
+      }
       
-      // Create a download link
-      const url = URL.createObjectURL(docBlob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `Memoria_Tecnica_${memoriaData.nombreProyecto || 'Proyecto'}.docx`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      const htmlPreview = previewRef.current.innerHTML;
+      const templateArrayBuffer = await wordTemplate.arrayBuffer();
+
+      await buildWord({
+        templateArrayBuffer,
+        htmlPreview,
+        logoUrl: "/lovable-uploads/0849350b-e654-4690-a2e5-da51a316f627.png" // Logo URL
+      });
       
       toast({
         title: "Documento generado",
@@ -201,7 +202,7 @@ El refrigerante, a alta presión, se expansiona hasta la presión de intermedia 
       console.error("Error generating document:", error);
       toast({
         title: "Error",
-        description: "No se pudo generar el documento Word",
+        description: "No se pudo generar el documento Word: " + (error as Error).message,
         variant: "destructive"
       });
     }
