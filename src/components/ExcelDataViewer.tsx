@@ -32,6 +32,49 @@ const ExcelDataViewer: React.FC<ExcelDataViewerProps> = ({ data, title = "Datos 
   // Determina si los datos son un array o un objeto (formato de hoja de cálculo)
   const isArrayFormat = Array.isArray(data);
   
+  // Función para convertir letra de columna a índice numérico
+  const columnLetterToIndex = (columnLetter: string): number => {
+    let result = 0;
+    for (let i = 0; i < columnLetter.length; i++) {
+      result = result * 26 + columnLetter.charCodeAt(i) - 64;
+    }
+    return result;
+  };
+
+  // Función para convertir índice numérico a letra de columna
+  const indexToColumnLetter = (index: number): string => {
+    let columnLetter = '';
+    while (index > 0) {
+      const remainder = (index - 1) % 26;
+      columnLetter = String.fromCharCode(65 + remainder) + columnLetter;
+      index = Math.floor((index - 1) / 26);
+    }
+    return columnLetter || 'A';
+  };
+  
+  // Función para extraer columna y fila de un cellId
+  const extractColumnAndRow = (cellId: string): { column: string, row: number } | null => {
+    // Detecta columnas como A, B, C... Z, AA, AB, etc.
+    const match = cellId.match(/^([A-Z]+)(\d+)$/);
+    if (!match) return null;
+    
+    return {
+      column: match[1],
+      row: parseInt(match[2], 10)
+    };
+  };
+  
+  // Función para comparar columnas como A, B, C... Z, AA, AB, etc.
+  const compareColumns = (a: string, b: string): number => {
+    // Si son de longitud diferente, las columnas más largas van después (AA > Z)
+    if (a.length !== b.length) {
+      return a.length - b.length;
+    }
+    
+    // Si son de la misma longitud, comparar lexicográficamente
+    return a.localeCompare(b);
+  };
+  
   // Para datos en formato de array (como en los logs)
   const renderArrayData = () => {
     // Obtener todas las claves únicas de todos los objetos
@@ -168,18 +211,6 @@ const ExcelDataViewer: React.FC<ExcelDataViewerProps> = ({ data, title = "Datos 
     const rows: Set<number> = new Set();
     const columns: Set<string> = new Set();
     
-    // Función para detectar si un cellId contiene una columna multi-letra (como AA, AB, etc.)
-    const extractColumnAndRow = (cellId: string): { column: string, row: number } | null => {
-      // Detecta columnas como A, B, C... Z, AA, AB, etc.
-      const match = cellId.match(/^([A-Z]+)(\d+)$/);
-      if (!match) return null;
-      
-      return {
-        column: match[1],
-        row: parseInt(match[2], 10)
-      };
-    };
-    
     Object.entries(sheetData).forEach(([cellId, cellData]: [string, any]) => {
       if (cellId !== '!ref' && cellId !== '!margins' && typeof cellId === 'string') {
         const parsed = extractColumnAndRow(cellId);
@@ -192,17 +223,6 @@ const ExcelDataViewer: React.FC<ExcelDataViewerProps> = ({ data, title = "Datos 
       }
     });
     
-    // Función para comparar columnas como A, B, C... Z, AA, AB, etc.
-    const compareColumns = (a: string, b: string): number => {
-      // Si son de longitud diferente, las columnas más largas van después (AA > Z)
-      if (a.length !== b.length) {
-        return a.length - b.length;
-      }
-      
-      // Si son de la misma longitud, comparar lexicográficamente
-      return a.localeCompare(b);
-    };
-    
     // Convertir sets a arrays ordenados
     const sortedRows = Array.from(rows).sort((a, b) => a - b);
     const sortedColumns = Array.from(columns).sort(compareColumns);
@@ -210,8 +230,8 @@ const ExcelDataViewer: React.FC<ExcelDataViewerProps> = ({ data, title = "Datos 
     // Rango de filas a mostrar
     const maxRowsToShow = 100; // Aumentado para ver más datos
     const startRow = 1;
-    const endRow = Math.min(startRow + maxRowsToShow, sortedRows.length);
-    const visibleRows = sortedRows.slice(startRow - 1, endRow);
+    const endRow = Math.min(startRow + maxRowsToShow, Math.max(...sortedRows));
+    const visibleRows = sortedRows.filter(row => row >= startRow && row <= endRow);
     
     return (
       <div>

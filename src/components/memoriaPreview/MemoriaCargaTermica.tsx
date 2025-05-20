@@ -7,369 +7,191 @@ interface MemoriaCargaTermicaProps {
 }
 
 const MemoriaCargaTermica: React.FC<MemoriaCargaTermicaProps> = ({ excelData }) => {
-  // Function to extract relevant data from Excel data within specific ranges
-  const extractTableData = (data: any, range: { startCol: string, endCol: string, startIndex: number, endIndex: number }) => {
+  // Función para convertir letra de columna a índice numérico
+  const columnLetterToIndex = (columnLetter: string): number => {
+    let result = 0;
+    for (let i = 0; i < columnLetter.length; i++) {
+      result = result * 26 + columnLetter.charCodeAt(i) - 64;
+    }
+    return result;
+  };
+
+  // Función para convertir índice numérico a letra de columna
+  const indexToColumnLetter = (index: number): string => {
+    let columnLetter = '';
+    while (index > 0) {
+      const remainder = (index - 1) % 26;
+      columnLetter = String.fromCharCode(65 + remainder) + columnLetter;
+      index = Math.floor((index - 1) / 26);
+    }
+    return columnLetter || 'A';
+  };
+
+  // Función para extraer datos de un rango específico de celdas
+  const extractDataFromRange = (
+    sheet: any, 
+    startCol: string, 
+    endCol: string, 
+    startRow: number, 
+    endRow: number,
+    columnMapping: { [key: string]: string }
+  ): any[] => {
+    if (!sheet) return [];
+    
+    const result = [];
+    const startColIndex = columnLetterToIndex(startCol);
+    const endColIndex = columnLetterToIndex(endCol);
+    
+    console.log(`Extrayendo datos del rango ${startCol}${startRow}-${endCol}${endRow}`);
+    
+    for (let row = startRow; row <= endRow; row++) {
+      // Determina si la fila contiene datos válidos
+      const hasValidData = Object.keys(columnMapping).some(key => {
+        const colLetter = columnMapping[key];
+        const cellKey = `${colLetter}${row}`;
+        return sheet[cellKey] && sheet[cellKey].v !== undefined;
+      });
+      
+      // Solo procesar filas que tengan al menos un dato
+      if (hasValidData) {
+        const rowData: any = {};
+        
+        // Extraer datos según el mapeo de columnas
+        Object.keys(columnMapping).forEach(key => {
+          const colLetter = columnMapping[key];
+          const cellKey = `${colLetter}${row}`;
+          rowData[key] = sheet[cellKey]?.v;
+        });
+        
+        // Filtrar filas con encabezados específicos
+        const firstColumnValue = rowData[Object.keys(rowData)[0]];
+        if (firstColumnValue && 
+            !["DENOMINACIÓN", "CENTRAL FRIGORÍFICA", "CARACTERÍSTICA", 
+              "MAQUINARIA INSTALADA", "ELEMENTO", "CENTRAL POSITIVA", 
+              "CENTRAL INTERMEDIA", "CENTRAL NEGATIVA", 
+              "COMPRESORES PARALELOS"].includes(firstColumnValue)) {
+          result.push(rowData);
+        }
+      }
+    }
+    
+    return result;
+  };
+
+  // Extrae datos de un rango especificando columnas por nombre
+  const extractTableData = (data: any, options: {
+    sheet: string,
+    startCol: string,
+    endCol: string,
+    startRow: number,
+    endRow: number,
+    mappings: { [key: string]: string }
+  }): any[] => {
     if (!data) return [];
     
-    console.log(`Procesando datos Excel para rango ${range.startCol}-${range.endCol}:`, data);
-    
-    // Para datos en formato array (como en los logs)
-    if (Array.isArray(data) && data.length > 0) {
-      console.log("Datos en formato array encontrados");
-      
-      // Filtrar encabezados y extraer datos para la primera tabla (A-E)
-      if (range.startCol === 'A' && range.endCol === 'E') {
-        // Filtramos filas que contengan datos útiles (eliminamos filas vacías y encabezados no deseados)
-        const validRows = data.filter(row => {
-          // Verificar que la fila tenga datos en la primera columna y no sea un encabezado
-          return row && 
-                 row["SERVICIOS CENTRAL INTERMEDIA"] && 
-                 // Excluir filas con encabezados o totales específicos
-                 row["SERVICIOS CENTRAL INTERMEDIA"] !== "DENOMINACIÓN" &&
-                 row["SERVICIOS CENTRAL INTERMEDIA"] !== "CENTRAL FRIGORÍFICA" &&
-                 row["SERVICIOS CENTRAL INTERMEDIA"] !== "Fabricante central" &&
-                 row["SERVICIOS CENTRAL INTERMEDIA"] !== "Modelo central" &&
-                 row["SERVICIOS CENTRAL INTERMEDIA"] !== "Nº de serie central" &&
-                 row["SERVICIOS CENTRAL INTERMEDIA"] !== "Tensión de alimentación" &&
-                 row["SERVICIOS CENTRAL INTERMEDIA"] !== "Dimensiones Central" &&
-                 row["SERVICIOS CENTRAL INTERMEDIA"] !== "Peso central";
-        });
-        
-        // Extraer los datos relevantes de cada fila
-        const formattedRows = validRows.map(row => {
-          return {
-            denominacion: row["SERVICIOS CENTRAL INTERMEDIA"] || "",
-            modulos: row["__EMPTY"] || "",
-            modVol: row["__EMPTY_1"] || "",
-            temperatura: row["__EMPTY_2"] || "",
-            cargaT: row["__EMPTY_3"] || ""
-          };
-        });
-        
-        console.log("Filas procesadas para servicios positivos:", formattedRows);
-        return formattedRows;
-      } 
-      // Para la segunda tabla (Q-U) - SERVICIOS NEGATIVOS
-      else if (range.startCol === 'Q' && range.endCol === 'U') {
-        const serviciosNegativos = [];
-        
-        // Buscar datos en el área Q-U usando las columnas correctas
-        for (const row of data) {
-          // Verificar columnas específicas para datos de servicios negativos
-          if (row && 
-              ((row["DENOMINACIÓN"] && row["MÓDULOS"] && row["Tª INT."]) || 
-               (row["__EMPTY_16"] && row["__EMPTY_17"] && row["__EMPTY_19"]))) {
-            
-            // Extraer los datos usando las columnas correctas según el formato
-            const denominacion = row["DENOMINACIÓN"] || row["__EMPTY_16"] || "";
-            const modulos = row["MÓDULOS"] || row["__EMPTY_17"] || "";
-            const modVol = row["MOD./PUERTAS"] || row["__EMPTY_18"] || "";
-            const temperatura = row["Tª INT."] || row["__EMPTY_19"] || "";
-            const cargaT = row["CARGA Tª"] || row["__EMPTY_20"] || "";
-            
-            // Filtrar filas de encabezado o totales
-            if (denominacion !== "DENOMINACIÓN" && denominacion) {
-              serviciosNegativos.push({
-                denominacion,
-                modulos,
-                modVol,
-                temperatura,
-                cargaT
-              });
-            }
-          }
-        }
-        
-        console.log("Filas procesadas para servicios negativos:", serviciosNegativos);
-        return serviciosNegativos;
-      }
-      // Para la tabla de Maquinaria Instalada (G-H)
-      else if (range.startCol === 'G' && range.endCol === 'H') {
-        const maquinaria = [];
-        
-        // Buscar datos en el área G-H
-        for (const row of data) {
-          if (row && 
-             ((row["__EMPTY_6"] || row["Unnamed: 6"] || row["MAQUINARIA INSTALADA"]) && 
-              (row["__EMPTY_6"] !== "MAQUINARIA INSTALADA" && 
-               row["__EMPTY_6"] !== "ELEMENTO" && 
-               row["__EMPTY_6"] !== "CENTRAL FRIGORÍFICA"))) {
-            
-            const elemento = row["__EMPTY_6"] || row["Unnamed: 6"] || row["MAQUINARIA INSTALADA"] || "";
-            const detalles = row["__EMPTY_7"] || row["Unnamed: 7"] || row["ELEMENTO"] || "";
-            
-            // Solo agregar filas no vacías
-            if (elemento && elemento !== "MAQUINARIA INSTALADA" && elemento !== "ELEMENTO") {
-              maquinaria.push({
-                elemento: elemento,
-                detalles: detalles
-              });
-            }
-          }
-        }
-        
-        console.log("Filas procesadas para maquinaria instalada:", maquinaria);
-        return maquinaria;
-      }
-      // Para la tabla de Central Positiva (J-O)
-      else if (range.startCol === 'J' && range.endCol === 'O') {
-        const centralPositiva = [];
-        
-        // Buscar datos en el área J-O
-        for (const row of data) {
-          if (row) {
-            // Intentar extraer los datos usando diferentes posibles nombres de columnas
-            const caracteristica = row["__EMPTY_9"] || row["Unnamed: 9"] || row["CENTRAL POSITIVA"] || row["CARACTERÍSTICA"] || row["CENTRAL INTERMEDIA"] || "";
-            
-            // Solo agregar filas no vacías y no encabezados
-            if (caracteristica && 
-                caracteristica !== "CENTRAL POSITIVA" && 
-                caracteristica !== "CENTRAL INTERMEDIA" &&
-                caracteristica !== "CARACTERÍSTICA") {
-              
-              const medidas = row["__EMPTY_10"] || row["Unnamed: 10"] || row["MEDIDAS"] || "";
-              const observaciones = row["__EMPTY_14"] || row["Unnamed: 14"] || row["OBSERVACIONES"] || row["__EMPTY_15"] || "";
-              
-              centralPositiva.push({
-                caracteristica,
-                medidas,
-                observaciones
-              });
-            }
-          }
-        }
-        
-        console.log("Filas procesadas para central positiva:", centralPositiva);
-        return centralPositiva;
-      }
-      // Para la tabla de Compresores Paralelos (W-Z)
-      else if (range.startCol === 'W' && range.endCol === 'Z') {
-        const compresoresParalelos = [];
-        
-        // Buscar datos en el área W-Z
-        for (const row of data) {
-          if (row) {
-            // Intentar extraer los datos usando diferentes posibles nombres de columnas
-            const caracteristica = row["__EMPTY_22"] || row["Unnamed: 22"] || row["COMPRESORES PARALELOS"] || row["CARACTERÍSTICA"] || "";
-            
-            // Solo agregar filas no vacías y no encabezados
-            if (caracteristica && 
-                caracteristica !== "COMPRESORES PARALELOS" && 
-                caracteristica !== "CARACTERÍSTICA") {
-              
-              const medidas = row["__EMPTY_23"] || row["Unnamed: 23"] || row["MEDIDAS"] || "";
-              const observaciones = row["__EMPTY_25"] || row["Unnamed: 25"] || row["OBSERVACIONES"] || "";
-              
-              // Añadir la presión en la columna de observaciones si está disponible
-              const obsColumn = row["__EMPTY_24"] ? `${row["__EMPTY_24"]} / ${observaciones}`.trim() : observaciones;
-              
-              compresoresParalelos.push({
-                caracteristica,
-                medidas,
-                observaciones: obsColumn
-              });
-            }
-          }
-        }
-        
-        console.log("Filas procesadas para compresores paralelos:", compresoresParalelos);
-        return compresoresParalelos;
-      }
-      // Para la tabla de Central Negativa (AD-AH)
-      else if (range.startCol === 'AD' && range.endCol === 'AH') {
-        const centralNegativa = [];
-        
-        // Buscar datos en el área AD-AH
-        for (const row of data) {
-          if (row) {
-            // Intentar extraer los datos usando diferentes posibles nombres de columnas
-            const característicaValue = row["CENTRAL NEGATIVA"] || row["__EMPTY_29"] || row["Unnamed: 29"] || row["CARACTERÍSTICA"] || "";
-            
-            // Solo agregar filas no vacías y no encabezados
-            if (característicaValue && 
-                característicaValue !== "CENTRAL NEGATIVA" && 
-                característicaValue !== "CARACTERÍSTICA" &&
-                característicaValue !== "Nº de compresores" &&
-                característicaValue !== "Refrigerante" &&
-                característicaValue !== "Marca compresores" &&
-                característicaValue !== "Tipo compresores") {
-              
-              // Para valores en columnas AD hasta AH
-              const medidasValue = row["R-744"] || row["__EMPTY_30"] || row["Unnamed: 30"] || row["MEDIDAS"] || "";
-              const temperaturaPColumn = row["__EMPTY_31"] || row["Unnamed: 31"] || "";
-              const observacionesValue = row["__EMPTY_34"] || row["Unnamed: 34"] || row["OBSERVACIONES"] || "";
-              
-              centralNegativa.push({
-                caracteristica: característicaValue,
-                medidas: medidasValue,
-                observaciones: observacionesValue
-              });
-            }
-          }
-        }
-        
-        console.log("Filas procesadas para central negativa:", centralNegativa);
-        return centralNegativa;
-      }
-    }
+    console.log(`Procesando datos Excel para rango ${options.startCol}-${options.endCol}:`, data);
     
     // Para datos en formato de hoja de cálculo
-    if (data && data["RESUM LEGA"]) {
-      const sheet = data["RESUM LEGA"];
-      console.log(`Hoja RESUM LEGA encontrada para rango ${range.startCol}-${range.endCol}:`, sheet);
-      
-      const rows = [];
-      
-      // Determinar las columnas según el rango
-      if (range.startCol === 'A' && range.endCol === 'E') {
-        const colMapping = { denom: 'A', modulos: 'B', modVol: 'C', temp: 'D', carga: 'E' };
-        
-        // Iterar sobre las filas potenciales
-        for (let i = range.startIndex; i <= range.endIndex; i++) {
-          const denomKey = `${colMapping.denom}${i}`;
-          
-          // Verificar si hay valor en la columna de denominación
-          if (sheet[denomKey] && sheet[denomKey].v && 
-              sheet[denomKey].v !== "DENOMINACIÓN" &&
-              sheet[denomKey].v !== "CENTRAL FRIGORÍFICA") {
-            const row = {
-              denominacion: sheet[denomKey].v || "",
-              modulos: sheet[`${colMapping.modulos}${i}`]?.v || "",
-              modVol: sheet[`${colMapping.modVol}${i}`]?.v || "",
-              temperatura: sheet[`${colMapping.temp}${i}`]?.v || "",
-              cargaT: sheet[`${colMapping.carga}${i}`]?.v || ""
-            };
-            
-            rows.push(row);
-          }
-        }
-      } 
-      else if (range.startCol === 'Q' && range.endCol === 'U') {
-        const colMapping = { denom: 'Q', modulos: 'R', modVol: 'S', temp: 'T', carga: 'U' };
-        
-        for (let i = range.startIndex; i <= range.endIndex; i++) {
-          const denomKey = `${colMapping.denom}${i}`;
-          
-          if (sheet[denomKey] && sheet[denomKey].v && sheet[denomKey].v !== "DENOMINACIÓN") {
-            const row = {
-              denominacion: sheet[denomKey].v || "",
-              modulos: sheet[`${colMapping.modulos}${i}`]?.v || "",
-              modVol: sheet[`${colMapping.modVol}${i}`]?.v || "",
-              temperatura: sheet[`${colMapping.temp}${i}`]?.v || "",
-              cargaT: sheet[`${colMapping.carga}${i}`]?.v || ""
-            };
-            
-            rows.push(row);
-          }
-        }
-      }
-      else if (range.startCol === 'G' && range.endCol === 'H') {
-        // Para la tabla de maquinaria instalada
-        for (let i = range.startIndex; i <= range.endIndex; i++) {
-          const elementoKey = `G${i}`;
-          
-          if (sheet[elementoKey] && sheet[elementoKey].v && 
-              sheet[elementoKey].v !== "MAQUINARIA INSTALADA" &&
-              sheet[elementoKey].v !== "ELEMENTO" &&
-              sheet[elementoKey].v !== "CENTRAL FRIGORÍFICA") {
-            
-            rows.push({
-              elemento: sheet[elementoKey].v || "",
-              detalles: sheet[`H${i}`]?.v || ""
-            });
-          }
-        }
-      }
-      else if (range.startCol === 'J' && range.endCol === 'O') {
-        // Para la tabla de central positiva
-        for (let i = range.startIndex; i <= range.endIndex; i++) {
-          const caracteristicaKey = `J${i}`;
-          
-          if (sheet[caracteristicaKey] && sheet[caracteristicaKey].v && 
-              sheet[caracteristicaKey].v !== "CENTRAL POSITIVA" &&
-              sheet[caracteristicaKey].v !== "CENTRAL INTERMEDIA" &&
-              sheet[caracteristicaKey].v !== "CARACTERÍSTICA") {
-            
-            rows.push({
-              caracteristica: sheet[caracteristicaKey].v || "",
-              medidas: sheet[`K${i}`]?.v || "",
-              observaciones: sheet[`O${i}`]?.v || ""
-            });
-          }
-        }
-      }
-      else if (range.startCol === 'W' && range.endCol === 'Z') {
-        // Para la tabla de compresores paralelos
-        for (let i = range.startIndex; i <= range.endIndex; i++) {
-          const caracteristicaKey = `W${i}`;
-          
-          if (sheet[caracteristicaKey] && sheet[caracteristicaKey].v && 
-              sheet[caracteristicaKey].v !== "COMPRESORES PARALELOS" &&
-              sheet[caracteristicaKey].v !== "CARACTERÍSTICA") {
-            
-            const medidas = sheet[`X${i}`]?.v || "";
-            const presion = sheet[`Y${i}`]?.v || "";
-            const observaciones = sheet[`Z${i}`]?.v || "";
-            
-            // Combinar presión con observaciones si existe
-            const obsColumn = presion ? `${presion} / ${observaciones}`.trim() : observaciones;
-            
-            rows.push({
-              caracteristica: sheet[caracteristicaKey].v || "",
-              medidas: medidas,
-              observaciones: obsColumn
-            });
-          }
-        }
-      }
-      else if (range.startCol === 'AD' && range.endCol === 'AH') {
-        // Para la tabla de central negativa (corregido para AD-AH)
-        for (let i = range.startIndex; i <= range.endIndex; i++) {
-          const caracteristicaKey = `AD${i}`;
-          
-          if (sheet[caracteristicaKey] && sheet[caracteristicaKey].v && 
-              sheet[caracteristicaKey].v !== "CENTRAL NEGATIVA" &&
-              sheet[caracteristicaKey].v !== "CARACTERÍSTICA" &&
-              sheet[caracteristicaKey].v !== "Nº de compresores" &&
-              sheet[caracteristicaKey].v !== "Refrigerante" &&
-              sheet[caracteristicaKey].v !== "Marca compresores" &&
-              sheet[caracteristicaKey].v !== "Tipo compresores") {
-            
-            // Extracción directa de los valores sin incluir encabezados
-            rows.push({
-              caracteristica: sheet[caracteristicaKey].v || "",
-              medidas: sheet[`AE${i}`]?.v || "",
-              observaciones: sheet[`AH${i}`]?.v || ""
-            });
-          }
-        }
-      }
-      
-      console.log(`Filas extraídas de RESUM LEGA (${range.startCol}-${range.endCol}):`, rows);
-      return rows;
+    if (data && data[options.sheet]) {
+      const sheet = data[options.sheet];
+      return extractDataFromRange(sheet, options.startCol, options.endCol, options.startRow, options.endRow, options.mappings);
     }
     
-    console.log(`No se pudo procesar el formato de los datos Excel para rango ${range.startCol}-${range.endCol}`);
+    console.log(`No se encontró la hoja ${options.sheet} en los datos Excel`);
     return [];
   };
   
   // Calcular el sumatorio de la columna de carga térmica
-  const calculateSum = (data: any[]): number => {
+  const calculateSum = (data: any[], field: string = "cargaT"): number => {
     return data.reduce((sum, row) => {
-      const value = typeof row.cargaT === 'number' ? row.cargaT : 
-                    (typeof row.cargaT === 'string' && !isNaN(parseFloat(row.cargaT))) ? 
-                    parseFloat(row.cargaT) : 0;
+      const value = typeof row[field] === 'number' ? row[field] : 
+                   (typeof row[field] === 'string' && !isNaN(parseFloat(row[field]))) ? 
+                   parseFloat(row[field]) : 0;
       return sum + value;
     }, 0);
   };
   
   // Obtener datos para las tablas
-  const positivosData = extractTableData(excelData, { startCol: 'A', endCol: 'E', startIndex: 1, endIndex: 60 });
-  const negativosData = extractTableData(excelData, { startCol: 'Q', endCol: 'U', startIndex: 1, endIndex: 60 });
-  const maquinariaData = extractTableData(excelData, { startCol: 'G', endCol: 'H', startIndex: 1, endIndex: 9 });
-  const centralPositivaData = extractTableData(excelData, { startCol: 'J', endCol: 'O', startIndex: 1, endIndex: 20 });
-  const compresoresParalelosData = extractTableData(excelData, { startCol: 'W', endCol: 'Z', startIndex: 1, endIndex: 20 });
-  const centralNegativaData = extractTableData(excelData, { startCol: 'AD', endCol: 'AH', startIndex: 1, endIndex: 22 });
+  const positivosData = extractTableData(excelData, {
+    sheet: "RESUM LEGA",
+    startCol: "A",
+    endCol: "E",
+    startRow: 1,
+    endRow: 60,
+    mappings: {
+      denominacion: "A",
+      modulos: "B",
+      modVol: "C",
+      temperatura: "D",
+      cargaT: "E"
+    }
+  });
+  
+  const negativosData = extractTableData(excelData, {
+    sheet: "RESUM LEGA",
+    startCol: "Q",
+    endCol: "U",
+    startRow: 1,
+    endRow: 60,
+    mappings: {
+      denominacion: "Q",
+      modulos: "R",
+      modVol: "S",
+      temperatura: "T",
+      cargaT: "U"
+    }
+  });
+  
+  const maquinariaData = extractTableData(excelData, {
+    sheet: "RESUM LEGA",
+    startCol: "G",
+    endCol: "H",
+    startRow: 1,
+    endRow: 9,
+    mappings: {
+      elemento: "G",
+      detalles: "H"
+    }
+  });
+  
+  const centralPositivaData = extractTableData(excelData, {
+    sheet: "RESUM LEGA",
+    startCol: "J",
+    endCol: "O",
+    startRow: 1,
+    endRow: 20,
+    mappings: {
+      caracteristica: "J",
+      medidas: "K",
+      observaciones: "O"
+    }
+  });
+  
+  const compresoresParalelosData = extractTableData(excelData, {
+    sheet: "RESUM LEGA",
+    startCol: "W",
+    endCol: "Z",
+    startRow: 1,
+    endRow: 20,
+    mappings: {
+      caracteristica: "W",
+      medidas: "X",
+      observaciones: "Z" // Combinamos Y+Z en observaciones si fuera necesario
+    }
+  });
+  
+  const centralNegativaData = extractTableData(excelData, {
+    sheet: "RESUM LEGA",
+    startCol: "AD",
+    endCol: "AH",
+    startRow: 1,
+    endRow: 22,
+    mappings: {
+      caracteristica: "AD",
+      medidas: "AE",
+      observaciones: "AH"
+    }
+  });
   
   // Calcular sumatorios
   const sumPositivos = calculateSum(positivosData);
