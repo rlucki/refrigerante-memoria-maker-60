@@ -125,10 +125,11 @@ export async function buildWord(opts: {
   });
 
   /* 5️⃣  fusionar la parte renderizada y la nueva sección */
-  const finalZip = PizZip.load(renderedBuf);
+  const finalZip = PizZip(renderedBuf); // Fixed: Removed .load() as it's not needed when passing arraybuffer directly
   const finalDoc = new Document({
     sections: doc.sections, // Fix: Explicitly pass sections property
   });
+  
   finalZip.file(
     "word/document.xml",
     await Packer.toString(finalDoc) // reemplaza contenido
