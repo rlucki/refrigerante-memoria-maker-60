@@ -10,5 +10,5 @@ declare module 'html-to-docx' {
       };
       [key: string]: any;
     }
-  ): Promise<Buffer>;
+  ): Promise<ArrayBuffer>;
 }

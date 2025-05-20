@@ -73,8 +73,23 @@ export async function buildWord(opts: {
     table: { row: { cantSplit: true } },
   });
   
-  // Convert Buffer to base64 string
-  const base64String = Buffer.from(bodyBuf).toString('base64');
+  // Convert Buffer to base64 string - handle Buffer in browser environment
+  let base64String = '';
+  if (bodyBuf instanceof ArrayBuffer) {
+    base64String = btoa(
+      new Uint8Array(bodyBuf)
+        .reduce((data, byte) => data + String.fromCharCode(byte), '')
+    );
+  } else if (typeof bodyBuf === 'object' && bodyBuf !== null) {
+    // Handle the case where it might be a Node.js Buffer or other buffer-like object
+    base64String = btoa(
+      new Uint8Array(bodyBuf as any)
+        .reduce((data, byte) => data + String.fromCharCode(byte), '')
+    );
+  } else {
+    console.error("Unexpected bodyBuf type:", typeof bodyBuf);
+    base64String = '';
+  }
   
   const bodyAttach = {
     _type: "doc_attach",
