@@ -1,13 +1,103 @@
 
-// src/components/memoriaPreview/MemoriaSoportaciones.tsx
-
 import React from "react";
 import { BlockMath } from "react-katex";
-import "katex/dist/katex.min.css";
+
+// Custom styles for KaTeX rendering
+const katexStyles = `
+.katex {
+  font: normal 1.21em KaTeX_Main, Times New Roman, serif;
+  line-height: 1.2;
+  text-indent: 0;
+  text-rendering: auto;
+}
+.katex * {
+  -ms-high-contrast-adjust: none !important;
+  border-color: currentColor;
+}
+.katex .katex-html {
+  overflow: hidden;
+}
+.katex .katex-mathml {
+  position: absolute;
+  clip: rect(1px, 1px, 1px, 1px);
+  padding: 0;
+  border: 0;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+}
+.katex .base {
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+}
+.katex .strut {
+  display: inline-block;
+}
+.katex .textbf {
+  font-weight: bold;
+}
+.katex .textit {
+  font-style: italic;
+}
+.katex .textrm {
+  font-family: KaTeX_Main;
+}
+.katex .textsf {
+  font-family: KaTeX_SansSerif;
+}
+.katex .texttt {
+  font-family: KaTeX_Typewriter;
+}
+.katex .mathnormal {
+  font-family: KaTeX_Math;
+  font-style: italic;
+}
+.katex .mathit {
+  font-family: KaTeX_Main;
+  font-style: italic;
+}
+.katex .mathrm {
+  font-style: normal;
+}
+.katex .mathbf {
+  font-family: KaTeX_Main;
+  font-weight: bold;
+}
+.katex .boldsymbol {
+  font-family: KaTeX_Math;
+  font-weight: bold;
+  font-style: italic;
+}
+.katex .amsrm {
+  font-family: KaTeX_AMS;
+}
+.katex .mathbb, .katex .textbb {
+  font-family: KaTeX_AMS;
+}
+.katex .mathcal {
+  font-family: KaTeX_Caligraphic;
+}
+.katex .mathfrak, .katex .textfrak {
+  font-family: KaTeX_Fraktur;
+}
+.katex .mathtt {
+  font-family: KaTeX_Typewriter;
+}
+.katex .mathscr, .katex .textscr {
+  font-family: KaTeX_Script;
+}
+.katex .mathsf, .katex .textsf {
+  font-family: KaTeX_SansSerif;
+}
+`;
 
 const MemoriaSoportaciones: React.FC = () => {
   return (
     <div className="mb-8 mx-auto p-6">
+      {/* Embed minimal KaTeX styles */}
+      <style>{katexStyles}</style>
+      
       {/* Sección 17.3 - Soportaciones */}
       <div className="pb-20">
         <h3
@@ -213,7 +303,7 @@ const MemoriaSoportaciones: React.FC = () => {
               partir de la siguiente ecuación:
             </p>
 
-            {/* Fórmula con KaTeX */}
+            {/* Fórmula con KaTeX - Renderizada como componente */}
             <div className="my-4 overflow-x-auto">
               <BlockMath
                 math={String.raw`

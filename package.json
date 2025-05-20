@@ -53,6 +53,7 @@
     "file-saver": "^2.0.5",
     "html2pdf.js": "^0.10.1",
     "input-otp": "^1.2.4",
+    "katex": "^0.16.22",
     "lucide-react": "^0.462.0",
     "next-themes": "^0.3.0",
     "pizzip": "^3.1.0",

@@ -47,11 +47,24 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
             margin-top: 1.5rem !important;
           }
           
-          /* Make sure katex formulas are properly displayed */
+          /* Make sure math formulas are properly displayed */
           .katex-display {
             overflow-x: auto;
             overflow-y: hidden;
             padding: 0.5rem 0;
+          }
+          
+          /* Additional katex styling */
+          .katex {
+            font-size: 1.1em;
+            line-height: 1.2;
+          }
+          
+          /* Ensure katex doesn't overflow on mobile */
+          @media (max-width: 768px) {
+            .katex-display > .katex {
+              max-width: 100%;
+            }
           }
         `}
       </style>
