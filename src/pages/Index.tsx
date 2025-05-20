@@ -1,85 +1,134 @@
+/*  src/components/memoriaPreview/MemoriaEvaporadores.tsx
+    Tabla 14.12  – EVAPORADORES
+    Lee las columnas AJ–AQ (filas 2-15) de la hoja “RESUM LEGA”
+    y muestra la tabla con las cabeceras correctas.
+*/
 
-import { useState } from "react";
-import MemoriaTecnicaForm from "@/components/MemoriaTecnicaForm";
-import { Button } from "@/components/ui/button";
-import { FileText, Eye } from "lucide-react";
-import { toast } from "@/hooks/use-toast";
-import { Link } from "react-router-dom";
+import React from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
-const Index = () => {
-  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+interface MemoriaEvaporadoresProps {
+  excelData?: any;
+}
 
-  const handleFormSubmit = () => {
-    setIsFormSubmitted(true);
-    toast({
-      title: "Memoria técnica generada",
-      description: "Se ha generado correctamente la memoria técnica.",
-    });
-  };
+const MemoriaEvaporadores: React.FC<MemoriaEvaporadoresProps> = ({
+  excelData,
+}) => {
+  /* ─────────── Extraer datos de Excel ─────────── */
+  const evaporadoresData = React.useMemo(() => {
+    if (!excelData?.["RESUM LEGA"]) return [];
 
+    const sheet = excelData["RESUM LEGA"];
+    const rows: any[] = [];
+
+    // Filas 2-15 (fila 1 contiene cabeceras “UNIDADES…SEP.ALETA”)
+    for (let i = 2; i <= 15; i++) {
+      const row = {
+        unidades:     sheet[`AJ${i}`]?.v ?? "",
+        denominacion: sheet[`AK${i}`]?.v ?? "",
+        modelo:       sheet[`AL${i}`]?.v ?? "",
+        volInt:       sheet[`AM${i}`]?.v ?? "",
+        superficie:   sheet[`AN${i}`]?.v ?? "",
+        caudal:       sheet[`AO${i}`]?.v ?? "",
+        potencia:     sheet[`AP${i}`]?.v ?? "",
+        sepAleta:     sheet[`AQ${i}`]?.v ?? "",
+      };
+
+      // Añadir fila solo si hay denominación o modelo
+      if (row.denominacion || row.modelo) rows.push(row);
+    }
+    return rows;
+  }, [excelData]);
+
+  /* ─────────── Render ─────────── */
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm py-4 px-6 md:px-10 border-b">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            <img 
-              src="/lovable-uploads/0849350b-e654-4690-a2e5-da51a316f627.png" 
-              alt="COLDsulting Logo" 
-              className="h-16" 
-            />
-            <h1 className="text-2xl font-bold text-gray-800">LEGALIZATOR</h1>
-          </div>
-          <div className="flex gap-3">
-            <Link to="/plantilla">
-              <Button variant="outline" className="flex items-center gap-2">
-                <FileText size={18} />
-                <span>Ver Plantilla</span>
-              </Button>
-            </Link>
-            <Link to="/vista-previa">
-              <Button className="flex items-center gap-2">
-                <Eye size={18} />
-                <span>Vista Previa</span>
-              </Button>
-            </Link>
-          </div>
+    <div className="mb-8 max-w-[210mm] mx-auto bg-white min-h-[297mm] relative p-6">
+      <h3 className="text-lg font-bold mb-4">14.12. EVAPORADORES</h3>
+
+      <p className="text-sm text-justify mb-4">
+        En cada cámara se instala un evaporador convenientemente dimensionado y
+        dotado de ventiladores axiales y baterías de intercambio con tubos de
+        cobre y aletas de aluminio, cuya separación está en función de la
+        temperatura interior deseada. Están diseñados para soportar las
+        presiones de trabajo alcanzadas por el refrigerante. Los evaporadores
+        instalados son los siguientes:
+      </p>
+
+      {evaporadoresData.length ? (
+        <div className="overflow-x-auto">
+          <Table className="w-full border-collapse text-xs">
+            <TableHeader>
+              <TableRow className="bg-gray-100">
+                <TableHead className="border p-2">Unidades</TableHead>
+                <TableHead className="border p-2">Denominación</TableHead>
+                <TableHead className="border p-2">Modelo</TableHead>
+                <TableHead className="border p-2">Vol. int.</TableHead>
+                <TableHead className="border p-2">Superficie</TableHead>
+                <TableHead className="border p-2">Caudal&nbsp;(m³/h)</TableHead>
+                <TableHead className="border p-2">Potencia&nbsp;(W)</TableHead>
+                <TableHead className="border p-2">Sep. aleta&nbsp;(mm)</TableHead>
+              </TableRow>
+            </TableHeader>
+
+            <TableBody>
+              {evaporadoresData.map((r, i) => (
+                <TableRow key={i} className={i % 2 ? "bg-gray-50" : ""}>
+                  <TableCell className="border p-2 text-center">
+                    {r.unidades}
+                  </TableCell>
+                  <TableCell className="border p-2">{r.denominacion}</TableCell>
+                  <TableCell className="border p-2">{r.modelo}</TableCell>
+                  <TableCell className="border p-2 text-center">
+                    {r.volInt}
+                  </TableCell>
+                  <TableCell className="border p-2 text-center">
+                    {r.superficie}
+                  </TableCell>
+                  <TableCell className="border p-2 text-center">
+                    {r.caudal}
+                  </TableCell>
+                  <TableCell className="border p-2 text-center">
+                    {r.potencia}
+                  </TableCell>
+                  <TableCell className="border p-2 text-center">
+                    {r.sepAleta}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </div>
-      </header>
-      
-      <main className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-        <div className="bg-white shadow rounded-lg mb-6">
-          <div className="p-6 border-b border-gray-200">
-            <h2 className="text-lg font-medium text-gray-900">Formulario de Datos para Memoria Técnica</h2>
-            <p className="mt-1 text-sm text-gray-500">
-              Complete los siguientes campos para generar automáticamente la memoria técnica descriptiva de instalación frigorífica.
-            </p>
-          </div>
-          <div className="p-6">
-            <MemoriaTecnicaForm onSubmit={handleFormSubmit} />
-          </div>
-        </div>
-        
-        {isFormSubmitted && (
-          <div className="bg-white shadow rounded-lg">
-            <div className="p-6 border-b border-gray-200">
-              <h2 className="text-lg font-medium text-gray-900">Memoria Técnica Generada</h2>
-              <p className="mt-1 text-sm text-gray-500">
-                La memoria técnica ha sido generada con éxito. Puede descargarla o visualizarla.
-              </p>
-            </div>
-            <div className="p-6 flex gap-4">
-              <Button className="bg-green-600 hover:bg-green-700">
-                Descargar Memoria
-              </Button>
-              <Button variant="outline">
-                Vista Previa
-              </Button>
-            </div>
-          </div>
-        )}
-      </main>
+      ) : (
+        <p className="italic text-gray-500">
+          No se encontraron datos de evaporadores en el Excel.
+        </p>
+      )}
+
+      {/* texto adicional de la sección (sin cambios) */}
+      <div className="text-sm mt-6 space-y-4 text-justify">
+        <p>
+          El desescarche en los evaporadores de las cámaras y de los muebles
+          frigoríficos negativos se realiza mediante la aportación de calor por
+          resistencias (desescarche eléctrico), mientras que en los evaporadores
+          de los obradores y de los muebles frigoríficos positivos se realiza
+          por aire, mediante el corte de la alimentación de refrigerante a éstos
+          mientras los ventiladores están en funcionamiento.
+        </p>
+        <p>
+          La separación de aleta para los evaporadores de cámaras de temperatura
+          positiva es como mínimo de 6&nbsp;mm. En los evaporadores de cámara de
+          congelados es como mínimo de 7&nbsp;mm.
+        </p>
+      </div>
     </div>
   );
 };
 
-export default Index;
+export default MemoriaEvaporadores;
