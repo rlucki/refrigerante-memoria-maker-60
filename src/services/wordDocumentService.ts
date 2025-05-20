@@ -72,9 +72,13 @@ export async function buildWord(opts: {
   const bodyBuf = await htmlToDocx(tmp.innerHTML, {
     table: { row: { cantSplit: true } },
   });
+  
+  // Convert Buffer to base64 string
+  const base64String = Buffer.from(bodyBuf).toString('base64');
+  
   const bodyAttach = {
     _type: "doc_attach",
-    data: bodyBuf.toString("base64"),
+    data: base64String,
   };
 
   /* 3️⃣  renderizar plantilla con Docxtemplater */
