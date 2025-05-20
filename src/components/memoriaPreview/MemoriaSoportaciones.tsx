@@ -1,4 +1,5 @@
-// src/components/memoriaPreview/sections/MemoriaSoportaciones.tsx
+
+// src/components/memoriaPreview/MemoriaSoportaciones.tsx
 
 import React from "react";
 import { BlockMath } from "react-katex";
