@@ -1,212 +1,77 @@
+/*  src/services/wordDocumentService.ts
+    - Genera DOCX con TOC, pie de página, y convierte la vista previa HTML.
+*/
 
-import { Document, Packer, Paragraph, TextRun, HeadingLevel, TableOfContents } from "docx";
+import PizZip from "pizzip";
+import Docxtemplater from "docxtemplater";
+import htmlToDocx from "html-to-docx";
+import { saveAs } from "file-saver";
+import {
+  Document,
+  Packer,
+  Paragraph,
+  TextRun,
+  HeadingLevel,
+  TableOfContents,
+  Footer,
+  ImageRun,
+  PageNumber,
+} from "docx";
 
-interface MemoriaData {
-  [key: string]: any;
-}
-
-// Function to generate document from template
-export async function generateWordDocument(templateFile: File, memoriaData: MemoriaData) {
-  try {
-    // We'll create a new document rather than modifying an existing one
-    // since directly modifying an existing DOCX is challenging in the browser
-    const doc = new Document({
-      sections: [
-        {
-          properties: {},
-          children: [
-            // Add title page
-            new Paragraph({
-              text: memoriaData.titulo || "MEMORIA TÉCNICA DESCRIPTIVA",
-              heading: HeadingLevel.TITLE,
-              alignment: "center"
-            }),
-            
-            // Add table of contents
-            new Paragraph({
-              text: "ÍNDICE",
-              heading: HeadingLevel.HEADING_1,
-              alignment: "center"
-            }),
-            new TableOfContents("Índice", {
-              hyperlink: true,
-              headingStyleRange: "1-9",
-            }),
-            
-            // Section 1: Datos del titular
-            new Paragraph({
-              text: "1. DATOS DEL TITULAR",
-              heading: HeadingLevel.HEADING_1,
-            }),
-            new Paragraph({
-              children: [
-                new TextRun({
-                  text: `${memoriaData.titular || ''}\n` +
-                  `NIF/CIF: ${memoriaData.nif || ''}\n` +
-                  `Dirección: ${memoriaData.direccion || ''}\n` +
-                  `Población: ${memoriaData.poblacion || ''}, ${memoriaData.provincia || ''}\n` +
-                  `C.P.: ${memoriaData.cp || ''}\n` +
-                  `Teléfono: ${memoriaData.telefono || ''}\n` +
-                  `Email: ${memoriaData.email || ''}`
-                }),
-              ],
-            }),
-            
-            // Section 12: Descripción de la instalación
-            new Paragraph({
-              text: "12. DESCRIPCIÓN DE LA INSTALACIÓN FRIGORÍFICA",
-              heading: HeadingLevel.HEADING_1,
-            }),
-            new Paragraph({
-              children: [
-                new TextRun({
-                  text: memoriaData.descripcionInstalacion || '',
-                }),
-              ],
-            }),
-            
-            // Process any index markers in the description
-            ...(memoriaData.descripcionInstalacion ? 
-              processIndexMarkersAndCreateContent(memoriaData.descripcionInstalacion) : []),
-            
-            // Add more sections based on available data
-            ...(memoriaData.normativaCompleta ? createNormativaSection(memoriaData.normativaCompleta) : []),
-            
-            // Add more sections...
-          ],
-        },
-      ],
-    });
-
-    // Generate the document
-    const buffer = await Packer.toBuffer(doc);
-    
-    // Create a blob from the buffer
-    const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
-    
-    // Return the blob for download
-    return blob;
-  } catch (error) {
-    console.error("Error generating Word document:", error);
-    throw new Error("No se pudo generar el documento Word");
-  }
-}
-
-// Helper function to create a heading with text content
-function createHeadingWithText(title: string, content: string) {
-  return [
-    new Paragraph({
-      text: title,
-      heading: HeadingLevel.HEADING_1,
-    }),
-    new Paragraph({
-      children: [
-        new TextRun({
-          text: content,
-        }),
-      ],
-    }),
-  ];
-}
-
-// Function to process index markers and create paragraphs
-function processIndexMarkersAndCreateContent(text: string) {
-  const paragraphs: Paragraph[] = [];
-  const lines = text.split('\n');
-  
-  lines.forEach(line => {
-    // Check for index markers
-    const matches = line.match(/&&(.*?)&&/g);
-    if (matches && matches.length > 0) {
-      // Extract heading text and create a heading paragraph
-      matches.forEach(match => {
-        const headingText = match.replace(/&&/g, '');
-        paragraphs.push(
-          new Paragraph({
-            text: headingText,
-            heading: HeadingLevel.HEADING_2,
-          })
-        );
-      });
-      
-      // Create content paragraph with clean text (no markers)
-      const cleanLine = line.replace(/&&(.*?)&&/g, '$1');
-      paragraphs.push(
-        new Paragraph({
-          children: [
-            new TextRun({
-              text: cleanLine,
-            }),
-          ],
-        })
-      );
-    } else if (line.trim()) {
-      // Regular paragraph without markers
-      paragraphs.push(
-        new Paragraph({
-          children: [
-            new TextRun({
-              text: line,
-            }),
-          ],
-        })
-      );
-    }
+/* ---------------- Helper: logo en el pie ------------------ */
+async function buildFooter(logoUrl: string) {
+  const res = await fetch(logoUrl);
+  const buf = await res.arrayBuffer();
+  return new Footer({
+    children: [
+      new Paragraph({
+        children: [
+          new ImageRun({ data: buf, transformation: { width: 80, height: 40 } }),
+          new TextRun("   Página "),
+          PageNumber.CURRENT,
+          new TextRun(" de "),
+          PageNumber.TOTAL_PAGES,
+        ],
+      }),
+    ],
   });
-  
-  return paragraphs;
 }
 
-// Function to create normativa section
-function createNormativaSection(normativaData: any) {
-  const paragraphs: Paragraph[] = [];
-  
-  paragraphs.push(
-    new Paragraph({
-      text: "11. NORMATIVA APLICABLE",
-      heading: HeadingLevel.HEADING_1,
-    })
-  );
-  
-  if (normativaData && Array.isArray(normativaData)) {
-    normativaData.forEach(item => {
-      if (item && item.title) {
-        paragraphs.push(
-          new Paragraph({
-            children: [
-              new TextRun({
-                text: `• ${item.title}`,
-                bold: true,
-              }),
-            ],
-          })
-        );
-        
-        if (item.description) {
-          paragraphs.push(
-            new Paragraph({
-              children: [
-                new TextRun({
-                  text: item.description,
-                }),
-              ],
-            })
-          );
-        }
-      }
-    });
-  }
-  
-  return paragraphs;
-}
-
-// Function to check for index markers and process them
-export function processIndexMarkers(text: string): { text: string, indexEntries: string[] } {
-  const indexEntries: string[] = [];
-  const processedText = text.replace(/&&(.*?)&&/g, (match, content) => {
-    indexEntries.push(content);
-    return content;
+/* ---------------- Helper: convierte el HTML preview -------- */
+async function htmlPreviewToDocx(html: string) {
+  const buffer = await htmlToDocx(html, {
+    table: { row: { cantSplit: true } },
   });
-  
-  return { text: processedText, indexEntries };
+  return new Paragraph({}); // placeholder (attach later via docxtemplater)
 }
+
+/* ---------------- API principal --------------------------- */
+export async function buildWord({
+  templateArrayBuffer,   // ArrayBuffer de plantilla.docx
+  htmlPreview,           // innerHTML de #preview
+  logoUrl,               // src del logo corporativo
+}: {
+  templateArrayBuffer: ArrayBuffer;
+  htmlPreview: string;
+  logoUrl?: string;
+}) {
+  /* 1) extrae headings marcados en la vista previa */
+  const temp = document.createElement("div");
+  temp.innerHTML = htmlPreview;
+  const headingEls = temp.querySelectorAll("[data-heading]");
+  const headingParas: Paragraph[] = [];
+
+  headingEls.forEach((el) => {
+    const raw = (el as HTMLElement).dataset.heading!;
+    const clean = raw.replace(/&&/g, "");
+    headingParas.push(
+      new Paragraph({ text: clean, heading: HeadingLevel.HEADING_2 })
+    );
+  });
+
+  /* 2) convierte el resto del HTML a docx fragmento */
+  const bodyBuffer = await htmlToDocx(temp.innerHTML);
+
+  /* 3) carga plantilla y rellena */
+  const zip = new PizZip(templateArrayBuffer);
+  const docx = new Docxtemplater(zip,
