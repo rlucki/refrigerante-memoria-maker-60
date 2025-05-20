@@ -8,19 +8,21 @@ interface CentralPositivaSectionProps {
 }
 
 const CentralPositivaSection: React.FC<CentralPositivaSectionProps> = ({ excelData }) => {
-  // ACTUALIZADO: Rango correcto para Central Positiva (14.1)
-  const centralPositivaData = extractTableData(excelData, {
-    sheet: "RESUM LEGA",
-    startCol: "W",
-    endCol: "AB",
-    startRow: 1,
-    endRow: 20,
-    mappings: {
-      caracteristica: "W",
-      medidas: "X",
-      observaciones: "AB"
-    }
-  });
+  // Use useMemo to avoid unnecessary recalculations
+  const centralPositivaData = React.useMemo(() => {
+    return extractTableData(excelData, {
+      sheet: "RESUM LEGA",
+      startCol: "W",
+      endCol: "AB",
+      startRow: 1,
+      endRow: 20,
+      mappings: {
+        caracteristica: "W",
+        medidas: "X",
+        observaciones: "AB"
+      }
+    });
+  }, [excelData]);
 
   return (
     <div className="mt-8">

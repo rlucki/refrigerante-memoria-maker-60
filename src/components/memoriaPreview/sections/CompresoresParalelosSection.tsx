@@ -8,19 +8,21 @@ interface CompresoresParalelosSectionProps {
 }
 
 const CompresoresParalelosSection: React.FC<CompresoresParalelosSectionProps> = ({ excelData }) => {
-  // Rango correcto para Compresores Paralelos (14.2)
-  const compresoresParalelosData = extractTableData(excelData, {
-    sheet: "RESUM LEGA",
-    startCol: "AS",
-    endCol: "AW",
-    startRow: 1,
-    endRow: 18,
-    mappings: {
-      caracteristica: "AS",
-      medidas: "AT",
-      observaciones: "AW"
-    }
-  });
+  // Use useMemo to avoid unnecessary recalculations
+  const compresoresParalelosData = React.useMemo(() => {
+    return extractTableData(excelData, {
+      sheet: "RESUM LEGA",
+      startCol: "AS",
+      endCol: "AW",
+      startRow: 1,
+      endRow: 18,
+      mappings: {
+        caracteristica: "AS",
+        medidas: "AT",
+        observaciones: "AW"
+      }
+    });
+  }, [excelData]);
 
   return (
     <div className="mt-8">

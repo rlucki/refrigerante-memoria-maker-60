@@ -8,19 +8,21 @@ interface CentralNegativaSectionProps {
 }
 
 const CentralNegativaSection: React.FC<CentralNegativaSectionProps> = ({ excelData }) => {
-  // Rango correcto para Central Negativa (14.3)
-  const centralNegativaData = extractTableData(excelData, {
-    sheet: "RESUM LEGA",
-    startCol: "AD",
-    endCol: "AH",
-    startRow: 1,
-    endRow: 19,
-    mappings: {
-      caracteristica: "AD",
-      medidas: "AE",
-      observaciones: "AH"
-    }
-  });
+  // Use useMemo to avoid unnecessary recalculations
+  const centralNegativaData = React.useMemo(() => {
+    return extractTableData(excelData, {
+      sheet: "RESUM LEGA",
+      startCol: "AD",
+      endCol: "AH",
+      startRow: 1,
+      endRow: 19,
+      mappings: {
+        caracteristica: "AD",
+        medidas: "AE",
+        observaciones: "AH"
+      }
+    });
+  }, [excelData]);
 
   return (
     <div className="mt-8">

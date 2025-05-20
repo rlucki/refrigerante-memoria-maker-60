@@ -1,3 +1,4 @@
+
 /**
  * Utility functions for Excel data processing
  */
@@ -95,7 +96,7 @@ export const extractDataFromRange = (
 /* ──────────────────────────────────────────────────────────── */
 
 export const extractTableData = (
-  workbook: XLSX.WorkBook,
+  workbook: XLSX.WorkBook | undefined | null,
   options: {
     sheet: string;
     startCol: string;
@@ -105,11 +106,21 @@ export const extractTableData = (
     mappings: { [key: string]: string };
   }
 ): any[] => {
-  if (!workbook) return [];
-
+  // Check if workbook exists
+  if (!workbook) {
+    console.warn("No se proporcionó un archivo Excel válido");
+    return [];
+  }
+  
+  // Check if the requested sheet exists
+  if (!workbook.Sheets || !workbook.SheetNames.includes(options.sheet)) {
+    console.warn(`No se encontró la hoja "${options.sheet}" en el Excel cargado`);
+    return [];
+  }
+  
   const sheet = workbook.Sheets[options.sheet];
   if (!sheet) {
-    console.warn(`No se encontró la hoja "${options.sheet}"`);
+    console.warn(`No se pudo acceder a la hoja "${options.sheet}"`);
     return [];
   }
 
