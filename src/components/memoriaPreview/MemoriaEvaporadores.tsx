@@ -53,7 +53,7 @@ const MemoriaEvaporadores: React.FC<MemoriaEvaporadoresProps> = ({ excelData }) 
     <div className="mb-8 max-w-[210mm] mx-auto bg-white min-h-[297mm] relative p-6">
       <div className="pb-20">
         {/* Only keep the EVAPORADORES section (14.12) */}
-        <h3 className="text-lg font-bold">14.12. EVAPORADORES</h3>
+        <h3 className="text-lg font-bold" data-heading="&&14.12. EVAPORADORES">14.12. EVAPORADORES</h3>
         
         <div className="mt-4 text-sm text-justify">
           <p className="mb-4">
