@@ -20,8 +20,6 @@ interface FormSectionProps {
 const FormSection: React.FC<FormSectionProps> = ({
   activeTab,
   setActiveTab,
-  activeSubTab,
-  setActiveSubTab,
   onFormChange,
   onCalculationsChange,
   onExcelUpload,
@@ -45,11 +43,6 @@ const FormSection: React.FC<FormSectionProps> = ({
           <MemoriaTecnicaForm 
             onSubmit={() => {}} 
             onChange={onFormChange}
-            onWordTemplateUploaded={onWordTemplateUploaded}
-            onGenerateWordDocument={onGenerateWordDocument}
-            hasWordTemplate={hasWordTemplate}
-            activeTab={activeSubTab}
-            setActiveTab={setActiveSubTab}
             onCalculationsChange={onCalculationsChange}
             onExcelUpload={onExcelUpload}
           />
