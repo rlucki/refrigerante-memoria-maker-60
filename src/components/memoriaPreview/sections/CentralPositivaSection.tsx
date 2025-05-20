@@ -14,12 +14,11 @@ interface Props {
 }
 
 const CentralPositivaSection: React.FC<Props> = ({ excelData }) => {
-  /* Rango real J-O */
   const data = extractTableData(excelData, {
     sheet: "RESUM LEGA",
     startCol: "J",
     endCol: "O",
-    startRow: 2,   // debajo del título
+    startRow: 2,
     endRow: 25,
     mappings: {
       caracteristica: "J",
@@ -59,30 +58,4 @@ const CentralPositivaSection: React.FC<Props> = ({ excelData }) => {
 
             <TableBody>
               {data.map((row, i) => (
-                <TableRow key={i} className={i % 2 ? "bg-gray-50" : ""}>
-                  <TableCell className="border p-2">
-                    {row.caracteristica}
-                  </TableCell>
-                  {["c1", "c2", "c3", "c4", "total"].map((k) => (
-                    <TableCell
-                      key={k}
-                      className="border p-2 text-center"
-                    >
-                      {row[k]}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      ) : (
-        <p className="mt-4 italic">
-          No se encontraron datos de la central positiva en el archivo Excel.
-        </p>
-      )}
-    </div>
-  );
-};
-
-export default CentralPositivaSection;
+                <Table
