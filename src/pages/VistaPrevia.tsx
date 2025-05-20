@@ -1,3 +1,4 @@
+
 import { useState, useRef } from "react";
 import { toast } from "@/hooks/use-toast";
 import { generateWordDocument } from "@/services/wordDocumentService";
@@ -75,7 +76,7 @@ const VistaPrevia = () => {
     normativaCompleta: null,
     
     // Descripción de la instalación
-    descripcionInstalacion: La instalación está compuesta por varios muebles frigoríficos tipo mural y dos armarios de congelados, así como tres cámaras de conservación, un obrador y dos cámaras de congelados. Los servicios positivos se alimentan desde una central compacta positiva, mientras que los servicios negativos se alimentan desde una central compacta negativa.
+    descripcionInstalacion: `La instalación está compuesta por varios muebles frigoríficos tipo mural y dos armarios de congelados, así como tres cámaras de conservación, un obrador y dos cámaras de congelados. Los servicios positivos se alimentan desde una central compacta positiva, mientras que los servicios negativos se alimentan desde una central compacta negativa.
 
 Las centrales compactas frigoríficas se encuentran ubicadas dentro de una sala de máquinas no específica. Los compresores utilizados son de tipo scroll de la marca COPELAND. Dichos compresores van provistos de todos los elementos de seguridad necesarios para garantizar el funcionamiento correcto de los mismos y un mantenimiento mínimo. 
 
@@ -83,7 +84,7 @@ Las centrales compactas frigoríficas incorporan el condensador de aire dentro d
 
 El refrigerante condensado se almacena en su correspondiente recipiente de líquido individual incorporado dentro de las propias máquinas descritas.  
 Se ha instalado un evaporador en cada cámara, correctamente dimensionado a sus necesidades. El desescarche de los evaporadores se realiza por resistencias eléctricas.
-El gas utilizado en la instalación es R-448A. La carga de refrigerante para la central compacta positiva es de 50 kg, mientras que la carga de refrigerante para la central compacta negativa es de 35 kg. Por lo que la instalación cuenta con una carga total de 85 kg de refrigerante R-448A repartida en dos sistemas diferentes.
+El gas utilizado en la instalación es R-448A. La carga de refrigerante para la central compacta positiva es de 50 kg, mientras que la carga de refrigerante para la central compacta negativa es de 35 kg. Por lo que la instalación cuenta con una carga total de 85 kg de refrigerante R-448A repartida en dos sistemas diferentes.`
   });
   
   const [excelData, setExcelData] = useState(null);
@@ -105,12 +106,12 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
 
   // Handle form changes without scroll synchronization
   const handleFormChange = (field: string, value: any) => {
-    console.log(Field changed: ${field}, value);
+    console.log(`Field changed: ${field}`, value);
     setMemoriaData(prev => ({ ...prev, [field]: value }));
     
     // Check if we need to update description based on compresor paralelo and nivelInstalacion
     if (field === "nivelInstalacion" && calculationsData.compresorParalelo === "0" && value === "Nivel 2") {
-      const boosterDescription = Esta instalación se ha diseñado para cubrir las necesidades frigoríficas de diferentes muebles y cámaras de un hipermercado. Para ello se han instalado dos centrales frigoríficas: una de régimen positivo para los servicios que trabajan a temperaturas que oscilan entre los 0/+10 °C, y otra de régimen negativo para los servicios de congelados que trabajan con temperaturas entre -22/-25 °C.
+      const boosterDescription = `Esta instalación se ha diseñado para cubrir las necesidades frigoríficas de diferentes muebles y cámaras de un hipermercado. Para ello se han instalado dos centrales frigoríficas: una de régimen positivo para los servicios que trabajan a temperaturas que oscilan entre los 0/+10 °C, y otra de régimen negativo para los servicios de congelados que trabajan con temperaturas entre -22/-25 °C.
 
 Tanto los servicios positivos como los negativos se alimentan con refrigerante R-744 (CO₂). Para garantizar las condiciones mencionadas se ha instalado un grupo "booster" de compresión, dotado de dos centrales frigoríficas, trabajando una con una temperatura de evaporación de -8 °C (central positiva), y la otra a -33 °C (central negativa).  La central positiva trabaja en modo transcrítico, mientras que la central negativa lo hace en modo subcrítico, descargando sobre la aspiración de la central positiva. Ambas centrales están en la misma bancada "booster".
 
@@ -119,7 +120,7 @@ Los gases de descarga generados por los compresores de la central positiva que s
 Los gases de descarga, ya prácticamente sin aceite y a la temperatura y presión indicada anteriormente, son conducidos a un "gas cooler" (enfriador), situado en cubierta y dotado de ventiladores helicoidales, donde ceden parte del calor sensible al aire que circula por su batería y se produce un decremento de la temperatura del fluido frigorífico hasta alcanzar +38 °C. 
 RADIAL SALA DE MÁQUINAS / HELICOIDAL CUBIERTA
 
-El refrigerante, a alta presión, se expansiona hasta la presión de intermedia mediante una válvula de expansión electrónica transcrítica y se conduce al recipiente de líquido vertical de las centrales, a una temperatura superior a los +5,3 °C, donde una parte llega en fase líquida y la otra en fase gas (flash gas). Estos gases flash sobrecalentados se reconducen hasta el colector de aspiración de la central positiva, provocándoles una pequeña caída de presión mediante otra válvula de expansión electrónica, denominada válvula de flash gas bypass;
+El refrigerante, a alta presión, se expansiona hasta la presión de intermedia mediante una válvula de expansión electrónica transcrítica y se conduce al recipiente de líquido vertical de las centrales, a una temperatura superior a los +5,3 °C, donde una parte llega en fase líquida y la otra en fase gas (flash gas). Estos gases flash sobrecalentados se reconducen hasta el colector de aspiración de la central positiva, provocándoles una pequeña caída de presión mediante otra válvula de expansión electrónica, denominada válvula de flash gas bypass`;
         
       setMemoriaData(prev => ({ ...prev, descripcionInstalacion: boosterDescription }));
     }
@@ -138,13 +139,13 @@ El refrigerante, a alta presión, se expansiona hasta la presión de intermedia 
   };
 
   const handleCalculationsChange = (field: string, value: string) => {
-    console.log(Calculations field changed: ${field}, value);
+    console.log(`Calculations field changed: ${field}`, value);
     setCalculationsData(prev => {
       const newData = { ...prev, [field]: value };
       
       // Check if compresorParalelo is 0 and nivelInstalacion is Nivel 2 to update the description
       if (field === "compresorParalelo" && value === "0" && memoriaData.nivelInstalacion === "Nivel 2") {
-        const boosterDescription = Esta instalación se ha diseñado para cubrir las necesidades frigoríficas de diferentes muebles y cámaras de un hipermercado. Para ello se han instalado dos centrales frigoríficas: una de régimen positivo para los servicios que trabajan a temperaturas que oscilan entre los 0/+10 °C, y otra de régimen negativo para los servicios de congelados que trabajan con temperaturas entre -22/-25 °C.
+        const boosterDescription = `Esta instalación se ha diseñado para cubrir las necesidades frigoríficas de diferentes muebles y cámaras de un hipermercado. Para ello se han instalado dos centrales frigoríficas: una de régimen positivo para los servicios que trabajan a temperaturas que oscilan entre los 0/+10 °C, y otra de régimen negativo para los servicios de congelados que trabajan con temperaturas entre -22/-25 °C.
 
 Tanto los servicios positivos como los negativos se alimentan con refrigerante R-744 (CO₂). Para garantizar las condiciones mencionadas se ha instalado un grupo "booster" de compresión, dotado de dos centrales frigoríficas, trabajando una con una temperatura de evaporación de -8 °C (central positiva), y la otra a -33 °C (central negativa).  La central positiva trabaja en modo transcrítico, mientras que la central negativa lo hace en modo subcrítico, descargando sobre la aspiración de la central positiva. Ambas centrales están en la misma bancada "booster".
 
@@ -153,7 +154,7 @@ Los gases de descarga generados por los compresores de la central positiva que s
 Los gases de descarga, ya prácticamente sin aceite y a la temperatura y presión indicada anteriormente, son conducidos a un "gas cooler" (enfriador), situado en cubierta y dotado de ventiladores helicoidales, donde ceden parte del calor sensible al aire que circula por su batería y se produce un decremento de la temperatura del fluido frigorífico hasta alcanzar +38 °C. 
 RADIAL SALA DE MÁQUINAS / HELICOIDAL CUBIERTA
 
-El refrigerante, a alta presión, se expansiona hasta la presión de intermedia mediante una válvula de expansión electrónica transcrítica y se conduce al recipiente de líquido vertical de las centrales, a una temperatura superior a los +5,3 °C, donde una parte llega en fase líquida y la otra en fase gas (flash gas). Estos gases flash sobrecalentados se reconducen hasta el colector de aspiración de la central positiva, provocándoles una pequeña caída de presión mediante otra válvula de expansión electrónica, denominada válvula de flash gas bypass;
+El refrigerante, a alta presión, se expansiona hasta la presión de intermedia mediante una válvula de expansión electrónica transcrítica y se conduce al recipiente de líquido vertical de las centrales, a una temperatura superior a los +5,3 °C, donde una parte llega en fase líquida y la otra en fase gas (flash gas). Estos gases flash sobrecalentados se reconducen hasta el colector de aspiración de la central positiva, provocándoles una pequeña caída de presión mediante otra válvula de expansión electrónica, denominada válvula de flash gas bypass`;
         
         setMemoriaData(prev => ({ ...prev, descripcionInstalacion: boosterDescription }));
       }
@@ -186,7 +187,7 @@ El refrigerante, a alta presión, se expansiona hasta la presión de intermedia 
       const url = URL.createObjectURL(docBlob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = Memoria_Tecnica_${memoriaData.nombreProyecto || 'Proyecto'}.docx;
+      a.download = `Memoria_Tecnica_${memoriaData.nombreProyecto || 'Proyecto'}.docx`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
