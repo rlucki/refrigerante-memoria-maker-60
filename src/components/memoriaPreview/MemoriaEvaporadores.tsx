@@ -1,3 +1,4 @@
+
 import React from "react";
 import {
   Table,
@@ -106,6 +107,78 @@ const MemoriaEvaporadores: React.FC<MemoriaEvaporadoresProps> = ({
         <p>
           La separación de aleta para los evaporadores de cámaras de temperatura positiva es como mínimo de 6 mm. En los evaporadores de cámara de congelados es como mínimo de 7 mm.&nbsp;
         </p>
+      </div>
+      
+      {/* Sección 14.12.1 - Valvulería y elementos muebles y evaporadores */}
+      <div className="text-sm mt-10 space-y-4 text-justify">
+        <h4 className="text-md font-semibold" data-heading="&&14.12.1. VALVULERÍA Y ELEMENTOS MUEBLES Y EVAPORADORES">
+          14.12.1. VALVULERÍA Y ELEMENTOS MUEBLES Y EVAPORADORES
+        </h4>
+        <p>
+          Para cada evaporador de cámaras y mueble frigorífico se instalan las siguientes válvulas:
+        </p>
+        
+        <div className="ml-4">
+          <p className="font-medium">Línea de líquido</p>
+          <ul className="list-disc pl-6 space-y-2">
+            <li>Válvula de paso de bola con descompresor integrado, que incorpora en su mismo cuerpo un by-pass para evitar una subida brusca de presión del refrigerante que pudiera quedar atrapado entre ambas válvulas.</li>
+            <li>Válvula de bola para despresurización</li>
+            <li>Visor de líquido y humedad</li>
+            <li>Válvula de expansión electrónica DANFOSS AKV10P, en cada evaporador y módulo de mueble, conectada a su controlador DANFOSS AK-CC55 situado en el subcuadro de cada cámara o en el propio mueble</li>
+          </ul>
+        </div>
+        
+        <div className="ml-4">
+          <p className="font-medium">Línea de aspiración</p>
+          <ul className="list-disc pl-6 space-y-2">
+            <li>Válvula de bola para despresurización</li>
+            <li>Válvula de paso de bola con descompresor integrado, que incorpora en su mismo cuerpo un by-pass para evitar una subida brusca de presión del refrigerante que pudiera quedar atrapado entre ambas válvulas.</li>
+            <li>Transductor de presión DANFOSS AKS-2050 con llave de paso</li>
+            <li>Sonda de temperatura de contacto DANFOSS AKS-11</li>
+            <li>Sondas de temperatura ambiente DANFOSS AKS-12</li>
+          </ul>
+        </div>
+      </div>
+      
+      {/* Sección 14.12.2 - Valvulería y elementos muebles y evaporadores */}
+      <div className="text-sm mt-8 space-y-4 text-justify">
+        <h4 className="text-md font-semibold" data-heading="&&14.12.2. VALVLVULERÍA Y ELEMENTOS MUEBLES Y EVAPORADORES">
+          14.12.2. VALVLVULERÍA Y ELEMENTOS MUEBLES Y EVAPORADORES
+        </h4>
+        
+        <div className="ml-4">
+          <p className="font-medium">Línea de líquido</p>
+          <ul className="list-disc pl-6 space-y-2">
+            <li>Válvula de paso</li>
+            <li>Visor de líquido y humedad</li>
+            <li>Válvula Solenoide</li>
+            <li>Válvula de expansión termostática</li>
+          </ul>
+        </div>
+        
+        <div className="ml-4">
+          <p className="font-medium">Línea de aspiración</p>
+          <ul className="list-disc pl-6 space-y-2">
+            <li>Válvula de bola</li>
+            <li>Sonda de temperatura de contacto DANFOSS AKS-11</li>
+            <li>Sondas de temperatura ambiente DANFOSS AKS-12</li>
+          </ul>
+        </div>
+      </div>
+      
+      {/* Sección 14.12.3 - Conexionado desagües */}
+      <div className="text-sm mt-8 space-y-4 text-justify">
+        <h4 className="text-md font-semibold" data-heading="&&14.12.3. CONEXIONADO DESAGÜES MÓDULOS MOBILIARIO Y EVAPORADORES">
+          14.12.3. CONEXIONADO DESAGÜES MÓDULOS MOBILIARIO Y EVAPORADORES
+        </h4>
+        <p>
+          Los desagües de cada módulo de mobiliario frigorífico y de cada evaporador de cámara se realizan según se indica a continuación:
+        </p>
+        
+        <ul className="list-disc pl-6 space-y-2">
+          <li>En todo el mobiliario frigorífico el instalador frigorista realiza la conexión de desagüe de cada módulo aportando los accesorios necesarios (excepto el sifón que viene suministrado con cada módulo de fábrica) para la conexión hasta la línea de desagüe general. En el caso de mobiliario de congelado se aísla todo el tramo de tubería hasta el sifón, incluyendo el aislamiento del propio sifón.</li>
+          <li>En evaporadores de cámaras el instalador frigorista realiza la conexión de cada desagüe de evaporador aportando los accesorios necesarios en PVC blanco de 40mm, hasta la línea de desagüe general. En el caso de evaporadores de cámaras de congelado se aísla todo el tramo de tubería incluyendo el sifón hasta la salida de la misma fuera de la cámara.</li>
+        </ul>
       </div>
     </div>
   );
