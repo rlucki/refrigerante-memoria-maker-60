@@ -81,7 +81,14 @@ const MemoriaTecnicaForm = ({
     }
   };
 
-  // Create an adapter function to match the expected signature
+  // Create an adapter function to match the expected signature for NormativaSection
+  const handleNormativaChange = (field: string, value: any) => {
+    if (onChange) {
+      onChange(field, value);
+    }
+  };
+
+  // Create an adapter function for textarea elements
   const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (onChange) {
       onChange(e.target.id, e.target.value);
@@ -158,7 +165,7 @@ const MemoriaTecnicaForm = ({
         <TabsContent value="descripcion_clasificacion" className="mt-6">
           <div className="space-y-6">
             {/* Nueva sección de Normativa agregada aquí */}
-            <NormativaSection onChange={handleInputChange} />
+            <NormativaSection onChange={handleNormativaChange} />
             
             {/* Calculadora */}
             <Card className="p-6">
