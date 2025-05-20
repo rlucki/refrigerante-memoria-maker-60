@@ -1,14 +1,15 @@
 /*  src/services/wordDocumentService.ts
-    Genera un DOCX a partir de la plantilla subida, inyecta:
-    – contenido HTML de la vista previa (tablas incluidas)
-    – títulos marcados con data-heading (para índice)
-    – pie de página con logo + nº de página
+    Genera un DOCX desde el navegador (sin instalar paquetes con npm).
+    – Usa módulos ES servidos por CDN (https://esm.sh)
+    – Inserta: contenido HTML de la vista previa, títulos data-heading (TOC),
+      pie con logo y numeración de página.
 */
 
-import PizZip from "pizzip/browser";
-import Docxtemplater from "docxtemplater";
-import htmlToDocx from "html-to-docx";
-import { saveAs } from "file-saver";
+/* ────────  Imports ESM desde CDN  ──────── */
+import PizZip from "https://esm.sh/pizzip@3.2.5/dist/pizzip.esm.js";
+import Docxtemplater from "https://esm.sh/docxtemplater@3.39.1/build/docxtemplater.esm.js";
+import htmlToDocx from "https://esm.sh/html-to-docx@2.4.0";
+import { saveAs } from "https://esm.sh/file-saver@2.0.5";
 import {
   Document,
   Packer,
@@ -19,66 +20,63 @@ import {
   ImageRun,
   PageNumber,
   TextRun,
-} from "docx";
+} from "https://esm.sh/docx@8.1.2";
 
-/* ───────────────────────── helper: pie de página ───────────────────── */
+/* ───── helper: pie con logo + nº página ───── */
 async function buildFooter(logoUrl?: string) {
-  const children = [];
-
+  const runs: (ImageRun | TextRun | PageNumber)[] = [];
   if (logoUrl) {
-    const res = await fetch(logoUrl);
-    const buffer = await res.arrayBuffer();
-    children.push(
-      new ImageRun({ data: buffer, transformation: { width: 80, height: 40 } })
+    const buf = await (await fetch(logoUrl)).arrayBuffer();
+    runs.push(
+      new ImageRun({ data: buf, transformation: { width: 80, height: 40 } }),
+      new TextRun("   ")
     );
   }
-
-  children.push(
-    new TextRun("   Página "),
+  runs.push(
+    new TextRun("Página "),
     PageNumber.CURRENT,
     new TextRun(" de "),
     PageNumber.TOTAL_PAGES
   );
 
   return new Footer({
-    children: [new Paragraph({ children })],
+    children: [new Paragraph({ children: runs })],
   });
 }
 
-/* ───────────────────────── API principal ───────────────────────────── */
-export async function buildWord({
-  templateArrayBuffer,
-  htmlPreview,
-  logoUrl,
-}: {
-  templateArrayBuffer: ArrayBuffer;
-  htmlPreview: string;
-  logoUrl?: string;
+/* ───── API principal ───── */
+export async function buildWord(opts: {
+  templateArrayBuffer: ArrayBuffer; // plantilla .docx en ArrayBuffer
+  htmlPreview: string;             // innerHTML del div #preview
+  logoUrl?: string;                // URL/logo opcional
 }) {
-  /* 1️⃣  extrae títulos (data-heading) de la vista previa */
-  const temp = document.createElement("div");
-  temp.innerHTML = htmlPreview;
+  const { templateArrayBuffer, htmlPreview, logoUrl } = opts;
 
-  const headings = Array.from(
-    temp.querySelectorAll("[data-heading]")
-  ) as HTMLElement[];
+  /* 1️⃣  extraer títulos marcados */
+  const tmp = document.createElement("div");
+  tmp.innerHTML = htmlPreview;
+  const headingEls = Array.from(
+    tmp.querySelectorAll<HTMLElement>("[data-heading]")
+  );
 
-  const headingParas: Paragraph[] = headings.map((el) => {
-    const clean = el.dataset.heading!.replace(/&&/g, "");
-    return new Paragraph({ text: clean, heading: HeadingLevel.HEADING_2 });
-  });
+  const headingParas = headingEls.map(
+    (el) =>
+      new Paragraph({
+        text: el.dataset.heading!.replace(/&&/g, ""),
+        heading: HeadingLevel.HEADING_2,
+      })
+  );
 
-  /* 2️⃣  convierte TODO el HTML (con las tablas) a fragmento DOCX */
-  const bodyBuffer = await htmlToDocx(temp.innerHTML, {
+  /* 2️⃣  convertir todo el HTML a fragmento DOCX */
+  const bodyBuf = await htmlToDocx(tmp.innerHTML, {
     table: { row: { cantSplit: true } },
   });
-
   const bodyAttach = {
     _type: "doc_attach",
-    data: bodyBuffer.toString("base64"),
+    data: bodyBuf.toString("base64"),
   };
 
-  /* 3️⃣  carga plantilla y rellena placeholder {{memoriaCompleta}} */
+  /* 3️⃣  renderizar plantilla con Docxtemplater */
   const zip = new PizZip(templateArrayBuffer);
   const docTpl = new Docxtemplater(zip, {
     paragraphLoop: true,
@@ -86,24 +84,20 @@ export async function buildWord({
   });
 
   docTpl.setData({ memoriaCompleta: bodyAttach });
-  docTpl.render();
-  const rendered = docTpl.getZip().generate({ type: "nodebuffer" });
+  docTpl.render(); // sustituye {{memoriaCompleta}}
 
-  /* 4️⃣  inserta TOC + headings en una nueva sección */
+  const renderedBuf = docTpl.getZip().generate({ type: "arraybuffer" });
+
+  /* 4️⃣  construir documento final con TOC y pie */
   const footer = await buildFooter(logoUrl);
 
-  const finalDoc = new Document({
+  const doc = new Document({
     sections: [
-      /* sección 0: contenido renderizado de la plantilla */
       {
         properties: {},
-        headers: {},
-        footers: footer ? { default: footer } : {},
-        children: [
-          /* el attachment sustituye al placeholder en la plantilla */
-        ],
+        footers: footer ? { default: footer } : undefined,
+        children: [], // el contenido viene de la plantilla renderizada
       },
-      /* sección 1: índice */
       {
         properties: {},
         children: [
@@ -122,10 +116,17 @@ export async function buildWord({
     ],
   });
 
-  /* 5️⃣  descarga */
-  const blob = new Blob([await Packer.toBuffer(finalDoc)], {
+  /* 5️⃣  fusionar la parte renderizada y la nueva sección */
+  const finalZip = PizZip.load(renderedBuf);
+  const finalDoc = new Document(doc);
+  finalZip.file(
+    "word/document.xml",
+    await Packer.toString(finalDoc) // reemplaza contenido
+  );
+
+  /* 6️⃣  descargar */
+  const blob = new Blob([finalZip.generate({ type: "arraybuffer" })], {
     type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
   });
-
   saveAs(blob, "MemoriaTecnica.docx");
 }
