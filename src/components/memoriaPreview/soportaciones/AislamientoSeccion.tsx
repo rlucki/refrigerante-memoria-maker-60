@@ -1,17 +1,11 @@
 import React from "react";
-import { BlockMath } from "react-katex";
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
 
-// Custom KaTeX style with correct TypeScript type for textRendering
-const katexStyle: React.CSSProperties = {
-  fontFamily: "KaTeX_Main, Times New Roman, serif",
-  fontSize: "1.21em",
-  lineHeight: "1.2",
-  textIndent: 0,
-  textRendering: "auto" as const
-};
-
 const AislamientoSeccion: React.FC = () => {
+  // URL de la fórmula renderizada como SVG vía codecogs
+  const formulaUrl =
+    "https://latex.codecogs.com/svg.image?Q%3D%5Cfrac%7Bt_e-t_i%7D%7B%5Cfrac%7B1%7D%7B2%5Cpi%7D%28%5Cfrac%7B1%7D%7Bh_i%20r_i%7D%2B%5Cfrac%7B1%7D%5Clambda%5Cln%5Cfrac%7Br_2%7D%7Br_1%7D%2B%5Cfrac%7B1%7D%7Bh_e%20r_2%7D%29%7D%3D%5Cfrac%7Bt_e-t_%7Bse%7D%7D%7B2%5Cpi%20h_e%20r_2%7D";
+
   return (
     <div className="space-y-4 text-sm text-justify">
       {/* Sección AISLAMIENTO */}
@@ -85,22 +79,12 @@ const AislamientoSeccion: React.FC = () => {
         partir de la siguiente ecuación:
       </p>
 
-      {/* Fórmula con KaTeX */}
-      <div className="my-4 overflow-x-auto" style={katexStyle}>
-        <BlockMath
-          math={String.raw`
-            Q \;=\;
-            \frac{\,t_e - t_i\,}
-                 {\displaystyle
-                   \frac{1}{2\pi}\bigl(
-                     \tfrac{1}{h_i r_i}
-                     + \tfrac{1}{\lambda}\ln\!\tfrac{r_2}{r_1}
-                     + \tfrac{1}{h_e r_2}
-                   \bigr)
-                 }
-            \;=\;
-            \frac{\,t_e - t_{se}\,}{2\pi\,h_e\,r_2}
-          `}
+      {/* Fórmula como imagen */}
+      <div className="my-4 overflow-x-auto">
+        <img
+          src={formulaUrl}
+          alt="Fórmula aislamiento térmico"
+          className="mx-auto"
         />
       </div>
 
