@@ -3,13 +3,13 @@ import React from "react";
 import { BlockMath } from "react-katex";
 import { Table, TableHeader, TableBody, TableHead, TableRow, TableCell } from "@/components/ui/table";
 
-// Custom KaTeX style
-const katexStyle = {
+// Custom KaTeX style with correct TypeScript type for textRendering
+const katexStyle: React.CSSProperties = {
   fontFamily: "KaTeX_Main, Times New Roman, serif",
   fontSize: "1.21em",
   lineHeight: "1.2",
   textIndent: 0,
-  textRendering: "auto"
+  textRendering: "auto" as const
 };
 
 const AislamientoSeccion: React.FC = () => {
