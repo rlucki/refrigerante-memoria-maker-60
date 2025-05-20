@@ -1,19 +1,22 @@
 /**
- * excelUtils.ts – SOLO utilidades para leer Excel (sin JSX)
+ * excelUtils.ts – utilidades para leer Excel y formatear valores
+ * NO contiene JSX.
  */
 
 import * as XLSX from "xlsx";
 
-/* ── Conversión de letras de columna ── */
+/* ──────────────────── CONVERSIÓN DE COLUMNAS ──────────────────── */
 
+// "A" → 0, "Z" → 25, "AA" → 26…
 export const columnLetterToIndex = (label: string): number => {
   let idx = 0;
   for (let i = 0; i < label.length; i++) {
     idx = idx * 26 + label.toUpperCase().charCodeAt(i) - 64;
   }
-  return idx - 1;                 // 0-based
+  return idx - 1; // 0-based
 };
 
+// 0 → "A", 27 → "AB"
 export const indexToColumnLetter = (n: number): string => {
   let s = "";
   n++;
@@ -25,15 +28,35 @@ export const indexToColumnLetter = (n: number): string => {
   return s;
 };
 
-/* ── Limpieza y formateo ── */
+/* ─────────────── TABLA DE FORMATOS (decimales + unidad) ─────────────── */
 
-const clean = (v: any) => {
-  if (v === "/" || v === "-") return "";
-  const num = parseFloat(String(v).replace(",", "."));
-  return Number.isFinite(num) ? num.toFixed(1) : v;   // 1 decimal
+const FORMAT_RULES: Record<string, { dec: number; unit: string }> = {
+  "Potencia frigorífica": { dec: 1, unit: "kW" },
+  "Potencia absorbida": { dec: 1, unit: "W" },
+  "Potencia absorbida máxima": { dec: 1, unit: "W" },
+  COP: { dec: 2, unit: "" },
+  "Caudal Másico": { dec: 1, unit: "kg/h" },
+  "Desplazamiento Volumétrico": { dec: 1, unit: "m³/h" },
+  "Intensidad a régimen": { dec: 0, unit: "A" },
+  "Intensidad máxima": { dec: 0, unit: "A" },
+  "Temp. Presión absoluta Evaporación": { dec: 1, unit: "°C" },
+  "Temp. / Presión absoluta Descarga": { dec: 1, unit: "°C" },
+  "Temperatura Salida Gas Cooler": { dec: 1, unit: "°C" },
+  // añade más si las necesitas
 };
 
-/* ── Extraer filas de un rango ── */
+/* ───────────── LIMPIEZA / FORMATEO SEGÚN LA REGLA ───────────── */
+
+const clean = (raw: any, caracteristica: string) => {
+  if (raw === "/" || raw === "-") return "";
+  const rule = FORMAT_RULES[caracteristica] || { dec: 1, unit: "" };
+  const num = parseFloat(String(raw).replace(",", "."));
+  if (!Number.isFinite(num)) return raw; // deja texto si no es número
+  const val = num.toFixed(rule.dec);
+  return rule.unit ? `${val} ${rule.unit}` : val;
+};
+
+/* ───────────── EXTRAER FILAS DE UN RANGO ───────────── */
 
 export const extractDataFromRange = (
   sheet: XLSX.WorkSheet,
@@ -48,19 +71,27 @@ export const extractDataFromRange = (
   const out: any[] = [];
 
   for (let r = startRow; r <= endRow; r++) {
-    const has = Object.values(mapping).some((col) => {
+    // ¿hay al menos un valor?
+    const hasData = Object.values(mapping).some((col) => {
       const c = sheet[`${col.toUpperCase()}${r}`];
       return c && c.v !== undefined && c.v !== "";
     });
-    if (!has) continue;
+    if (!hasData) continue;
 
     const row: Record<string, any> = {};
-    for (const [k, col] of Object.entries(mapping)) {
+
+    // primero leemos la característica para poder formatear el resto
+    const charCell = sheet[`${mapping.caracteristica.toUpperCase()}${r}`];
+    row.caracteristica = charCell?.v ?? "";
+
+    for (const [key, col] of Object.entries(mapping)) {
+      if (key === "caracteristica") continue;
       const cell = sheet[`${col.toUpperCase()}${r}`];
-      row[k] = clean(cell?.v);
+      row[key] = clean(cell?.v, row.caracteristica);
     }
 
-    const first = String(row[Object.keys(row)[0]]).toUpperCase();
+    // descartar filas-cabecera
+    const first = String(row.caracteristica).toUpperCase();
     const CABECERAS = [
       "DENOMINACIÓN",
       "CENTRAL FRIGORÍFICA",
@@ -68,7 +99,7 @@ export const extractDataFromRange = (
       "MAQUINARIA INSTALADA",
       "ELEMENTO",
       "CENTRAL POSITIVA",
-      "CENTRAL INTERMEDIA", // título en tu Excel
+      "CENTRAL INTERMEDIA",
       "CENTRAL NEGATIVA",
       "COMPRESORES PARALELOS",
     ];
@@ -80,7 +111,7 @@ export const extractDataFromRange = (
   return out;
 };
 
-/* ── API principal ── */
+/* ───────────── API PRINCIPAL ───────────── */
 
 export const extractTableData = (
   wb: any,
@@ -109,7 +140,7 @@ export const extractTableData = (
   );
 };
 
-/* ── Suma opcional ── */
+/* ───────────── Suma opcional ───────────── */
 
 export const calculateSum = (rows: any[], field = "cargaT") =>
   rows.reduce((s, r) => {
