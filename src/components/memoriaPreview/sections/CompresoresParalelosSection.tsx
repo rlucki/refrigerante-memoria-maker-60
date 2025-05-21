@@ -32,8 +32,7 @@ const CompresoresParalelosSection: React.FC<Props> = ({ excelData }) => {
     <div className="mt-8">
       <h4 className="text-md font-bold">14.2. COMPRESORES PARALELOS</h4>
       <p className="mt-2">
-        La bancada “booster” incluye compresores paralelos (IT), que descargan
-        sobre el mismo colector que la central positiva&nbsp;…
+        La bancada “booster” incluye compresor/es denominados paralelos (IT), que descargan sobre el mismo colector que la central positiva y que tienen como misión comprimir una parte de los gases flash procedentes del correspondiente recipiente de líquido, pero a una temperatura de evaporación más elevada, lo que redunda en una mayor eficiencia energética de las centrales. Estos compresores son también del tipo semihermético, y sus características técnicas son las que siguen:&nbsp;…
       </p>
 
       {data.length ? (
