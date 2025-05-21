@@ -40,7 +40,7 @@ const CentralNegativaSection: React.FC<CentralNegativaSectionProps> = ({
     <div className="mt-8">
       <h4 className="text-md font-bold">14.3. CENTRAL NEGATIVA</h4>
       <p className="mt-2">
-        Central frigorífica formada por compresores semiherméticos alternativos…
+        Central frigorífica formada por compresores semiherméticos alternativos, accionados mediante un motor eléctrico trifásico. Está ubicada en la misma bancada que la central anterior, a diferente altura. Sus características técnicas son las siguientes:
       </p>
 
       {centralNegativaData.length > 0 ? (
