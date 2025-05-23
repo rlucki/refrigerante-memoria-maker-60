@@ -554,6 +554,12 @@ const ClasificacionSection = ({ onChange }: ClasificacionSectionProps) => {
     
     if (onChange) {
       onChange({ id: field, value: value });
+      
+      // Special case: when changing gasFluorado manually, notify with special field name
+      // to distinguish from automatic updates
+      if (field === "gasFluorado") {
+        onChange({ id: "manualGasFluorado", value: value });
+      }
     }
   };
 
