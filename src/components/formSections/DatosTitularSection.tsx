@@ -21,11 +21,6 @@ const DatosTitularSection = ({
   onExcelUpload,
   selectedRefrigerante
 }: DatosTitularSectionProps) => {
-  // Create adapter for DatosTecnicosSection which expects (field: string, value: any) => void
-  const handleComponentChange = (field: string, value: any) => {
-    onChange({ id: field, value });
-  };
-  
   // Create adapter for components that expect ChangeEvent<HTMLInputElement>
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onChange(e);
@@ -36,12 +31,17 @@ const DatosTitularSection = ({
     onChange(e);
   };
 
+  // Create adapter for DatosTecnicosSection which expects (field: string, value: any) => void
+  const handleTecnicosChange = (field: string, value: any) => {
+    onChange({ id: field, value });
+  };
+  
   return (
     <div className="space-y-6">
       <ClasificacionSection onChange={onChange} />
       <DatosInstaladorSection onChange={handleInputChange} />
       <DatosInstalacionSection onChange={handleInstalacionChange} onCalculationsChange={onCalculationsChange} onExcelUpload={onExcelUpload} />
-      <DatosTecnicosSection onChange={handleComponentChange} />
+      <DatosTecnicosSection onChange={handleTecnicosChange} />
       <NormativaSection onChange={onNormativaChange} selectedRefrigerante={selectedRefrigerante} />
     </div>
   );
