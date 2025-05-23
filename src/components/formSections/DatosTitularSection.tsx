@@ -21,13 +21,18 @@ const DatosTitularSection = ({
   onExcelUpload,
   selectedRefrigerante
 }: DatosTitularSectionProps) => {
-  // Create adapter functions to bridge the type differences
+  // Create adapter for DatosTecnicosSection which expects (field: string, value: any) => void
   const handleComponentChange = (field: string, value: any) => {
     onChange({ id: field, value });
   };
   
-  // Create adapter for components that expect ChangeEvent
+  // Create adapter for components that expect ChangeEvent<HTMLInputElement>
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange(e);
+  };
+
+  // Create adapter for DatosInstalacionSection passing through to parent onChange
+  const handleInstalacionChange = (e: React.ChangeEvent<HTMLInputElement> | { id: string, value: string }) => {
     onChange(e);
   };
 
@@ -35,7 +40,7 @@ const DatosTitularSection = ({
     <div className="space-y-6">
       <ClasificacionSection onChange={onChange} />
       <DatosInstaladorSection onChange={handleInputChange} />
-      <DatosInstalacionSection onChange={onChange} onCalculationsChange={onCalculationsChange} onExcelUpload={onExcelUpload} />
+      <DatosInstalacionSection onChange={handleInstalacionChange} onCalculationsChange={onCalculationsChange} onExcelUpload={onExcelUpload} />
       <DatosTecnicosSection onChange={handleComponentChange} />
       <NormativaSection onChange={onNormativaChange} selectedRefrigerante={selectedRefrigerante} />
     </div>
