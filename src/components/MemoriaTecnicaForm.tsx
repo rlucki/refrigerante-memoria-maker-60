@@ -43,6 +43,18 @@ const MemoriaTecnicaForm = ({
       onChange(field, value);
     }
   };
+
+  // Special handler for gas fluorado changes
+  const handleGasFluoradoChange = (field: string, value: string) => {
+    if (onChange) {
+      // When gasFluorado is changed, update both gasFluorado and clasificacionSistema
+      if (field === "gasFluorado" || field === "manualGasFluorado") {
+        onChange("gasFluorado", value);
+        onChange("clasificacionSistema", value);
+        console.log("MemoriaTecnicaForm: Gas fluorado changed to", value);
+      }
+    }
+  };
   
   return (
     <form onSubmit={handleSubmit}>
@@ -51,6 +63,7 @@ const MemoriaTecnicaForm = ({
         onNormativaChange={handleNormativaChange}
         onCalculationsChange={onCalculationsChange}
         onExcelUpload={onExcelUpload}
+        onGasFluoradoChange={handleGasFluoradoChange}
       />
     </form>
   );

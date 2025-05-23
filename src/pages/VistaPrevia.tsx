@@ -108,27 +108,26 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
   const handleFormChange = (field: string, value: any) => {
     console.log(`Field changed: ${field}`, value);
     
-    // Special handling for refrigerant-related fields
-    if (field === "refrigerante") {
-      // Normal update of the field itself
-      setMemoriaData(prev => ({ ...prev, [field]: value }));
-    } 
-    else if (field === "gasFluorado") {
-      // When gasFluorado is directly changed (from the refrigerant database)
+    // Special handling for gas fluorado and clasificacionSistema
+    if (field === "gasFluorado") {
+      // When gasFluorado is changed, update both fields
       setMemoriaData(prev => ({ 
         ...prev, 
         gasFluorado: value,
-        // Also update clasificacionSistema to match
         clasificacionSistema: value 
       }));
       
       console.log("Updated gasFluorado and clasificacionSistema to:", value);
     }
     else if (field === "clasificacionSistema") {
-      // When clasificacionSistema is changed
-      setMemoriaData(prev => ({ ...prev, clasificacionSistema: value }));
+      // When clasificacionSistema is changed, update both fields
+      setMemoriaData(prev => ({ 
+        ...prev, 
+        clasificacionSistema: value,
+        gasFluorado: value
+      }));
       
-      // No need to update gasFluorado here to maintain the refrigerant's value
+      console.log("Updated clasificacionSistema and gasFluorado to:", value);
     }
     else if (field === "manualGasFluorado") {
       // If user manually changes gasFluorado in the form
@@ -139,6 +138,11 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
       }));
       
       console.log("Manually updated gasFluorado and clasificacionSistema to:", value);
+    }
+    else if (field === "refrigerante") {
+      // Update the refrigerant field but don't automatically change gasFluorado
+      // The gasFluorado will be updated by ClasificacionSection's useEffect
+      setMemoriaData(prev => ({ ...prev, [field]: value }));
     }
     else {
       // Default case: just update the field
