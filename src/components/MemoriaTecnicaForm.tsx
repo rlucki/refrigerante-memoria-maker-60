@@ -20,7 +20,6 @@ const MemoriaTecnicaForm = ({
   onCalculationsChange,
   onExcelUpload
 }: MemoriaTecnicaFormProps) => {
-  const [selectedRefrigerante, setSelectedRefrigerante] = useState<string | null>(null);
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,19 +29,11 @@ const MemoriaTecnicaForm = ({
   // Adapter function for input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement> | { id: string, value: string }) => {
     if (onChange) {
-      // Check if e is an event or a direct object by checking its type rather than using 'in'
-      if (typeof e === 'object' && e !== null && 'target' in e) {
+      if ('target' in e) {
         onChange(e.target.id, e.target.value);
-      } else if (typeof e === 'object' && e !== null && 'id' in e && 'value' in e) {
+      } else {
         onChange(e.id, e.value);
       }
-    }
-    
-    // Detect refrigerant changes
-    if (typeof e === 'object' && e !== null && 'target' in e && e.target.id === 'refrigerante') {
-      setSelectedRefrigerante(e.target.value);
-    } else if (typeof e === 'object' && e !== null && 'id' in e && e.id === 'refrigerante') {
-      setSelectedRefrigerante(e.value);
     }
   };
   
@@ -60,7 +51,6 @@ const MemoriaTecnicaForm = ({
         onNormativaChange={handleNormativaChange}
         onCalculationsChange={onCalculationsChange}
         onExcelUpload={onExcelUpload}
-        selectedRefrigerante={selectedRefrigerante}
       />
     </form>
   );

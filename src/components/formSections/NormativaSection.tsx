@@ -9,7 +9,7 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
-import NormativaSelectorSection from "./subComponents/NormativaSelectorSection";
+import { Checkbox } from "@/components/ui/checkbox";
 
 // Define regulation descriptions
 const reglamentosRSIF = {
@@ -59,22 +59,11 @@ const normativaSeguridadSalud = {
   "RD 1627/1997": `Real Decreto 1627/1997, de 24 de octubre, por el que se establecen disposiciones mínimas de seguridad y salud en las obras de construcción. Transpone la Directiva Europea 92/57/CEE, de 24 de junio. El RD 2177/2004, de 12 de noviembre, modifica el anexo IV. El RD 604/2006, de 19 de mayo, incorpora una disposición adicional única. El RD 1109/2007, de 24 de agosto, modifica los artículos 13.4 y 18.2. Finalmente, el RD 337/2010, de 19 de marzo, deroga el artículo 18 y modifica el 19.1.`
 };
 
-// Array of refrigerantes que requieren normativa de gases fluorados
-const refrigerantesGasesFluorados = [
-  "R-134a", "R-404A", "R-407C", "R-410A", "R-422D", "R-427A", "R-434A", "R-448A", "R-449A", "R-452A", "R-507A", "R-513A", "R-32", "R-1234yf", "R-1234ze"
-];
-
-// Refrigerantes naturales sin normativa de gases fluorados
-const refrigerantesNaturales = [
-  "R-717", "R-744", "R-290", "R-600a", "R-1270"
-];
-
 interface NormativaSectionProps {
   onChange?: (field: string, value: any) => void;
-  selectedRefrigerante?: string | null;
 }
 
-const NormativaSection = ({ onChange, selectedRefrigerante }: NormativaSectionProps) => {
+const NormativaSection = ({ onChange }: NormativaSectionProps) => {
   const [comunidadAutonoma, setComunidadAutonoma] = useState("CATALUNYA");
   const [instalacionNueva, setInstalacionNueva] = useState("SI");
   const [periodoInstalacionSeleccionado, setPeriodoInstalacionSeleccionado] = useState("nueva");
@@ -82,8 +71,6 @@ const NormativaSection = ({ onChange, selectedRefrigerante }: NormativaSectionPr
   const [aplicaGasesFluorados, setAplicaGasesFluorados] = useState("NO");
   const [rsifAplicable, setRsifAplicable] = useState("RD 552/2019");
   const [normativaCompleta, setNormativaCompleta] = useState({});
-  const [isRefrigeranteNatural, setIsRefrigeranteNatural] = useState(false);
-  const [isRefrigeranteFluorado, setIsRefrigeranteFluorado] = useState(false);
   
   const comunidadesAutonomas = [
     { id: "ANDALUCIA", nombre: "ANDALUCÍA", normativa: "Decreto-Ley 4/2023", aplicaSiempre: true },
@@ -163,29 +150,6 @@ const NormativaSection = ({ onChange, selectedRefrigerante }: NormativaSectionPr
     }
     return "No aplica";
   };
-  
-  // Monitor changes in the selected refrigerante and update gases fluorados
-  useEffect(() => {
-    if (selectedRefrigerante) {
-      // Si es un refrigerante fluorado, aplicamos la normativa y bloqueamos la selección
-      if (refrigerantesGasesFluorados.includes(selectedRefrigerante)) {
-        setAplicaGasesFluorados("SI");
-        setIsRefrigeranteFluorado(true);
-        setIsRefrigeranteNatural(false);
-      }
-      // Si es un refrigerante natural, no aplicamos la normativa y bloqueamos la selección
-      else if (refrigerantesNaturales.includes(selectedRefrigerante)) {
-        setAplicaGasesFluorados("NO");
-        setIsRefrigeranteNatural(true);
-        setIsRefrigeranteFluorado(false);
-      }
-      // Para otros refrigerantes o refrigerantes desconocidos
-      else {
-        setIsRefrigeranteFluorado(false);
-        setIsRefrigeranteNatural(false);
-      }
-    }
-  }, [selectedRefrigerante]);
   
   // Function to get all applicable regulations for the current selections
   const getAplicableRegulations = () => {
@@ -295,8 +259,6 @@ const NormativaSection = ({ onChange, selectedRefrigerante }: NormativaSectionPr
     // Notify parent component about normativa changes
     if (onChange) {
       onChange('normativaCompleta', regulations);
-      // Also notify about the gases fluorados setting
-      onChange('aplicaGasesFluorados', aplicaGasesFluorados);
     }
   }, [comunidadAutonoma, instalacionNueva, periodoInstalacionSeleccionado, aplicaLegionela, aplicaGasesFluorados]);
   
@@ -310,44 +272,6 @@ const NormativaSection = ({ onChange, selectedRefrigerante }: NormativaSectionPr
         {regulations.map((reg, index) => (
           <p key={index} className="text-sm text-gray-500">{reg.name} - {reg.description}</p>
         ))}
-      </div>
-    );
-  };
-  
-  // Render the Normativa Gases Fluorados section with consistency checks
-  const renderGasesFluoradosSection = (regulations) => {
-    return (
-      <div className="space-y-2">
-        <Label className="font-semibold">NORMATIVA GASES FLUORADOS</Label>
-        <Select 
-          value={aplicaGasesFluorados} 
-          onValueChange={setAplicaGasesFluorados}
-          id="gases_fluorados_select"
-          disabled={isRefrigeranteFluorado || isRefrigeranteNatural}
-        >
-          <SelectTrigger className={isRefrigeranteFluorado || isRefrigeranteNatural ? "bg-gray-100" : ""}>
-            <SelectValue placeholder="Seleccionar" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="SI">SI</SelectItem>
-            <SelectItem value="NO">NO</SelectItem>
-          </SelectContent>
-        </Select>
-        {aplicaGasesFluorados === "NO" && (
-          <p className="text-sm text-gray-500 mt-2">No aplica</p>
-        )}
-        {aplicaGasesFluorados === "SI" && (
-          renderNormativaSection("", regulations.gasesFluorados.regulations)
-        )}
-        {selectedRefrigerante && (
-          <p className="text-sm text-gray-500 mt-2">
-            {refrigerantesGasesFluorados.includes(selectedRefrigerante)
-              ? `El refrigerante ${selectedRefrigerante} requiere normativa de gases fluorados.`
-              : refrigerantesNaturales.includes(selectedRefrigerante)
-                ? `El refrigerante ${selectedRefrigerante} es natural y no requiere normativa de gases fluorados.`
-                : ""}
-          </p>
-        )}
       </div>
     );
   };
@@ -366,7 +290,28 @@ const NormativaSection = ({ onChange, selectedRefrigerante }: NormativaSectionPr
             
             {renderNormativaSection(regulations.normativasSiempreAplican.title, regulations.normativasSiempreAplican.regulations)}
             
-            {renderGasesFluoradosSection(regulations)}
+            <div className="space-y-2">
+              <Label className="font-semibold">NORMATIVA GASES FLUORADOS</Label>
+              <Select 
+                value={aplicaGasesFluorados} 
+                onValueChange={setAplicaGasesFluorados}
+                id="gases_fluorados_select"
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Seleccionar" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="SI">SI</SelectItem>
+                  <SelectItem value="NO">NO</SelectItem>
+                </SelectContent>
+              </Select>
+              {aplicaGasesFluorados === "NO" && (
+                <p className="text-sm text-gray-500 mt-2">No aplica</p>
+              )}
+              {aplicaGasesFluorados === "SI" && (
+                renderNormativaSection("", regulations.gasesFluorados.regulations)
+              )}
+            </div>
           </div>
           
           <div className="space-y-6">
@@ -405,25 +350,96 @@ const NormativaSection = ({ onChange, selectedRefrigerante }: NormativaSectionPr
   return (
     <Card>
       <div className="p-6">
-        <NormativaSelectorSection 
-          comunidadAutonoma={comunidadAutonoma}
-          setComunidadAutonoma={setComunidadAutonoma}
-          instalacionNueva={instalacionNueva}
-          setInstalacionNueva={setInstalacionNueva}
-          periodoInstalacionSeleccionado={periodoInstalacionSeleccionado}
-          setPeriodoInstalacionSeleccionado={setPeriodoInstalacionSeleccionado}
-          rsifAplicable={rsifAplicable}
-          aplicaLegionela={aplicaLegionela}
-          setAplicaLegionela={setAplicaLegionela}
-          aplicaGasesFluorados={aplicaGasesFluorados}
-          setAplicaGasesFluorados={setAplicaGasesFluorados}
-          isRefrigeranteFluorado={isRefrigeranteFluorado}
-          isRefrigeranteNatural={isRefrigeranteNatural}
-        />
+        <h3 className="text-lg font-medium mb-4">NORMATIVA APLICABLE</h3>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <Label htmlFor="comunidad_autonoma_select">Comunidad Autónoma</Label>
+            <Select 
+              value={comunidadAutonoma} 
+              onValueChange={setComunidadAutonoma}
+              id="comunidad_autonoma_select"
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Seleccionar comunidad autónoma" />
+              </SelectTrigger>
+              <SelectContent>
+                {comunidadesAutonomas.map(comunidad => (
+                  <SelectItem key={comunidad.id} value={comunidad.id}>
+                    {comunidad.nombre}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="normativa_autonomica">Normativa Autonómica</Label>
+            <Input 
+              id="normativa_autonomica" 
+              placeholder="Normativa" 
+              value={getNormativaAutonomica()}
+              readOnly
+            />
+          </div>
+        </div>
+        
+        <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="space-y-2">
+            <Label htmlFor="instalacion_nueva_select">Instalación nueva</Label>
+            <Select 
+              value={instalacionNueva} 
+              onValueChange={handleInstalacionNuevaChange}
+              id="instalacion_nueva_select"
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Seleccionar" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="SI">SI</SelectItem>
+                <SelectItem value="NO">NO</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="ano_instalacion_select">Año instalación</Label>
+            <Select 
+              value={periodoInstalacionSeleccionado}
+              onValueChange={setPeriodoInstalacionSeleccionado}
+              id="ano_instalacion_select"
+              disabled={instalacionNueva === "SI"}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Seleccionar" />
+              </SelectTrigger>
+              <SelectContent>
+                {periodoInstalacion
+                  .filter(periodo => instalacionNueva === "SI" ? periodo.id === "nueva" : periodo.id !== "nueva")
+                  .map(periodo => (
+                    <SelectItem key={periodo.id} value={periodo.id}>
+                      {periodo.nombre}
+                    </SelectItem>
+                  ))
+                }
+              </SelectContent>
+            </Select>
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="rsif_aplicacion">RSIF aplicación</Label>
+            <Input 
+              id="rsif_aplicacion" 
+              placeholder="RSIF" 
+              value={rsifAplicable}
+              readOnly
+            />
+          </div>
+        </div>
         
         {/* Dynamic preview of the normativa */}
         {renderNormativaPreview()}
-        
+
         {/* Hidden input to store the full regulation data for form submission */}
         <input 
           type="hidden" 
