@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/select";
 
 // Hook y datos del refrigerante centralizados
-import { useRefrigerante } from "@/hooks/useRefrigerante"; // asegúrate de que existe este hook
+import { useRefrigerante } from "@/hooks/useRefrigerante";
 import { refrigerantesData, refrigerantes } from "@/data/refrigerantesData";
 
 interface DatosTecnicosSectionProps {
@@ -22,7 +22,7 @@ interface DatosTecnicosSectionProps {
 const DatosTecnicosSection = ({ onChange }: DatosTecnicosSectionProps) => {
   // Obtener refrigerante central
   const { seleccionado, setSeleccionado } = useRefrigerante();
-  const propsRef = REFRIGERANTES_DATA[seleccionado] || {};
+  const propsRef = refrigerantesData[seleccionado] || {};
 
   // Notificar al padre cada vez que cambie el refrigerante
   useEffect(() => {
@@ -74,15 +74,14 @@ const DatosTecnicosSection = ({ onChange }: DatosTecnicosSectionProps) => {
                   <SelectValue placeholder="Seleccionar refrigerante" />
                 </SelectTrigger>
                 <SelectContent>
-                  {REFRIGERANTES.map((r) => (
+                  {refrigerantes.map((r) => (
                     <SelectItem key={r} value={r}>{r}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
             {/* Campos derivadas del refrigerante */}
-            {
-              ([
+            {( [
                 ["composicion", "Composición del refrigerante"],
                 ["inflamabilidad", "Inflamabilidad"],
                 ["toxicidad", "Toxicidad"],
@@ -95,17 +94,16 @@ const DatosTecnicosSection = ({ onChange }: DatosTecnicosSectionProps) => {
                 ["limiteInflamabilidad", "Límite inflamabilidad"],
                 ["temperaturaAutoignicion", "Temperatura autoignición"],
                 ["gasFluorado", "Gas fluorado"]
-              ] as Array<[string, string]>).map(([key, label]) => (
-                <div className="space-y-2" key={key}>
-                  <Label htmlFor={key}>{label}</Label>
-                  <Input
-                    id={key}
-                    value={(propsRef as any)[key] ?? ""}
-                    readOnly
-                  />
-                </div>
-              ))
-            }
+            ] as Array<[string, string]> ).map(([key, label]) => (
+              <div className="space-y-2" key={key}>
+                <Label htmlFor={key}>{label}</Label>
+                <Input
+                  id={key}
+                  value={(propsRef as any)[key] ?? ""}
+                  readOnly
+                />
+              </div>
+            ))}
           </div>
         </div>
       </div>
