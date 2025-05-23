@@ -36,11 +36,23 @@ const DatosTitularSection = ({
     onChange({ id: field, value });
   };
   
+  // Create adapter specifically for onCalculationsChange to match expected signature
+  const handleCalculationsChange = onCalculationsChange ? 
+    (field: string, value: string) => {
+      if (onCalculationsChange) {
+        onCalculationsChange(field, value);
+      }
+    } : undefined;
+  
   return (
     <div className="space-y-6">
       <ClasificacionSection onChange={onChange} />
       <DatosInstaladorSection onChange={handleInputChange} />
-      <DatosInstalacionSection onChange={handleInstalacionChange} onCalculationsChange={onCalculationsChange} onExcelUpload={onExcelUpload} />
+      <DatosInstalacionSection 
+        onChange={handleInstalacionChange} 
+        onCalculationsChange={handleCalculationsChange} 
+        onExcelUpload={onExcelUpload} 
+      />
       <DatosTecnicosSection onChange={handleTecnicosChange} />
       <NormativaSection onChange={onNormativaChange} selectedRefrigerante={selectedRefrigerante} />
     </div>
