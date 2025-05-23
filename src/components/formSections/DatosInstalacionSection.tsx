@@ -13,6 +13,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Fan, Thermometer, Gauge, AirVent, Weight } from "lucide-react";
+import NormativaSection from "./NormativaSection";
 
 // Define regions for postal codes
 const postalCodeRegions = [
@@ -134,11 +135,18 @@ const DatosInstalacionSection = ({ onChange, onCalculationsChange, onExcelUpload
   const [rsifAplicable, setRsifAplicable] = useState("RD 552/2019");
   const [normativaCompleta, setNormativaCompleta] = useState({});
   const [cpInstalacion, setCpInstalacion] = useState("35610");
+  const [clasificacionSistema, setClasificacionSistema] = useState("NO");
   
   // For calculation section
   const handleSelectChange = (id: string, value: string) => {
     if (onChange) {
       onChange(id, value);
+    }
+    
+    // If we're changing the clasificación del sistema, update gases fluorados accordingly
+    if (id === "clasificacionSistema") {
+      setClasificacionSistema(value);
+      setAplicaGasesFluorados(value);
     }
   };
   
@@ -691,11 +699,12 @@ const DatosInstalacionSection = ({ onChange, onCalculationsChange, onExcelUpload
           <div className="space-y-2">
             <Label className="font-semibold">NORMATIVA GASES FLUORADOS</Label>
             <Select 
-              value={aplicaGasesFluorados} 
+              value={aplicaGasesFluorados}
               onValueChange={setAplicaGasesFluorados}
               id="gases_fluorados_select"
+              disabled={true} // Disabled because it's controlled by clasificacionSistema
             >
-              <SelectTrigger>
+              <SelectTrigger className={aplicaGasesFluorados === clasificacionSistema ? "" : "border-red-500"}>
                 <SelectValue placeholder="Seleccionar" />
               </SelectTrigger>
               <SelectContent>
@@ -703,6 +712,7 @@ const DatosInstalacionSection = ({ onChange, onCalculationsChange, onExcelUpload
                 <SelectItem value="NO">NO</SelectItem>
               </SelectContent>
             </Select>
+            <p className="text-xs text-gray-500 italic mt-1">Este valor se controla automáticamente desde Clasificación del Sistema</p>
           </div>
           
           <div className="space-y-2">
@@ -925,6 +935,26 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
           </div>
         </div>
 
+        {/* CLASIFICACIÓN DEL SISTEMA */}
+        <h3 className="text-lg font-medium mb-4">Clasificación del Sistema</h3>
+        <div className="space-y-4">
+          <div>
+            <Label htmlFor="clasificacionSistema">¿Es refrigerante fluorado?</Label>
+            <Select
+              value={clasificacionSistema}
+              onValueChange={(value) => handleSelectChange("clasificacionSistema", value)}
+              id="clasificacionSistema"
+            >
+              <SelectTrigger className="w-full mt-2">
+                <SelectValue placeholder="Seleccionar" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="SI">SI</SelectItem>
+                <SelectItem value="NO">NO</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
       </div>
     </Card>
   );
