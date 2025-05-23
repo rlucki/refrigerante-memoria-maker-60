@@ -1,4 +1,5 @@
 
+import React from "react";
 import NormativaSection from "./NormativaSection";
 import DatosInstaladorSection from "./DatosInstaladorSection";
 import DatosInstalacionSection from "./DatosInstalacionSection";
@@ -24,11 +25,16 @@ const DatosTitularSection = ({
   const handleComponentChange = (field: string, value: any) => {
     onChange({ id: field, value });
   };
+  
+  // Create adapter for components that expect ChangeEvent
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange(e);
+  };
 
   return (
     <div className="space-y-6">
       <ClasificacionSection onChange={onChange} />
-      <DatosInstaladorSection onChange={handleComponentChange} />
+      <DatosInstaladorSection onChange={handleInputChange} />
       <DatosInstalacionSection onChange={onChange} onCalculationsChange={onCalculationsChange} onExcelUpload={onExcelUpload} />
       <DatosTecnicosSection onChange={handleComponentChange} />
       <NormativaSection onChange={onNormativaChange} selectedRefrigerante={selectedRefrigerante} />
