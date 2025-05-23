@@ -41,6 +41,11 @@ const MemoriaTecnicaForm = ({
   const handleNormativaChange = (field: string, value: any) => {
     if (onChange) {
       onChange(field, value);
+      
+      // If we're updating the clasificacionSistema field, also update gasFluorado field to match
+      if (field === "clasificacionSistema") {
+        onChange("gasFluorado", value);
+      }
     }
   };
   

@@ -147,6 +147,11 @@ const DatosInstalacionSection = ({ onChange, onCalculationsChange, onExcelUpload
     if (id === "clasificacionSistema") {
       setClasificacionSistema(value);
       setAplicaGasesFluorados(value);
+      
+      // Also notify parent component about the change in gasFluorado status
+      if (onChange) {
+        onChange("gasFluorado", value);
+      }
     }
   };
   
@@ -342,8 +347,8 @@ const DatosInstalacionSection = ({ onChange, onCalculationsChange, onExcelUpload
       regulations.normativasSiempreAplican.regulations.push({ name, description });
     });
     
-    // Add gases fluorados regulations
-    if (aplicaGasesFluorados === "SI") {
+    // Add gases fluorados regulations - use clasificacionSistema value (which is the master control)
+    if (clasificacionSistema === "SI") {
       // If Gases Fluorados is YES, add ALL regulations
       Object.entries(normativasGasesFluorados).forEach(([name, description]) => {
         regulations.gasesFluorados.regulations.push({ name, description });
@@ -379,7 +384,17 @@ const DatosInstalacionSection = ({ onChange, onCalculationsChange, onExcelUpload
     if (onChange) {
       onChange('normativaCompleta', regulations);
     }
-  }, [comunidadAutonoma, instalacionNueva, periodoInstalacionSeleccionado, aplicaLegionela, aplicaGasesFluorados]);
+  }, [comunidadAutonoma, instalacionNueva, periodoInstalacionSeleccionado, aplicaLegionela, clasificacionSistema]);
+  
+  // Keep aplicaGasesFluorados in sync with clasificacionSistema
+  useEffect(() => {
+    setAplicaGasesFluorados(clasificacionSistema);
+    
+    // Notify parent about gasFluorado changes
+    if (onChange) {
+      onChange("gasFluorado", clasificacionSistema);
+    }
+  }, [clasificacionSistema, onChange]);
   
   // Render a normativa section with its regulations
   const renderNormativaSection = (title: string, regulations: any[]) => {

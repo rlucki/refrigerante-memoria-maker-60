@@ -1,4 +1,3 @@
-
 import { useState, useRef } from "react";
 import { toast } from "@/hooks/use-toast";
 import { buildWord } from "@/services/wordDocumentService";
@@ -108,6 +107,13 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
   const handleFormChange = (field: string, value: any) => {
     console.log(`Field changed: ${field}`, value);
     setMemoriaData(prev => ({ ...prev, [field]: value }));
+    
+    // Synchronize gasFluorado and clasificacionSistema
+    if (field === "clasificacionSistema") {
+      setMemoriaData(prev => ({ ...prev, gasFluorado: value }));
+    } else if (field === "gasFluorado") {
+      setMemoriaData(prev => ({ ...prev, clasificacionSistema: value }));
+    }
     
     // Check if we need to update description based on compresor paralelo and nivelInstalacion
     if (field === "nivelInstalacion" && calculationsData.compresorParalelo === "0" && value === "Nivel 2") {
