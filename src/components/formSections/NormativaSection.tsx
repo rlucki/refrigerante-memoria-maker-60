@@ -9,6 +9,7 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
+import NormativaSelectorSection from "./subComponents/NormativaSelectorSection";
 
 // Define regulation descriptions
 const reglamentosRSIF = {
@@ -404,96 +405,25 @@ const NormativaSection = ({ onChange, selectedRefrigerante }: NormativaSectionPr
   return (
     <Card>
       <div className="p-6">
-        <h3 className="text-lg font-medium mb-4">NORMATIVA APLICABLE</h3>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-2">
-            <Label htmlFor="comunidad_autonoma_select">Comunidad Autónoma</Label>
-            <Select 
-              value={comunidadAutonoma} 
-              onValueChange={setComunidadAutonoma}
-              id="comunidad_autonoma_select"
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Seleccionar comunidad autónoma" />
-              </SelectTrigger>
-              <SelectContent>
-                {comunidadesAutonomas.map(comunidad => (
-                  <SelectItem key={comunidad.id} value={comunidad.id}>
-                    {comunidad.nombre}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="normativa_autonomica">Normativa Autonómica</Label>
-            <Input 
-              id="normativa_autonomica" 
-              placeholder="Normativa" 
-              value={getNormativaAutonomica()}
-              readOnly
-            />
-          </div>
-        </div>
-        
-        <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="space-y-2">
-            <Label htmlFor="instalacion_nueva_select">Instalación nueva</Label>
-            <Select 
-              value={instalacionNueva} 
-              onValueChange={handleInstalacionNuevaChange}
-              id="instalacion_nueva_select"
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Seleccionar" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="SI">SI</SelectItem>
-                <SelectItem value="NO">NO</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="ano_instalacion_select">Año instalación</Label>
-            <Select 
-              value={periodoInstalacionSeleccionado}
-              onValueChange={setPeriodoInstalacionSeleccionado}
-              id="ano_instalacion_select"
-              disabled={instalacionNueva === "SI"}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Seleccionar" />
-              </SelectTrigger>
-              <SelectContent>
-                {periodoInstalacion
-                  .filter(periodo => instalacionNueva === "SI" ? periodo.id === "nueva" : periodo.id !== "nueva")
-                  .map(periodo => (
-                    <SelectItem key={periodo.id} value={periodo.id}>
-                      {periodo.nombre}
-                    </SelectItem>
-                  ))
-                }
-              </SelectContent>
-            </Select>
-          </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="rsif_aplicacion">RSIF aplicación</Label>
-            <Input 
-              id="rsif_aplicacion" 
-              placeholder="RSIF" 
-              value={rsifAplicable}
-              readOnly
-            />
-          </div>
-        </div>
+        <NormativaSelectorSection 
+          comunidadAutonoma={comunidadAutonoma}
+          setComunidadAutonoma={setComunidadAutonoma}
+          instalacionNueva={instalacionNueva}
+          setInstalacionNueva={setInstalacionNueva}
+          periodoInstalacionSeleccionado={periodoInstalacionSeleccionado}
+          setPeriodoInstalacionSeleccionado={setPeriodoInstalacionSeleccionado}
+          rsifAplicable={rsifAplicable}
+          aplicaLegionela={aplicaLegionela}
+          setAplicaLegionela={setAplicaLegionela}
+          aplicaGasesFluorados={aplicaGasesFluorados}
+          setAplicaGasesFluorados={setAplicaGasesFluorados}
+          isRefrigeranteFluorado={isRefrigeranteFluorado}
+          isRefrigeranteNatural={isRefrigeranteNatural}
+        />
         
         {/* Dynamic preview of the normativa */}
         {renderNormativaPreview()}
-
+        
         {/* Hidden input to store the full regulation data for form submission */}
         <input 
           type="hidden" 

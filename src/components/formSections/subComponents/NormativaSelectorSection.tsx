@@ -18,6 +18,8 @@ interface NormativaSelectorSectionProps {
   setAplicaLegionela: (value: string) => void;
   aplicaGasesFluorados: string;
   setAplicaGasesFluorados: (value: string) => void;
+  isRefrigeranteFluorado: boolean;
+  isRefrigeranteNatural: boolean;
 }
 
 const NormativaSelectorSection = ({ 
@@ -31,7 +33,9 @@ const NormativaSelectorSection = ({
   aplicaLegionela,
   setAplicaLegionela,
   aplicaGasesFluorados,
-  setAplicaGasesFluorados
+  setAplicaGasesFluorados,
+  isRefrigeranteFluorado,
+  isRefrigeranteNatural
 }: NormativaSelectorSectionProps) => {
 
   // Handle installation nueva change
@@ -135,8 +139,9 @@ const NormativaSelectorSection = ({
             value={aplicaGasesFluorados} 
             onValueChange={setAplicaGasesFluorados}
             id="gases_fluorados_select"
+            disabled={isRefrigeranteFluorado || isRefrigeranteNatural}
           >
-            <SelectTrigger>
+            <SelectTrigger className={isRefrigeranteFluorado || isRefrigeranteNatural ? "bg-gray-100" : ""}>
               <SelectValue placeholder="Seleccionar" />
             </SelectTrigger>
             <SelectContent>
