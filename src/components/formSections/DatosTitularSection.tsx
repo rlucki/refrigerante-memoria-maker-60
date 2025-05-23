@@ -24,12 +24,7 @@ const DatosTitularSection = ({
     <div className="space-y-6">
       <ClasificacionSection onChange={onChange} />
       <DatosInstaladorSection onChange={onChange} />
-      <DatosInstalacionSection onChange={onChange} />
-      <DatosTecnicosSection 
-        onChange={onChange} 
-        onCalculationsChange={onCalculationsChange}
-        onExcelUpload={onExcelUpload}
-      />
+      <DatosInstalacionSection onChange={onChange} onCalculationsChange={onCalculationsChange} onExcelUpload={onExcelUpload} />
       <NormativaSection onChange={onNormativaChange} selectedRefrigerante={selectedRefrigerante} />
     </div>
   );

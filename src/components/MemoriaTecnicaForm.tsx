@@ -30,18 +30,19 @@ const MemoriaTecnicaForm = ({
   // Adapter function for input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement> | { id: string, value: string }) => {
     if (onChange) {
-      if ('target' in e) {
+      // Check if e is an event or a direct object by checking its type rather than using 'in'
+      if (typeof e === 'object' && e !== null && 'target' in e) {
         onChange(e.target.id, e.target.value);
-      } else {
+      } else if (typeof e === 'object' && e !== null && 'id' in e && 'value' in e) {
         onChange(e.id, e.value);
       }
     }
     
     // Detect refrigerant changes
-    if (('target' in e && e.target.id === 'refrigerante') || 
-        (!('target' in e) && e.id === 'refrigerante')) {
-      const value = 'target' in e ? e.target.value : e.value;
-      setSelectedRefrigerante(value);
+    if (typeof e === 'object' && e !== null && 'target' in e && e.target.id === 'refrigerante') {
+      setSelectedRefrigerante(e.target.value);
+    } else if (typeof e === 'object' && e !== null && 'id' in e && e.id === 'refrigerante') {
+      setSelectedRefrigerante(e.value);
     }
   };
   
