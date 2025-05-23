@@ -12,8 +12,8 @@ import {
 } from "@/components/ui/select";
 
 // Hook y datos del refrigerante centralizados
-import { useRefrigerante } from "@/hooks/useRefrigerante";
-import { REFRIGERANTES, REFRIGERANTES_DATA } from "@/data/refrigerantes";
+import { useRefrigerante } from "@/hooks/useRefrigerante"; // asegúrate de que existe este hook
+import { refrigerantesData, refrigerantes } from "@/data/refrigerantesData";
 
 interface DatosTecnicosSectionProps {
   onChange?: (field: string, value: any) => void;
