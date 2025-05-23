@@ -842,18 +842,13 @@ const ClasificacionSection = ({ onChange }: ClasificacionSectionProps) => {
                 <tr>
                   <td className="p-2 border">- Gas fluorado:</td>
                   <td className="p-2 border" colSpan={2}>
-                    <Select 
-                      value={sistemaData.gasFluorado} 
-                      onValueChange={(value) => handleSelectChange("gasFluorado", value)}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Seleccionar" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="SI">SI</SelectItem>
-                        <SelectItem value="NO">NO</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <Input
+                      id="gasFluorado"
+                      value={sistemaData.gasFluorado}
+                      onChange={handleInputChange}
+                      className="w-full bg-gray-100"
+                      readOnly
+                    />
                   </td>
                 </tr>
               </tbody>
