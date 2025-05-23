@@ -26,6 +26,9 @@ const DatosInstalacionSection = ({ onChange, onCalculationsChange, onExcelUpload
   const [rsifAplicable, setRsifAplicable] = useState("RD 552/2019");
   const [normativaCompleta, setNormativaCompleta] = useState({});
   const [cpInstalacion, setCpInstalacion] = useState("35610");
+  // Add states for refrigerant properties
+  const [isRefrigeranteFluorado, setIsRefrigeranteFluorado] = useState(false);
+  const [isRefrigeranteNatural, setIsRefrigeranteNatural] = useState(false);
   
   // For calculation section
   const handleSelectChange = (id: string, value: string) => {
@@ -140,6 +143,8 @@ const DatosInstalacionSection = ({ onChange, onCalculationsChange, onExcelUpload
           setAplicaLegionela={setAplicaLegionela}
           aplicaGasesFluorados={aplicaGasesFluorados}
           setAplicaGasesFluorados={setAplicaGasesFluorados}
+          isRefrigeranteFluorado={isRefrigeranteFluorado}
+          isRefrigeranteNatural={isRefrigeranteNatural}
         />
         
         {/* Hidden input to store the full regulation data for form submission */}
