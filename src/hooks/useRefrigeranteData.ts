@@ -1,99 +1,125 @@
-// src/components/formSections/DatosTecnicosSection.tsx
 
-import React from "react";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Card } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { useState, useEffect } from "react";
+import { refrigerantesData } from "../data/refrigerantsData";
 
-// Importa tu hook, que ya lee refrigerantesData internamente
-import useRefrigeranteData from "@/hooks/useRefrigeranteData";
-
-interface DatosTecnicosSectionProps {
+interface UseRefrigeranteDataProps {
   onChange?: (e: React.ChangeEvent<HTMLInputElement> | { id: string; value: string }) => void;
   onGasFluoradoChange?: (field: string, value: string) => void;
 }
 
-const DatosTecnicosSection = ({ onChange, onGasFluoradoChange }: DatosTecnicosSectionProps) => {
-  // Obtienes todo el sistemaData y los handlers
-  const {
+interface SistemaData {
+  refrigerante: string;
+  composicionRefrigerante: string;
+  inflamabilidad: string;
+  toxicidad: string;
+  grupoSeguridad: string;
+  directivaEquipos: string;
+  pca: string;
+  agotamientoOzono: string;
+  limitePractico: string;
+  atelOdl: string;
+  limiteInflamabilidad: string;
+  temperaturaAutoignicion: string;
+  gasFluorado: string;
+  [key: string]: string;
+}
+
+const useRefrigeranteData = ({ onChange, onGasFluoradoChange }: UseRefrigeranteDataProps) => {
+  const [sistemaData, setSistemaData] = useState<SistemaData>({
+    refrigerante: "",
+    composicionRefrigerante: "",
+    inflamabilidad: "",
+    toxicidad: "",
+    grupoSeguridad: "",
+    directivaEquipos: "",
+    pca: "",
+    agotamientoOzono: "",
+    limitePractico: "",
+    atelOdl: "",
+    limiteInflamabilidad: "",
+    temperaturaAutoignicion: "",
+    gasFluorado: "",
+  });
+
+  // Update refrigerant properties when refrigerant changes
+  const updateRefrigerantProperties = (refrigeranteName: string) => {
+    if (!refrigeranteName) return;
+
+    const refrigerante = refrigerantesData[refrigeranteName];
+    if (!refrigerante) return;
+
+    const updates = {
+      refrigerante: refrigeranteName,
+      composicionRefrigerante: refrigerante.composicion || "",
+      inflamabilidad: refrigerante.inflamabilidad || "",
+      toxicidad: refrigerante.toxicidad || "",
+      grupoSeguridad: refrigerante.grupoSeguridad || "",
+      directivaEquipos: refrigerante.directivaEquipos || "",
+      pca: refrigerante.pca || "",
+      agotamientoOzono: refrigerante.agotamientoOzono || "",
+      limitePractico: refrigerante.limitePractico || "",
+      atelOdl: refrigerante.atelOdl || "",
+      limiteInflamabilidad: refrigerante.limiteInflamabilidad || "",
+      temperaturaAutoignicion: refrigerante.temperaturaAutoignicion || "",
+    };
+
+    // Update each field individually and notify parent
+    Object.entries(updates).forEach(([field, value]) => {
+      setSistemaData(prev => ({ ...prev, [field]: value }));
+      notifyChange(field, value);
+    });
+
+    // Handle gasFluorado separately as it needs special notification
+    const gasFluorado = refrigerante.gasFluorado || "";
+    setSistemaData(prev => ({ ...prev, gasFluorado }));
+    console.log("Setting gasFluorado from refrigerant to:", gasFluorado);
+    notifyChange("gasFluorado", gasFluorado);
+    
+    if (onGasFluoradoChange) {
+      onGasFluoradoChange("gasFluorado", gasFluorado);
+      console.log("Updated gasFluorado and clasificacionSistema to:", gasFluorado);
+    }
+  };
+
+  // Generic handler for select changes
+  const handleSelectChange = (field: string, value: string) => {
+    // Special case for refrigerante selection
+    if (field === "refrigerante") {
+      updateRefrigerantProperties(value);
+    } else {
+      setSistemaData(prev => ({ ...prev, [field]: value }));
+      notifyChange(field, value);
+      
+      // Special case for gasFluorado
+      if (field === "gasFluorado" && onGasFluoradoChange) {
+        onGasFluoradoChange(field, value);
+        console.log("Field changed:", field, value);
+        console.log("Updated gasFluorado and clasificacionSistema to:", value);
+      }
+    }
+  };
+
+  // Handler for input changes from React.ChangeEvent
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setSistemaData(prev => ({ ...prev, [id]: value }));
+    notifyChange(id, value);
+  };
+
+  // Generic notification function
+  const notifyChange = (field: string, value: string) => {
+    if (onChange) {
+      console.log("Field changed:", field, value);
+      onChange({ id: field, value });
+    }
+  };
+
+  return {
     sistemaData,
     handleSelectChange,
-    handleInputChange
-  } = useRefrigeranteData({ onChange, onGasFluoradoChange });
-
-  return (
-    <Card>
-      <div className="p-6">
-        <h3 className="text-lg font-medium mb-4">7.- DATOS TÉCNICOS</h3>
-
-        {/* Cámaras, compresores... siguen igual, usando handleInputChange */}
-        {/* ... */}
-
-        <Separator className="my-6" />
-
-        <div className="mb-6">
-          <h4 className="text-md font-medium mb-3">REFRIGERANTE</h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Selector de refrigerante */}
-            <div className="space-y-2">
-              <Label htmlFor="refrigerante">Identificación del refrigerante</Label>
-              <Select
-                id="refrigerante"
-                value={sistemaData.refrigerante}
-                onValueChange={(val) => handleSelectChange("refrigerante", val)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Seleccionar refrigerante" />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.keys(sistemaData).includes("refrigerante") /* o usa tu array de keys */}
-                    ? Object.keys(refrigerantesData).map(r => (
-                        <SelectItem key={r} value={r}>
-                          {r}
-                        </SelectItem>
-                      ))
-                    : null
-                </SelectContent>
-              </Select>
-            </div>
-            
-            {/* Campos derivados */}
-            {[
-              ["composicionRefrigerante", "Composición"],
-              ["inflamabilidad", "Inflamabilidad"],
-              ["toxicidad", "Toxicidad"],
-              ["grupoSeguridad", "Grupo de seguridad"],
-              ["directivaEquipos", "Directiva Equipos a Presión"],
-              ["pca", "PCA"],
-              ["agotamientoOzono", "PAO"],
-              ["limitePractico", "Límite práctico"],
-              ["atelOdl", "ATEL/ODL"],
-              ["limiteInflamabilidad", "Límite inflamabilidad"],
-              ["temperaturaAutoignicion", "Temperatura autoignición"],
-              ["gasFluorado", "Gas fluorado"]
-            ].map(([field, label]) => (
-              <div className="space-y-2" key={field}>
-                <Label htmlFor={field}>{label}</Label>
-                <Input
-                  id={field}
-                  value={(sistemaData as any)[field] || ""}
-                  readOnly
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </Card>
-  );
+    handleInputChange,
+    updateRefrigerantProperties
+  };
 };
 
-export default DatosTecnicosSection;
+export default useRefrigeranteData;
