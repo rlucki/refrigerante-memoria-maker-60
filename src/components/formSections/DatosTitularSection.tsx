@@ -33,7 +33,8 @@ const DatosTitularSection = ({
 
   // Create adapter specifically for DatosTecnicosSection which expects (field: string, value: any) => void
   const handleTecnicosChange = (field: string, value: any) => {
-    onChange({ id: field, value });
+    // This adapter converts from (field, value) to {id, value} format expected by parent
+    onChange({ id: field, value: value });
   };
   
   // Create adapter specifically for onCalculationsChange to match expected signature
