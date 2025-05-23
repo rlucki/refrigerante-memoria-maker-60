@@ -15,13 +15,15 @@ interface DatosTitularSectionProps {
   onNormativaChange?: (field: string, value: any) => void;
   onCalculationsChange?: (field: string, value: string) => void;
   onExcelUpload?: (data: any) => void;
+  onGasFluoradoChange?: (field: string, value: string) => void;
 }
 
 const DatosTitularSection = ({ 
   onChange, 
   onNormativaChange,
   onCalculationsChange,
-  onExcelUpload
+  onExcelUpload,
+  onGasFluoradoChange
 }: DatosTitularSectionProps) => {
   const [activeTab, setActiveTab] = useState("titular");
 
@@ -184,7 +186,10 @@ const DatosTitularSection = ({
               onExcelUpload={onExcelUpload}
             />
             <div className="mt-6">
-              <ClasificacionSection onChange={onChange} />
+              <ClasificacionSection 
+                onChange={onChange} 
+                onGasFluoradoChange={onGasFluoradoChange}  
+              />
             </div>
           </TabsContent>
           
