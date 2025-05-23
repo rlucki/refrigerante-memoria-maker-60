@@ -27,8 +27,8 @@ const DatosTitularSection = ({
   };
 
   // Create adapter for DatosInstalacionSection passing through to parent onChange
-  const handleInstalacionChange = (e: React.ChangeEvent<HTMLInputElement> | { id: string, value: string }) => {
-    onChange(e);
+  const handleInstalacionChange = (field: string, value: any) => {
+    onChange({ id: field, value });
   };
 
   // Create adapter specifically for DatosTecnicosSection which expects (field: string, value: any) => void
