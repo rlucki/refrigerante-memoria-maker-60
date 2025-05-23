@@ -32,6 +32,7 @@ const DatosTitularSection = ({
   };
 
   // Create adapter for DatosTecnicosSection which expects (field: string, value: any) => void
+  // Fixed version to match the expected signature
   const handleTecnicosChange = (field: string, value: any) => {
     onChange({ id: field, value });
   };
