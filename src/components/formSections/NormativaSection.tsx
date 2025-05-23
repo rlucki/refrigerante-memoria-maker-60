@@ -178,13 +178,8 @@ const NormativaSection = ({ onChange, selectedRefrigerante }: NormativaSectionPr
         setIsRefrigeranteNatural(true);
         setIsRefrigeranteFluorado(false);
       }
-      // Para otros refrigerantes, mantenemos el valor actual pero permitimos modificación manual
-      else if (selectedRefrigerante !== "- Seleccionar -") {
-        // Por defecto, la mayoría de refrigerantes son fluorados
-        setAplicaGasesFluorados("SI");
-        setIsRefrigeranteFluorado(false);
-        setIsRefrigeranteNatural(false);
-      } else {
+      // Para otros refrigerantes o refrigerantes desconocidos
+      else {
         setIsRefrigeranteFluorado(false);
         setIsRefrigeranteNatural(false);
       }
@@ -299,6 +294,8 @@ const NormativaSection = ({ onChange, selectedRefrigerante }: NormativaSectionPr
     // Notify parent component about normativa changes
     if (onChange) {
       onChange('normativaCompleta', regulations);
+      // Also notify about the gases fluorados setting
+      onChange('aplicaGasesFluorados', aplicaGasesFluorados);
     }
   }, [comunidadAutonoma, instalacionNueva, periodoInstalacionSeleccionado, aplicaLegionela, aplicaGasesFluorados]);
   
@@ -312,6 +309,44 @@ const NormativaSection = ({ onChange, selectedRefrigerante }: NormativaSectionPr
         {regulations.map((reg, index) => (
           <p key={index} className="text-sm text-gray-500">{reg.name} - {reg.description}</p>
         ))}
+      </div>
+    );
+  };
+  
+  // Render the Normativa Gases Fluorados section with consistency checks
+  const renderGasesFluoradosSection = (regulations) => {
+    return (
+      <div className="space-y-2">
+        <Label className="font-semibold">NORMATIVA GASES FLUORADOS</Label>
+        <Select 
+          value={aplicaGasesFluorados} 
+          onValueChange={setAplicaGasesFluorados}
+          id="gases_fluorados_select"
+          disabled={isRefrigeranteFluorado || isRefrigeranteNatural}
+        >
+          <SelectTrigger className={isRefrigeranteFluorado || isRefrigeranteNatural ? "bg-gray-100" : ""}>
+            <SelectValue placeholder="Seleccionar" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="SI">SI</SelectItem>
+            <SelectItem value="NO">NO</SelectItem>
+          </SelectContent>
+        </Select>
+        {aplicaGasesFluorados === "NO" && (
+          <p className="text-sm text-gray-500 mt-2">No aplica</p>
+        )}
+        {aplicaGasesFluorados === "SI" && (
+          renderNormativaSection("", regulations.gasesFluorados.regulations)
+        )}
+        {selectedRefrigerante && (
+          <p className="text-sm text-gray-500 mt-2">
+            {refrigerantesGasesFluorados.includes(selectedRefrigerante)
+              ? `El refrigerante ${selectedRefrigerante} requiere normativa de gases fluorados.`
+              : refrigerantesNaturales.includes(selectedRefrigerante)
+                ? `El refrigerante ${selectedRefrigerante} es natural y no requiere normativa de gases fluorados.`
+                : ""}
+          </p>
+        )}
       </div>
     );
   };
@@ -330,38 +365,7 @@ const NormativaSection = ({ onChange, selectedRefrigerante }: NormativaSectionPr
             
             {renderNormativaSection(regulations.normativasSiempreAplican.title, regulations.normativasSiempreAplican.regulations)}
             
-            <div className="space-y-2">
-              <Label className="font-semibold">NORMATIVA GASES FLUORADOS</Label>
-              <Select 
-                value={aplicaGasesFluorados} 
-                onValueChange={setAplicaGasesFluorados}
-                id="gases_fluorados_select"
-                disabled={isRefrigeranteFluorado || isRefrigeranteNatural}
-              >
-                <SelectTrigger className={isRefrigeranteFluorado || isRefrigeranteNatural ? "bg-gray-100" : ""}>
-                  <SelectValue placeholder="Seleccionar" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="SI">SI</SelectItem>
-                  <SelectItem value="NO">NO</SelectItem>
-                </SelectContent>
-              </Select>
-              {aplicaGasesFluorados === "NO" && (
-                <p className="text-sm text-gray-500 mt-2">No aplica</p>
-              )}
-              {aplicaGasesFluorados === "SI" && (
-                renderNormativaSection("", regulations.gasesFluorados.regulations)
-              )}
-              {selectedRefrigerante && (
-                <p className="text-sm text-gray-500 mt-2">
-                  {refrigerantesGasesFluorados.includes(selectedRefrigerante)
-                    ? `El refrigerante ${selectedRefrigerante} requiere normativa de gases fluorados.`
-                    : refrigerantesNaturales.includes(selectedRefrigerante)
-                      ? `El refrigerante ${selectedRefrigerante} es natural y no requiere normativa de gases fluorados.`
-                      : ""}
-                </p>
-              )}
-            </div>
+            {renderGasesFluoradosSection(regulations)}
           </div>
           
           <div className="space-y-6">

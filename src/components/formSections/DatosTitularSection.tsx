@@ -44,7 +44,7 @@ const DatosTitularSection = ({
         onCalculationsChange(field, value);
       }
     } : undefined;
-  
+
   return (
     <div className="space-y-6">
       <ClasificacionSection onChange={onChange} />
