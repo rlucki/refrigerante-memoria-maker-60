@@ -21,16 +21,16 @@ const DatosTitularSection = ({
   selectedRefrigerante
 }: DatosTitularSectionProps) => {
   // Create adapter functions to bridge the type differences
-  const handleDatosTecnicosChange = (field: string, value: any) => {
+  const handleComponentChange = (field: string, value: any) => {
     onChange({ id: field, value });
   };
 
   return (
     <div className="space-y-6">
       <ClasificacionSection onChange={onChange} />
-      <DatosInstaladorSection onChange={onChange} />
+      <DatosInstaladorSection onChange={handleComponentChange} />
       <DatosInstalacionSection onChange={onChange} onCalculationsChange={onCalculationsChange} onExcelUpload={onExcelUpload} />
-      <DatosTecnicosSection onChange={handleDatosTecnicosChange} />
+      <DatosTecnicosSection onChange={handleComponentChange} />
       <NormativaSection onChange={onNormativaChange} selectedRefrigerante={selectedRefrigerante} />
     </div>
   );
