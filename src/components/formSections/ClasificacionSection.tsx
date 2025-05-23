@@ -527,6 +527,7 @@ const ClasificacionSection = ({ onChange }: ClasificacionSectionProps) => {
 
       // Notify parent component of changes
       if (onChange) {
+        // First update all other refrigerant properties
         Object.entries({
           refrigerante: data.nombre,
           composicionRefrigerante: data.composicion,
@@ -539,26 +540,35 @@ const ClasificacionSection = ({ onChange }: ClasificacionSectionProps) => {
           limitePractico: data.limitePractico,
           atelOdl: data.atelOdl,
           limiteInflamabilidad: data.limiteInflamabilidad,
-          temperaturaAutoignicion: data.temperaturaAutoignicion,
-          gasFluorado: data.gasFluorado
+          temperaturaAutoignicion: data.temperaturaAutoignicion
         }).forEach(([id, value]) => {
           onChange({ id, value });
         });
+        
+        // Update gasFluorado last to ensure it takes precedence
+        console.log("Setting gasFluorado from refrigerant to:", data.gasFluorado);
+        onChange({ id: "gasFluorado", value: data.gasFluorado });
       }
     }
-  }, [sistemaData.refrigerante]);
+  }, [sistemaData.refrigerante, onChange]);
 
   // Handle select changes
   const handleSelectChange = (field: string, value: string) => {
     setSistemaData(prev => ({ ...prev, [field]: value }));
     
     if (onChange) {
+      // For most fields, just update normally
       onChange({ id: field, value: value });
       
-      // Special case: when changing gasFluorado manually, notify with special field name
-      // to distinguish from automatic updates
+      // Special case for gasFluorado: when changed manually, update with special field name
       if (field === "gasFluorado") {
+        console.log("Manual change of gasFluorado to:", value);
         onChange({ id: "manualGasFluorado", value: value });
+      }
+      
+      // When changing refrigerant, let the useEffect handle the updates
+      if (field === "refrigerante") {
+        console.log("Refrigerant changed to:", value);
       }
     }
   };

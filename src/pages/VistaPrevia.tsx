@@ -1,5 +1,4 @@
-
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { toast } from "@/hooks/use-toast";
 import { buildWord } from "@/services/wordDocumentService";
 import Header from "@/components/vista-previa/Header";
@@ -69,6 +68,7 @@ const VistaPrevia = () => {
     limiteInflamabilidad: "NF",
     temperaturaAutoignicion: "ND",
     gasFluorado: "SI",
+    clasificacionSistema: "SI", // Adding this explicitly to have a separate value
     nivelInstalacion: "Nivel 1",
     documentoNecesario: "Memoria",
     
@@ -107,19 +107,42 @@ El gas utilizado en la instalación es R-448A. La carga de refrigerante para la 
   // Handle form changes
   const handleFormChange = (field: string, value: any) => {
     console.log(`Field changed: ${field}`, value);
-    setMemoriaData(prev => ({ ...prev, [field]: value }));
     
-    // Synchronize gasFluorado and clasificacionSistema
-    if (field === "clasificacionSistema") {
-      setMemoriaData(prev => ({ ...prev, gasFluorado: value }));
-    } else if (field === "gasFluorado") {
-      // Only update clasificacionSistema if this is a manual change from the form
-      // This prevents overriding the clasificacionSistema value with the refrigerant's gasFluorado value
+    // Special handling for refrigerant-related fields
+    if (field === "refrigerante") {
+      // Normal update of the field itself
+      setMemoriaData(prev => ({ ...prev, [field]: value }));
+    } 
+    else if (field === "gasFluorado") {
+      // When gasFluorado is directly changed (from the refrigerant database)
+      setMemoriaData(prev => ({ 
+        ...prev, 
+        gasFluorado: value,
+        // Also update clasificacionSistema to match
+        clasificacionSistema: value 
+      }));
+      
+      console.log("Updated gasFluorado and clasificacionSistema to:", value);
+    }
+    else if (field === "clasificacionSistema") {
+      // When clasificacionSistema is changed
       setMemoriaData(prev => ({ ...prev, clasificacionSistema: value }));
-    } else if (field === "manualGasFluorado") {
-      // Special case for manual gasFluorado change from the form
-      // Store it in the normal gasFluorado field but don't sync with clasificacionSistema
-      setMemoriaData(prev => ({ ...prev, gasFluorado: value }));
+      
+      // No need to update gasFluorado here to maintain the refrigerant's value
+    }
+    else if (field === "manualGasFluorado") {
+      // If user manually changes gasFluorado in the form
+      setMemoriaData(prev => ({ 
+        ...prev, 
+        gasFluorado: value,
+        clasificacionSistema: value 
+      }));
+      
+      console.log("Manually updated gasFluorado and clasificacionSistema to:", value);
+    }
+    else {
+      // Default case: just update the field
+      setMemoriaData(prev => ({ ...prev, [field]: value }));
     }
     
     // Check if we need to update description based on compresor paralelo and nivelInstalacion
@@ -138,6 +161,12 @@ El refrigerante, a alta presión, se expansiona hasta la presión de intermedia 
       setMemoriaData(prev => ({ ...prev, descripcionInstalacion: boosterDescription }));
     }
   };
+
+  // Add a debugging effect to monitor memoriaData.gasFluorado
+  useEffect(() => {
+    console.log("Current gasFluorado value:", memoriaData.gasFluorado);
+    console.log("Current clasificacionSistema value:", memoriaData.clasificacionSistema);
+  }, [memoriaData.gasFluorado, memoriaData.clasificacionSistema]);
 
   const handleExcelUpload = (data: any) => {
     console.log("Excel data loaded:", data);
