@@ -59,11 +59,22 @@ const normativaSeguridadSalud = {
   "RD 1627/1997": `Real Decreto 1627/1997, de 24 de octubre, por el que se establecen disposiciones mínimas de seguridad y salud en las obras de construcción. Transpone la Directiva Europea 92/57/CEE, de 24 de junio. El RD 2177/2004, de 12 de noviembre, modifica el anexo IV. El RD 604/2006, de 19 de mayo, incorpora una disposición adicional única. El RD 1109/2007, de 24 de agosto, modifica los artículos 13.4 y 18.2. Finalmente, el RD 337/2010, de 19 de marzo, deroga el artículo 18 y modifica el 19.1.`
 };
 
+// Array of refrigerantes que requieren normativa de gases fluorados
+const refrigerantesGasesFluorados = [
+  "R-134a", "R-404A", "R-407C", "R-410A", "R-422D", "R-427A", "R-434A", "R-448A", "R-449A", "R-452A", "R-507A", "R-513A", "R-32", "R-1234yf", "R-1234ze"
+];
+
+// Refrigerantes naturales sin normativa de gases fluorados
+const refrigerantesNaturales = [
+  "R-717", "R-744", "R-290", "R-600a", "R-1270"
+];
+
 interface NormativaSectionProps {
   onChange?: (field: string, value: any) => void;
+  selectedRefrigerante?: string | null;
 }
 
-const NormativaSection = ({ onChange }: NormativaSectionProps) => {
+const NormativaSection = ({ onChange, selectedRefrigerante }: NormativaSectionProps) => {
   const [comunidadAutonoma, setComunidadAutonoma] = useState("CATALUNYA");
   const [instalacionNueva, setInstalacionNueva] = useState("SI");
   const [periodoInstalacionSeleccionado, setPeriodoInstalacionSeleccionado] = useState("nueva");
@@ -150,6 +161,25 @@ const NormativaSection = ({ onChange }: NormativaSectionProps) => {
     }
     return "No aplica";
   };
+  
+  // Monitor changes in the selected refrigerante and update gases fluorados
+  useEffect(() => {
+    if (selectedRefrigerante) {
+      // Si es un refrigerante fluorado, aplicamos la normativa
+      if (refrigerantesGasesFluorados.includes(selectedRefrigerante)) {
+        setAplicaGasesFluorados("SI");
+      }
+      // Si es un refrigerante natural, no aplicamos la normativa
+      else if (refrigerantesNaturales.includes(selectedRefrigerante)) {
+        setAplicaGasesFluorados("NO");
+      }
+      // Para otros refrigerantes, mantenemos el valor actual o lo ponemos en SI por defecto
+      // ya que la mayoría de refrigerantes comerciales son fluorados
+      else if (selectedRefrigerante !== "- Seleccionar -") {
+        setAplicaGasesFluorados("SI");
+      }
+    }
+  }, [selectedRefrigerante]);
   
   // Function to get all applicable regulations for the current selections
   const getAplicableRegulations = () => {
@@ -296,6 +326,7 @@ const NormativaSection = ({ onChange }: NormativaSectionProps) => {
                 value={aplicaGasesFluorados} 
                 onValueChange={setAplicaGasesFluorados}
                 id="gases_fluorados_select"
+                disabled={selectedRefrigerante && refrigerantesNaturales.includes(selectedRefrigerante)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Seleccionar" />
@@ -310,6 +341,15 @@ const NormativaSection = ({ onChange }: NormativaSectionProps) => {
               )}
               {aplicaGasesFluorados === "SI" && (
                 renderNormativaSection("", regulations.gasesFluorados.regulations)
+              )}
+              {selectedRefrigerante && (
+                <p className="text-sm text-gray-500 mt-2">
+                  {refrigerantesGasesFluorados.includes(selectedRefrigerante)
+                    ? `El refrigerante ${selectedRefrigerante} requiere normativa de gases fluorados.`
+                    : refrigerantesNaturales.includes(selectedRefrigerante)
+                      ? `El refrigerante ${selectedRefrigerante} es natural y no requiere normativa de gases fluorados.`
+                      : ""}
+                </p>
               )}
             </div>
           </div>

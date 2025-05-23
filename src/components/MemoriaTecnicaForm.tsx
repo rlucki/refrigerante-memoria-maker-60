@@ -20,6 +20,7 @@ const MemoriaTecnicaForm = ({
   onCalculationsChange,
   onExcelUpload
 }: MemoriaTecnicaFormProps) => {
+  const [selectedRefrigerante, setSelectedRefrigerante] = useState<string | null>(null);
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,6 +35,13 @@ const MemoriaTecnicaForm = ({
       } else {
         onChange(e.id, e.value);
       }
+    }
+    
+    // Detect refrigerant changes
+    if (('target' in e && e.target.id === 'refrigerante') || 
+        (!('target' in e) && e.id === 'refrigerante')) {
+      const value = 'target' in e ? e.target.value : e.value;
+      setSelectedRefrigerante(value);
     }
   };
   
@@ -51,6 +59,7 @@ const MemoriaTecnicaForm = ({
         onNormativaChange={handleNormativaChange}
         onCalculationsChange={onCalculationsChange}
         onExcelUpload={onExcelUpload}
+        selectedRefrigerante={selectedRefrigerante}
       />
     </form>
   );
