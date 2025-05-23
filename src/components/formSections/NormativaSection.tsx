@@ -9,7 +9,6 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
 
 // Define regulation descriptions
 const reglamentosRSIF = {
@@ -82,6 +81,8 @@ const NormativaSection = ({ onChange, selectedRefrigerante }: NormativaSectionPr
   const [aplicaGasesFluorados, setAplicaGasesFluorados] = useState("NO");
   const [rsifAplicable, setRsifAplicable] = useState("RD 552/2019");
   const [normativaCompleta, setNormativaCompleta] = useState({});
+  const [isRefrigeranteNatural, setIsRefrigeranteNatural] = useState(false);
+  const [isRefrigeranteFluorado, setIsRefrigeranteFluorado] = useState(false);
   
   const comunidadesAutonomas = [
     { id: "ANDALUCIA", nombre: "ANDALUCÍA", normativa: "Decreto-Ley 4/2023", aplicaSiempre: true },
@@ -165,18 +166,27 @@ const NormativaSection = ({ onChange, selectedRefrigerante }: NormativaSectionPr
   // Monitor changes in the selected refrigerante and update gases fluorados
   useEffect(() => {
     if (selectedRefrigerante) {
-      // Si es un refrigerante fluorado, aplicamos la normativa
+      // Si es un refrigerante fluorado, aplicamos la normativa y bloqueamos la selección
       if (refrigerantesGasesFluorados.includes(selectedRefrigerante)) {
         setAplicaGasesFluorados("SI");
+        setIsRefrigeranteFluorado(true);
+        setIsRefrigeranteNatural(false);
       }
-      // Si es un refrigerante natural, no aplicamos la normativa
+      // Si es un refrigerante natural, no aplicamos la normativa y bloqueamos la selección
       else if (refrigerantesNaturales.includes(selectedRefrigerante)) {
         setAplicaGasesFluorados("NO");
+        setIsRefrigeranteNatural(true);
+        setIsRefrigeranteFluorado(false);
       }
-      // Para otros refrigerantes, mantenemos el valor actual o lo ponemos en SI por defecto
-      // ya que la mayoría de refrigerantes comerciales son fluorados
+      // Para otros refrigerantes, mantenemos el valor actual pero permitimos modificación manual
       else if (selectedRefrigerante !== "- Seleccionar -") {
+        // Por defecto, la mayoría de refrigerantes son fluorados
         setAplicaGasesFluorados("SI");
+        setIsRefrigeranteFluorado(false);
+        setIsRefrigeranteNatural(false);
+      } else {
+        setIsRefrigeranteFluorado(false);
+        setIsRefrigeranteNatural(false);
       }
     }
   }, [selectedRefrigerante]);
@@ -326,9 +336,9 @@ const NormativaSection = ({ onChange, selectedRefrigerante }: NormativaSectionPr
                 value={aplicaGasesFluorados} 
                 onValueChange={setAplicaGasesFluorados}
                 id="gases_fluorados_select"
-                disabled={selectedRefrigerante && refrigerantesNaturales.includes(selectedRefrigerante)}
+                disabled={isRefrigeranteFluorado || isRefrigeranteNatural}
               >
-                <SelectTrigger>
+                <SelectTrigger className={isRefrigeranteFluorado || isRefrigeranteNatural ? "bg-gray-100" : ""}>
                   <SelectValue placeholder="Seleccionar" />
                 </SelectTrigger>
                 <SelectContent>

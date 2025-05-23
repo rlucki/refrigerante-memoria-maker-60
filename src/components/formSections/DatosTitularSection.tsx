@@ -25,6 +25,7 @@ const DatosTitularSection = ({
       <ClasificacionSection onChange={onChange} />
       <DatosInstaladorSection onChange={onChange} />
       <DatosInstalacionSection onChange={onChange} onCalculationsChange={onCalculationsChange} onExcelUpload={onExcelUpload} />
+      <DatosTecnicosSection onChange={onChange} />
       <NormativaSection onChange={onNormativaChange} selectedRefrigerante={selectedRefrigerante} />
     </div>
   );
