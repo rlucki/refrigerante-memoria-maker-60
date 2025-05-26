@@ -1,4 +1,3 @@
-
 import React from "react";
 import MemoriaPreview from "@/components/memoriaPreview/MemoriaPreview";
 
@@ -15,11 +14,11 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
   excelData,
   previewRef,
 }) => {
+  // ► Con este log sabrás qué valor de gasFluorado llega a la vista previa
+  console.log("▶ gasFluorado que envío a la vista previa:", memoriaData.gasFluorado);
+
   return (
-    <div
-      ref={previewRef}
-      className="pdf-preview-container"
-    >
+    <div ref={previewRef} className="pdf-preview-container">
       <style>
         {`
           .memoria-preview-container.continuous-flow > div {
@@ -68,8 +67,10 @@ const PreviewSection: React.FC<PreviewSectionProps> = ({
           }
         `}
       </style>
-      <MemoriaPreview 
-        data={memoriaData} 
+
+      {/* Pasa TODO el objeto memoriaData sin filtrar */}
+      <MemoriaPreview
+        data={memoriaData}
         calculationsData={calculationsData}
         excelData={excelData}
       />
