@@ -26,6 +26,18 @@ const DatosTitularSection = ({
   onGasFluoradoChange
 }: DatosTitularSectionProps) => {
   const [activeTab, setActiveTab] = useState("titular");
+  const [gasFluorado, setGasFluorado] = useState("");
+
+  // Handler para recibir cambios de gas fluorado
+  const handleGasFluoradoChange = (field: string, value: string) => {
+    if (field === "aplicaGasesFluorados") {
+      setGasFluorado(value);
+      console.log("Gas fluorado updated in DatosTitularSection:", value);
+    }
+    if (onGasFluoradoChange) {
+      onGasFluoradoChange(field, value);
+    }
+  };
 
   return (
     <Card>
@@ -184,11 +196,12 @@ const DatosTitularSection = ({
               onChange={onNormativaChange}
               onCalculationsChange={onCalculationsChange}
               onExcelUpload={onExcelUpload}
+              gasFluorado={gasFluorado}
             />
             <div className="mt-6">
               <ClasificacionSection 
                 onChange={onChange} 
-                onGasFluoradoChange={onGasFluoradoChange}  
+                onGasFluoradoChange={handleGasFluoradoChange}  
               />
             </div>
           </TabsContent>

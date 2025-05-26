@@ -61,14 +61,15 @@ const normativaSeguridadSalud = {
 
 interface NormativaSectionProps {
   onChange?: (field: string, value: any) => void;
+  aplicaGasesFluorados?: string; // Recibe el valor automáticamente
 }
 
-const NormativaSection = ({ onChange }: NormativaSectionProps) => {
+const NormativaSection = ({ onChange, aplicaGasesFluorados }: NormativaSectionProps) => {
   const [comunidadAutonoma, setComunidadAutonoma] = useState("CATALUNYA");
   const [instalacionNueva, setInstalacionNueva] = useState("SI");
   const [periodoInstalacionSeleccionado, setPeriodoInstalacionSeleccionado] = useState("nueva");
   const [aplicaLegionela, setAplicaLegionela] = useState("SI");
-  const [aplicaGasesFluorados, setAplicaGasesFluorados] = useState("NO");
+  // Eliminamos el estado local para gases fluorados, ahora viene como prop
   const [rsifAplicable, setRsifAplicable] = useState("RD 552/2019");
   const [normativaCompleta, setNormativaCompleta] = useState({});
   
@@ -223,7 +224,7 @@ const NormativaSection = ({ onChange }: NormativaSectionProps) => {
       regulations.normativasSiempreAplican.regulations.push({ name, description });
     });
     
-    // Add gases fluorados regulations
+    // Add gases fluorados regulations - AUTOMÁTICO
     if (aplicaGasesFluorados === "SI") {
       // If Gases Fluorados is YES, add ALL regulations
       Object.entries(normativasGasesFluorados).forEach(([name, description]) => {
@@ -251,7 +252,7 @@ const NormativaSection = ({ onChange }: NormativaSectionProps) => {
     return regulations;
   };
   
-  // Update normativa when any input changes
+  // Update normativa when any input changes INCLUDING aplicaGasesFluorados
   useEffect(() => {
     const regulations = getAplicableRegulations();
     setNormativaCompleta(regulations);
@@ -292,24 +293,20 @@ const NormativaSection = ({ onChange }: NormativaSectionProps) => {
             
             <div className="space-y-2">
               <Label className="font-semibold">NORMATIVA GASES FLUORADOS</Label>
-              <Select 
-                value={aplicaGasesFluorados} 
-                onValueChange={setAplicaGasesFluorados}
-                id="gases_fluorados_select"
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Seleccionar" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="SI">SI</SelectItem>
-                  <SelectItem value="NO">NO</SelectItem>
-                </SelectContent>
-              </Select>
+              <Input 
+                value={aplicaGasesFluorados === "SI" ? "SI (Automático según refrigerante)" : 
+                       aplicaGasesFluorados === "NO" ? "NO (Automático según refrigerante)" : ""}
+                readOnly
+                className="bg-gray-50"
+              />
               {aplicaGasesFluorados === "NO" && (
-                <p className="text-sm text-gray-500 mt-2">No aplica</p>
+                <p className="text-sm text-gray-500 mt-2">No aplica - Refrigerante no es gas fluorado</p>
               )}
               {aplicaGasesFluorados === "SI" && (
-                renderNormativaSection("", regulations.gasesFluorados.regulations)
+                <>
+                  <p className="text-sm text-green-600 mt-2">✓ Aplica - Refrigerante es gas fluorado</p>
+                  {renderNormativaSection("", regulations.gasesFluorados.regulations)}
+                </>
               )}
             </div>
           </div>

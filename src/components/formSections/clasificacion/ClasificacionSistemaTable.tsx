@@ -23,23 +23,6 @@ const ClasificacionSistemaTable = ({
 }: ClasificacionSistemaTableProps) => {
   return (
     <div className="space-y-4">
-      {/* Pregunta principal de gas fluorado */}
-      <div className="space-y-2">
-        <label className="text-sm font-medium">¿Es refrigerante fluorado?</label>
-        <Select
-          value={gasFluorado}
-          onValueChange={(val) => onSelectChange("gasFluorado", val)}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Seleccionar..." />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="SI">SI</SelectItem>
-            <SelectItem value="NO">NO</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
       <h4 className="text-md font-medium">CLASIFICACIÓN DEL SISTEMA</h4>
       
       <div className="overflow-x-auto">

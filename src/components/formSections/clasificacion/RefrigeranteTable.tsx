@@ -110,7 +110,7 @@ const RefrigeranteTable = ({ sistemaData, onSelectChange, onInputChange }: Refri
               </tr>
             ))}
 
-            {/* Fila para Gas Fluorado - SOLO LECTURA, controlado desde ClasificacionSistemaTable */}
+            {/* Fila para Gas Fluorado - AUTOMÁTICO basado en refrigerante */}
             <tr>
               <td className="border border-gray-300 p-2">- Gas fluorado:</td>
               <td className="border border-gray-300 p-2">
@@ -118,10 +118,15 @@ const RefrigeranteTable = ({ sistemaData, onSelectChange, onInputChange }: Refri
                   value={sistemaData.gasFluorado || ""}
                   readOnly
                   className="bg-gray-50"
-                  placeholder="Controlado desde clasificación del sistema"
+                  placeholder="Automático según refrigerante"
                 />
               </td>
-              <td className="border border-gray-300 p-2"></td>
+              <td className="border border-gray-300 p-2">
+                <span className="text-sm text-gray-600">
+                  {sistemaData.gasFluorado === "SI" ? "✓ Aplican reglamentos de gases fluorados" : 
+                   sistemaData.gasFluorado === "NO" ? "✗ No aplican reglamentos de gases fluorados" : ""}
+                </span>
+              </td>
             </tr>
           </tbody>
         </table>
