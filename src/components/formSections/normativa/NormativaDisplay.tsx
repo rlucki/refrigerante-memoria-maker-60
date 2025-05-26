@@ -1,4 +1,5 @@
 
+
 import React from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -30,6 +31,7 @@ const NormativaDisplay: React.FC<NormativaDisplayProps> = ({
   onNormativaChange 
 }) => {
   console.log("🔍 NormativaDisplay received aplicaGasesFluorados:", aplicaGasesFluorados);
+  console.log("🔍 NormativaDisplay received codigoPostal:", codigoPostal);
   
   const {
     comunidadAutonoma,
@@ -46,6 +48,9 @@ const NormativaDisplay: React.FC<NormativaDisplayProps> = ({
 
   // Force synchronization of gas fluorado value
   const gasesFlooradosAplica = aplicaGasesFluorados === "SI";
+  
+  console.log("🔍 gasesFlooradosAplica calculated as:", gasesFlooradosAplica);
+  console.log("🔍 getAplicableRegulations().gasesFluorados:", getAplicableRegulations().gasesFluorados);
 
   // Render a normativa section with its regulations
   const renderNormativaSection = (title: string, regulations: any[]) => {
@@ -177,13 +182,13 @@ const NormativaDisplay: React.FC<NormativaDisplayProps> = ({
                 ))}
               </div>
               
-              {/* Gases Fluorados Section - FIXED */}
+              {/* Gases Fluorados Section - FIXED with forced display */}
               <div className="space-y-2">
                 <Label className="font-semibold">NORMATIVA GASES FLUORADOS</Label>
                 <Input 
                   value={gasesFlooradosAplica ? "SI (Automático según refrigerante)" : "NO (Automático según refrigerante)"}
                   readOnly
-                  className="bg-gray-50"
+                  className={gasesFlooradosAplica ? "bg-green-50 border-green-200" : "bg-gray-50"}
                 />
                 {!gasesFlooradosAplica && (
                   <p className="text-sm text-gray-500 mt-2">No aplica - Refrigerante no es gas fluorado</p>
@@ -191,9 +196,13 @@ const NormativaDisplay: React.FC<NormativaDisplayProps> = ({
                 {gasesFlooradosAplica && (
                   <>
                     <p className="text-sm text-green-600 mt-2">✓ Aplica - Refrigerante es gas fluorado</p>
-                    {getAplicableRegulations().gasesFluorados.regulations.map((reg, index) => (
-                      <p key={index} className="text-sm text-gray-500">{reg.name} - {reg.description}</p>
-                    ))}
+                    {getAplicableRegulations().gasesFluorados.regulations.length > 0 ? (
+                      getAplicableRegulations().gasesFluorados.regulations.map((reg, index) => (
+                        <p key={index} className="text-sm text-gray-500">{reg.name} - {reg.description}</p>
+                      ))
+                    ) : (
+                      <p className="text-sm text-orange-600 mt-2">⚠️ Cargando normativas de gases fluorados...</p>
+                    )}
                   </>
                 )}
               </div>

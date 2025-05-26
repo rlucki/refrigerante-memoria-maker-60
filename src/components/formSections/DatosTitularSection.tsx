@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -28,7 +27,7 @@ const DatosTitularSection = ({
   onExcelUpload,
   onGasFluoradoChange
 }: DatosTitularSectionProps) => {
-  const [gasFluorado, setGasFluorado] = useState("");
+  const [gasFluorado, setGasFluorado] = useState("SI");
   const [codigoPostal, setCodigoPostal] = useState("");
   const [activeTab, setActiveTab] = useState("titular");
   
@@ -62,8 +61,17 @@ const DatosTitularSection = ({
 
   // Handler for gas fluorado changes
   const handleGasFluoradoChange = (field: string, value: string) => {
+    console.log("🔄 Gas fluorado change in DatosTitularSection:", field, value);
+    setGasFluorado(value);
+    
     if (onGasFluoradoChange) {
       onGasFluoradoChange(field, value);
+    }
+    
+    // Also update via onChange
+    if (onChange) {
+      onChange({ id: "gasFluorado", value });
+      onChange({ id: "aplicaGasesFluorados", value });
     }
   };
 
