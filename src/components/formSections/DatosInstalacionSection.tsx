@@ -12,6 +12,7 @@ interface DatosInstalacionSectionProps {
   onExcelUpload?: (data: any) => void;
   gasFluorado?: string;
   codigoPostal?: string; // Add postal code prop
+  onNormativaChange?: (field: string, value: any) => void; // Add this missing prop
 }
 
 const DatosInstalacionSection = ({ 
@@ -19,7 +20,8 @@ const DatosInstalacionSection = ({
   onCalculationsChange, 
   onExcelUpload,
   gasFluorado,
-  codigoPostal
+  codigoPostal,
+  onNormativaChange
 }: DatosInstalacionSectionProps) => {
   
   return (
@@ -89,6 +91,7 @@ const DatosInstalacionSection = ({
         onChange={onChange} 
         aplicaGasesFluorados={gasFluorado}
         codigoPostal={codigoPostal}
+        onNormativaChange={onNormativaChange}
       />
     </div>
   );
