@@ -1,10 +1,16 @@
+
 import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import DatosInstalacionSection from "./DatosInstalacionSection";
 import DatosInstaladorSection from "./DatosInstaladorSection";
 import ClasificacionSection from "./ClasificacionSection";
 import DatosTecnicosSection from "./DatosTecnicosSection";
+import ExcelUploader from "../ExcelUploader";
 import WordDocumentTemplate from "../WordDocumentTemplate";
 
 interface DatosTitularSectionProps {
@@ -23,7 +29,8 @@ const DatosTitularSection = ({
   onGasFluoradoChange
 }: DatosTitularSectionProps) => {
   const [gasFluorado, setGasFluorado] = useState("");
-  const [codigoPostal, setCodigoPostal] = useState(""); // Track postal code
+  const [codigoPostal, setCodigoPostal] = useState("");
+  const [activeTab, setActiveTab] = useState("titular");
   
   // Handler for receiving changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement> | { id: string; value: string }) => {
@@ -45,6 +52,13 @@ const DatosTitularSection = ({
     // Also call the original onChange
     handleChange(e);
   };
+
+  // Handler for gas fluorado changes
+  const handleGasFluoradoChange = (field: string, value: string) => {
+    if (onGasFluoradoChange) {
+      onGasFluoradoChange(field, value);
+    }
+  };
   
   return (
     <div className="w-full max-w-6xl mx-auto p-6 space-y-6">
@@ -53,7 +67,7 @@ const DatosTitularSection = ({
         <p className="text-gray-600">Complete los datos para generar la memoria técnica</p>
       </div>
 
-      <Tabs defaultValue="titular" className="w-full">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid grid-cols-3 w-full">
           <TabsTrigger value="titular">Datos Titular</TabsTrigger>
           <TabsTrigger value="instalacion">Datos Instalación</TabsTrigger>
