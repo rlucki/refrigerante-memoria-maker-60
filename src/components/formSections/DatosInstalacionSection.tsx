@@ -76,6 +76,19 @@ const DatosInstalacionSection = ({
     }
   };
 
+  // Handlers for specific component signatures
+  const handleInstaladorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    handleInputChange(e.target.id, e.target.value);
+  };
+
+  const handleTecnicosChange = (e: React.ChangeEvent<HTMLInputElement> | { id: string; value: string }) => {
+    if ('target' in e) {
+      handleInputChange(e.target.id, e.target.value);
+    } else {
+      handleInputChange(e.id, e.value);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <Tabs defaultValue="instalacion" className="w-full">
@@ -177,13 +190,13 @@ const DatosInstalacionSection = ({
 
         <TabsContent value="instalador" className="space-y-6">
           <DatosInstaladorSection 
-            onChange={handleInputChange} 
+            onChange={handleInstaladorChange} 
           />
         </TabsContent>
 
         <TabsContent value="tecnicos" className="space-y-6">
           <DatosTecnicosSection 
-            onChange={handleInputChange}
+            onChange={handleTecnicosChange}
             onGasFluoradoChange={handleGasFluoradoChange}
           />
         </TabsContent>
