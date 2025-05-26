@@ -10,6 +10,10 @@ import { refrigerantesData } from "@/data/refrigerantsData";
 
 const VistaPrevia: React.FC = () => {
   const [memoriaData, setMemoriaData] = useState<any>({
+    // agrega campo aplicaGasesFluorados
+    gasFluorado: "SI",
+    aplicaGasesFluorados: "SI",
+
     // — Datos Titular —
     titular: "DINOSOL SUPERMERCADOS S.L.",
     nif: "B61742565",
@@ -83,7 +87,8 @@ const VistaPrevia: React.FC = () => {
     normativaCompleta: null,
 
     // — Descripción Instalación —
-    descripcionInstalacion: `La instalación está compuesta por varios muebles frigoríficos tipo mural y dos armarios de congelados, así como tres cámaras de conservación...`,
+    descripcionInstalacion: `La instalación está compuesta por varios muebles frigoríficos tipo mural...
+    `,
   });
 
   const [excelData, setExcelData] = useState<any>(null);
@@ -129,6 +134,7 @@ const VistaPrevia: React.FC = () => {
           temperaturaAutoignicion: info.temperaturaAutoignicion,
           gasFluorado: info.gasFluorado,
           clasificacionSistema: info.gasFluorado,
+          aplicaGasesFluorados: info.gasFluorado  // <— ahora se sincroniza
         }));
       } else {
         setMemoriaData((prev: any) => ({ ...prev, refrigerante: value }));
@@ -141,6 +147,7 @@ const VistaPrevia: React.FC = () => {
         ...prev,
         gasFluorado: value,
         clasificacionSistema: value,
+        aplicaGasesFluorados: value  // <— y aquí también
       }));
       return;
     }
@@ -150,6 +157,7 @@ const VistaPrevia: React.FC = () => {
         ...prev,
         clasificacionSistema: value,
         gasFluorado: value,
+        aplicaGasesFluorados: value  // <— y aquí
       }));
       return;
     }
