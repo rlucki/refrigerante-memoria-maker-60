@@ -77,8 +77,8 @@ const VistaPrevia: React.FC = () => {
     atelOdl: "0.32 kg/m3",
     limiteInflamabilidad: "NF",
     temperaturaAutoignicion: "ND",
-    gasFluorado: "SI",
     clasificacionSistema: "SI",
+
 
     nivelInstalacion: "Nivel 1",
     documentoNecesario: "Memoria",
@@ -87,8 +87,7 @@ const VistaPrevia: React.FC = () => {
     normativaCompleta: null,
 
     // — Descripción Instalación —
-    descripcionInstalacion: `La instalación está compuesta por varios muebles frigoríficos tipo mural...
-    `,
+    descripcionInstalacion: `La instalación está compuesta por varios muebles frigoríficos tipo mural y dos armarios de congelados, así como tres cámaras de conservación...`,
   });
 
   const [excelData, setExcelData] = useState<any>(null);
@@ -134,7 +133,6 @@ const VistaPrevia: React.FC = () => {
           temperaturaAutoignicion: info.temperaturaAutoignicion,
           gasFluorado: info.gasFluorado,
           clasificacionSistema: info.gasFluorado,
-          aplicaGasesFluorados: info.gasFluorado  // <— ahora se sincroniza
         }));
       } else {
         setMemoriaData((prev: any) => ({ ...prev, refrigerante: value }));
@@ -147,7 +145,6 @@ const VistaPrevia: React.FC = () => {
         ...prev,
         gasFluorado: value,
         clasificacionSistema: value,
-        aplicaGasesFluorados: value  // <— y aquí también
       }));
       return;
     }
@@ -157,7 +154,6 @@ const VistaPrevia: React.FC = () => {
         ...prev,
         clasificacionSistema: value,
         gasFluorado: value,
-        aplicaGasesFluorados: value  // <— y aquí
       }));
       return;
     }
