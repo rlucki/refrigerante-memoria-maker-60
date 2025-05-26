@@ -12,47 +12,47 @@ import {
 import { postalCodeToCommunity } from "@/data/postalCodeMapping";
 
 /* -----------------------------------------------------------
-   DESCRIPTORES (version reducida; reemplaza con tus textos)  
+   DESCRIPTORES (reemplaza con tu contenido completo)         
 ----------------------------------------------------------- */
 const reglamentosRSIF = {
-  "RD 552/2019": "Real Decreto 552/2019 …",
-  "RD 138/2011": "Real Decreto 138/2011 …",
-  "RD 3099/1977": "Real Decreto 3099/1977 …",
-  "Decreto 3214/1971": "Decreto 3214/1971 …",
+  "RD 552/2019": "Real Decreto 552/2019...",
+  "RD 138/2011": "Real Decreto 138/2011...",
+  "RD 3099/1977": "Real Decreto 3099/1977...",
+  "Decreto 3214/1971": "Decreto 3214/1971...",
 };
 const additionalRSIFText = {
-  RD_552_2019_antiguo: "RD 552/2019 (disposiciones transitorias)…",
+  RD_552_2019_antiguo: "Real Decreto 552/2019 (disposiciones transitorias)...",
 };
 const reglamentosAutonomicos = {
-  "Decret 192/2023": "Decret 192/2023 …",
-  "Decreto-Ley 4/2023": "Decreto-Ley 4/2023 …",
-  "Orden EEI/1036/2021": "Orden EEI/1036/2021 …",
+  "Decret 192/2023": "Decret 192/2023...",
+  "Decreto-Ley 4/2023": "Decreto-Ley 4/2023...",
+  "Orden EEI/1036/2021": "Orden EEI/1036/2021...",
 };
 const normativasSiempreAplican = {
-  "RD 709/2015": "Real Decreto 709/2015 …",
-  "RD 842/2002": "Real Decreto 842/2002 …",
+  "RD 709/2015": "Real Decreto 709/2015...",
+  "RD 842/2002": "Real Decreto 842/2002...",
 };
 const normativasGasesFluorados = {
-  "RD 115/2017": "Real Decreto 115/2017 …",
-  "Reglamento (UE) 2024/573": "Reglamento (UE) 2024/573 …",
+  "RD 115/2017": "Real Decreto 115/2017...",
+  "Reglamento (UE) 2024/573": "Reglamento (UE) 2024/573...",
 };
 const normativaEdificacion = {
-  "RD 314/2006": "Real Decreto 314/2006 …",
-  "RD 1371/2007": "Real Decreto 1371/2007 …",
-  "RD 732/2019": "Real Decreto 732/2019 …",
+  "RD 314/2006": "Real Decreto 314/2006...",
+  "RD 1371/2007": "Real Decreto 1371/2007...",
+  "RD 732/2019": "Real Decreto 732/2019...",
 };
 const normativaLegionela = {
-  "RD 487/2022": "Real Decreto 487/2022 …",
-  "RD 614/2024": "Real Decreto 614/2024 …",
+  "RD 487/2022": "Real Decreto 487/2022...",
+  "RD 614/2024": "Real Decreto 614/2024...",
 };
 const normativaSeguridadSalud = {
-  "Ley 31/1995": "Ley 31/1995 …",
-  "RD 485/1997": "Real Decreto 485/1997 …",
-  "RD 1627/1997": "Real Decreto 1627/1997 …",
+  "Ley 31/1995": "Ley 31/1995...",
+  "RD 485/1997": "Real Decreto 485/1997...",
+  "RD 1627/1997": "Real Decreto 1627/1997...",
 };
 
 /* -----------------------------------------------------------
-   PROPS
+   PROPS                                                    
 ----------------------------------------------------------- */
 interface NormativaSectionProps {
   gasFluorado: string; // "SI" | "NO"
@@ -61,25 +61,26 @@ interface NormativaSectionProps {
 }
 
 /* -----------------------------------------------------------
-   COMPONENTE
+   COMPONENTE                                                
 ----------------------------------------------------------- */
 const NormativaSection: React.FC<NormativaSectionProps> = ({
   gasFluorado,
   codigoPostal,
   onNormativaChange,
 }) => {
-  // estado principal
-  const [ca, setCa] = useState("CATALUNYA");
+  // Estado interno para comunidad, instalación, periodo y legionela
+  const [comunidad, setComunidad] = useState("CATALUNYA");
   const [instNueva, setInstNueva] = useState("SI");
   const [periodo, setPeriodo] = useState("nueva");
-  const [legionela, setLegionela] = useState("SI");
+  const [aplicaLegionela, setAplicaLegionela] = useState("SI");
 
-  /* tablas auxiliares */
-  const comunidadesAutonomas = [
+  // Tablas de selección
+  const comunidades = [
     { id: "ANDALUCIA", nombre: "ANDALUCÍA", normativa: "Decreto-Ley 4/2023", aplicaSiempre: true },
     { id: "CATALUNYA", nombre: "CATALUNYA", normativa: "Decret 192/2023", aplicaSiempre: true },
+    // ... resto de comunidades
   ];
-  const periodos = [
+  const periodosOptions = [
     { id: "entre_1971_1977", nombre: "Entre 1971 y 1977", rsif: "Decreto 3214/1971" },
     { id: "entre_1978_2011", nombre: "Entre 1978 y 2011", rsif: "RD 3099/1977" },
     { id: "entre_2012_2019", nombre: "Entre 2012 y 2019", rsif: "RD 138/2011" },
@@ -87,19 +88,24 @@ const NormativaSection: React.FC<NormativaSectionProps> = ({
     { id: "nueva", nombre: "Nueva", rsif: "RD 552/2019" },
   ];
 
-  /* autocompletar comunidad */
+  // Auto-detectar comunidad según CP
   useEffect(() => {
-    if (codigoPostal) setCa(postalCodeToCommunity(codigoPostal));
+    if (codigoPostal) {
+      setComunidad(postalCodeToCommunity(codigoPostal));
+    }
   }, [codigoPostal]);
 
-  /* RSIF aplicable */
-  const rsif = useMemo(() => {
-    return instNueva === "NO" ? periodos.find(p => p.id === periodo)?.rsif || "RD 552/2019" : "RD 552/2019";
+  // RSIF aplicable según periodo/instalación
+  const rsifAplicable = useMemo(() => {
+    if (instNueva === "NO") {
+      return periodosOptions.find(p => p.id === periodo)?.rsif || "RD 552/2019";
+    }
+    return "RD 552/2019";
   }, [instNueva, periodo]);
 
-  /* compilar normativa */
+  // Compilar normativa completa
   const normativaCompleta = useMemo(() => {
-    const o: any = {
+    const out: any = {
       reglamentoRSIF: { title: "REGLAMENTOS DE INSTALACIONES FRIGORÍFICAS", regulations: [] },
       reglamentoAutonomico: { title: "NORMATIVA AUTONÓMICA", regulations: [] },
       normativasSiempreAplican: { title: "NORMATIVA QUE SIEMPRE APLICA", regulations: [] },
@@ -110,58 +116,177 @@ const NormativaSection: React.FC<NormativaSectionProps> = ({
     };
 
     // RSIF
-    if (instNueva === "NO" && rsif !== "RD 552/2019") {
-      o.reglamentoRSIF.regulations.push({ name: rsif, description: reglamentosRSIF[rsif] });
-      o.reglamentoRSIF.regulations.push({ name: "RD 552/2019", description: additionalRSIFText.RD_552_2019_antiguo });
+    if (instNueva === "NO" && rsifAplicable !== "RD 552/2019") {
+      out.reglamentoRSIF.regulations.push({ name: rsifAplicable, description: reglamentosRSIF[rsifAplicable] });
+      out.reglamentoRSIF.regulations.push({ name: "RD 552/2019", description: additionalRSIFText.RD_552_2019_antiguo });
     } else {
-      o.reglamentoRSIF.regulations.push({ name: "RD 552/2019", description: reglamentosRSIF["RD 552/2019"] });
+      out.reglamentoRSIF.regulations.push({ name: "RD 552/2019", description: reglamentosRSIF["RD 552/2019"] });
     }
 
-    // autonómica
-    const caObj = comunidadesAutonomas.find(c => c.id === ca);
+    // Autonómica
+    const caObj = comunidades.find(c => c.id === comunidad);
     if (caObj && (caObj.aplicaSiempre || instNueva === "NO")) {
-      o.reglamentoAutonomico.regulations.push({ name: caObj.normativa, description: reglamentosAutonomicos[caObj.normativa] });
+      out.reglamentoAutonomico.regulations.push({ name: caObj.normativa, description: reglamentosAutonomicos[caObj.normativa] });
     }
 
-    // siempre aplica
-    Object.entries(normativasSiempreAplican).forEach(([n, d]) => o.normativasSiempreAplican.regulations.push({ name: n, description: d }));
+    // Normativas siempre aplican
+    Object.entries(normativasSiempreAplican).forEach(([name, desc]) => {
+      out.normativasSiempreAplican.regulations.push({ name, description: desc });
+    });
 
-    // gases fluorados
-    if (gasFluorado.trim().toUpperCase() === "SI") Object.entries(normativasGasesFluorados).forEach(([n, d]) => o.gasesFluorados.regulations.push({ name: n, description: d }));
+    // Gases fluorados
+    if (gasFluorado.trim().toUpperCase() === "SI") {
+      Object.entries(normativasGasesFluorados).forEach(([name, desc]) => {
+        out.gasesFluorados.regulations.push({ name, description: desc });
+      });
+    }
 
-    // edificación
-    Object.entries(normativaEdificacion).forEach(([n, d]) => o.edificacion.regulations.push({ name: n, description: d }));
+    // Edificación
+    Object.entries(normativaEdificacion).forEach(([name, desc]) => {
+      out.edificacion.regulations.push({ name, description: desc });
+    });
 
-    // legionela
-    if (legionela === "SI") Object.entries(normativaLegionela).forEach(([n, d]) => o.legionela.regulations.push({ name: n, description: d }));
+    // Legionela
+    if (aplicaLegionela === "SI") {
+      Object.entries(normativaLegionela).forEach(([name, desc]) => {
+        out.legionela.regulations.push({ name, description: desc });
+      });
+    }
 
-    // seguridad y salud
-    Object.entries(normativaSeguridadSalud).forEach(([n, d]) => o.seguridadSalud.regulations.push({ name: n, description: d }));
+    // Seguridad y Salud
+    Object.entries(normativaSeguridadSalud).forEach(([name, desc]) => {
+      out.seguridadSalud.regulations.push({ name, description: desc });
+    });
 
-    return o;
-  }, [ca, instNueva, periodo, legionela, gasFluorado, rsif]);
+    return out;
+  }, [comunidad, instNueva, periodo, aplicaLegionela, gasFluorado, rsifAplicable]);
 
-  // notificar al padre
-  useEffect(() => { onNormativaChange?.("normativaCompleta", normativaCompleta); }, [normativaCompleta, onNormativaChange]);
+  // Notificar al padre cambios de normativa
+  useEffect(() => {
+    onNormativaChange?.("normativaCompleta", normativaCompleta);
+  }, [normativaCompleta, onNormativaChange]);
 
-  const R = (arr: any[]) => arr.map((r, i) => (
-    <p key={i} className="text-sm text-gray-500">
-      {r.name} – {r.description}
-    </p>
-  ));
+  // Render helper
+  const renderRegs = (regs: any[]) =>
+    regs.map((r, i) => (
+      <p key={i} className="text-sm text-gray-500">
+        {r.name} – {r.description}
+      </p>
+    ));
 
-  /* JSX */
+  /* ---------------------------------------------------------
+     JSX
+  --------------------------------------------------------- */
   return (
     <Card className="p-6 space-y-6">
       <h3 className="text-lg font-semibold">NORMATIVA APLICABLE</h3>
 
-      {/* Comunidad autonoma y normativa autonómica */}
+      {/* Comunidad y autonómica */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-2">
           <Label>Comunidad Autónoma</Label>
-          <Input readOnly className="bg-gray-50" value={comunidadesAutonomas.find(c => c.id === ca)?.nombre || ""} />
+          <Input readOnly className="bg-gray-50" value={comunidades.find(c => c.id === comunidad)?.nombre || ""} />
         </div>
         <div className="space-y-2">
           <Label>Normativa autonómica</Label>
-          <Input readOnly className="bg-gray-50" value={normativaCompleta.reglamentoAutonomico.regulations[0]?.name || "No aplica"} />
-        </
+          <Input
+            readOnly
+            className="bg-gray-50"
+            value={normativaCompleta.reglamentoAutonomico.regulations[0]?.name || "No aplica"}
+          />
+        </div>
+      </div>
+
+      {/* Instalación nueva y año */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="space-y-2">
+          <Label>Instalación nueva</Label>
+          <Select value={instNueva} onValueChange={setInstNueva}>
+            <SelectTrigger>
+              <SelectValue placeholder="Seleccionar" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="SI">SI</SelectItem>
+              <SelectItem value="NO">NO</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-2">
+          <Label>Año instalación</Label>
+          <Select value={periodo} onValueChange={setPeriodo} disabled={instNueva === "SI"}>
+            <SelectTrigger>
+              <SelectValue placeholder="Seleccionar" />
+            </SelectTrigger>
+            <SelectContent>
+              {periodosOptions
+                .filter(p => (instNueva === "SI" ? p.id === "nueva" : p.id !== "nueva"))
+                .map(p => (
+                  <SelectItem key={p.id} value={p.id}>
+                    {p.nombre}
+                  </SelectItem>
+                ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="space-y-2">
+          <Label>RSIF aplicable</Label>
+          <Input readOnly value={rsifAplicable} />
+        </div>
+      </div>
+
+      {/* Gases fluorados */}
+      <div className="space-y-2">
+        <Label className="font-semibold">NORMATIVA GASES FLUORADOS</Label>
+        <Input
+          readOnly
+          className="bg-gray-50"
+          value={gasFluorado.trim().toUpperCase() === "SI" ? "SI (automático)" : "NO (automático)"}
+        />
+        {gasFluorado.trim().toUpperCase() === "SI" && (
+          <div className="mt-2">{renderRegs(normativaCompleta.gasesFluorados.regulations)}</div>
+        )}
+        {gasFluorado.trim().toUpperCase() === "NO" && (
+          <p className="text-sm text-gray-500 mt-2">No aplica – refrigerante no es gas fluorado</p>
+        )}
+      </div>
+
+      {/* Otros bloques */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="space-y-6">
+          <div>
+            <Label className="font-semibold">REGLAMENTOS DE INSTALACIONES FRIGORÍFICAS</Label>
+            {renderRegs(normativaCompleta.reglamentoRSIF.regulations)}
+          </div>
+          <div>
+            <Label className="font-semibold">NORMATIVA QUE SIEMPRE APLICA</Label>
+            {renderRegs(normativaCompleta.normativasSiempreAplican.regulations)}
+          </div>
+        </div>
+        <div className="space-y-6">
+          <div>
+            <Label className="font-semibold">NORMATIVA LEGIONELOSIS</Label>
+            <Select value={aplicaLegionela} onValueChange={setAplicaLegionela}>
+              <SelectTrigger>
+                <SelectValue placeholder="Seleccionar" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="SI">SI</SelectItem>
+                <SelectItem value="NO">NO</SelectItem>
+              </SelectContent>
+            </Select>
+            {aplicaLegionela === "SI" ? <>{renderRegs(normativaCompleta.legionela.regulations)}</> : <p className="text-sm text-gray-500 mt-2">No aplica</p>}
+          </div>
+          <div>
+            <Label className="font-semibold">NORMATIVA SEGURIDAD Y SALUD</Label>
+            {renderRegs(normativaCompleta.seguridadSalud.regulations)}
+          </div>
+        </div>
+      </div>
+
+      {/* Hidden field */}
+      <input type="hidden" name="normativa_completa" value={JSON.stringify(normativaCompleta)} />
+    </Card>
+  );
+};
+
+export default NormativaSection;
