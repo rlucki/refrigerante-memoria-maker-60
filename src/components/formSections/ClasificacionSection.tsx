@@ -42,7 +42,6 @@ const ClasificacionSection = ({ onChange, onGasFluoradoChange }: ClasificacionSe
           <RefrigeranteTable
           sistemaData={sistemaData}
           onSelectChange={handleSelectChange}
-          onInputChange={handleInputChange}   // <- quítalo
           />
 
           {/* Clasificación de la instalación */}
