@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
@@ -6,12 +7,11 @@ import { Button } from "@/components/ui/button";
 import { Search, XCircle, FileSpreadsheet, Table as TableIcon } from "lucide-react";
 
 interface ExcelDataViewerProps {
-  data?: any;
+  data: any;
   title?: string;
-  onExcelUpload?: (data: any) => void;
 }
 
-const ExcelDataViewer: React.FC<ExcelDataViewerProps> = ({ data, title = "Datos de Excel", onExcelUpload }) => {
+const ExcelDataViewer: React.FC<ExcelDataViewerProps> = ({ data, title = "Datos de Excel" }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedArea, setSelectedArea] = useState<string | null>(null);
   const [displayMode, setDisplayMode] = useState<"formatted" | "raw">("formatted");
