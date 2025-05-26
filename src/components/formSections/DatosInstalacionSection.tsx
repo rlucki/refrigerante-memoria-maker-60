@@ -165,7 +165,7 @@ const DatosInstalacionSection = ({
             </div>
           </Card>
 
-          <ExcelCalculationsForm onCalculationsChange={onCalculationsChange} />
+          <ExcelCalculationsForm onChange={onCalculationsChange} />
           <ExcelUploader onDataLoaded={onExcelUpload || (() => {})} />
           
           <NormativaSection
@@ -177,21 +177,13 @@ const DatosInstalacionSection = ({
 
         <TabsContent value="instalador" className="space-y-6">
           <DatosInstaladorSection 
-            onChange={(e) => {
-              const field = 'target' in e ? e.target.id : e.id;
-              const value = 'target' in e ? e.target.value : e.value;
-              handleInputChange(field, value);
-            }} 
+            onChange={handleInputChange} 
           />
         </TabsContent>
 
         <TabsContent value="tecnicos" className="space-y-6">
           <DatosTecnicosSection 
-            onChange={(e) => {
-              const field = 'target' in e ? e.target.id : e.id;
-              const value = 'target' in e ? e.target.value : e.value;
-              handleInputChange(field, value);
-            }}
+            onChange={handleInputChange}
             onGasFluoradoChange={handleGasFluoradoChange}
           />
         </TabsContent>
