@@ -20,6 +20,7 @@ const DatosInstalacionSection: React.FC<DatosInstalacionSectionProps> = ({
   onExcelUpload,
   gasFluorado,
   codigoPostal,
+  onNormativaChange,
 }) => {
   useEffect(() => {
     onChange?.("cpInstalacion", codigoPostal);
