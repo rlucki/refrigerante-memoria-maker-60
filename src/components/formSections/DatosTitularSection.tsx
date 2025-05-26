@@ -37,8 +37,15 @@ const DatosTitularSection = ({
     if (onGasFluoradoChange) {
       onGasFluoradoChange("gasFluorado", value);
     }
+    // Create a proper fake event object that matches ChangeEvent<HTMLInputElement>
     if (onChange) {
-      onChange({ id: "gasFluorado", value });
+      const fakeEvent = {
+        target: {
+          id: "gasFluorado",
+          value: value
+        }
+      } as React.ChangeEvent<HTMLInputElement>;
+      onChange(fakeEvent);
     }
   };
 
