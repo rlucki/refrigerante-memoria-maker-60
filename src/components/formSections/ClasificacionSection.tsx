@@ -37,7 +37,7 @@ const ClasificacionSection = ({ onChange, onGasFluoradoChange }: ClasificacionSe
             onSelectChange={handleSelectChange}
           />
 
-          {/* Refrigerante */}
+          {/* Refrigerante - WITHOUT gas fluorado question */}
           <RefrigeranteTable 
             sistemaData={sistemaData}
             onSelectChange={handleSelectChange}

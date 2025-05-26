@@ -20,6 +20,12 @@ interface SistemaData {
   atelOdl: string;
   limiteInflamabilidad: string;
   temperaturaAutoignicion: string;
+  gasFluorado: string;
+  metodoEnfriamiento: string;
+  seguridadSistema: string;
+  categoriaLocal: string;
+  nivelInstalacion: string;
+  documentoNecesario: string;
   [key: string]: string;
 }
 
@@ -37,6 +43,12 @@ const useRefrigeranteData = ({ onChange, onGasFluoradoChange }: UseRefrigeranteD
     atelOdl: "",
     limiteInflamabilidad: "",
     temperaturaAutoignicion: "",
+    gasFluorado: "NO",
+    metodoEnfriamiento: "",
+    seguridadSistema: "",
+    categoriaLocal: "",
+    nivelInstalacion: "",
+    documentoNecesario: "",
   });
 
   // Update refrigerant properties when refrigerant changes (WITHOUT gasFluorado)

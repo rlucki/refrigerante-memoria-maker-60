@@ -11,6 +11,7 @@ import DatosInstaladorSection from "./DatosInstaladorSection";
 import NormativaSection from "./NormativaSection";
 import DatosTecnicosSection from "./DatosTecnicosSection";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import GasFluoradoQuestion from "./shared/GasFluoradoQuestion";
 
 interface DatosTitularSectionProps {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -273,21 +274,11 @@ const DatosTitularSection = ({
               <h3 className="text-lg font-medium mb-4">10.- OTRAS CONSIDERACIONES</h3>
               
               <div className="space-y-6">
-                <div className="space-y-2">
-                  <Label htmlFor="gas_fluorado_manual">¿Es un gas fluorado?</Label>
-                  <Select 
-                    value={manualGasFluorado} 
-                    onValueChange={handleManualGasFluoradoChange}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleccionar" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="SI">SI</SelectItem>
-                      <SelectItem value="NO">NO</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                <GasFluoradoQuestion
+                  value={manualGasFluorado}
+                  onChange={handleManualGasFluoradoChange}
+                  label="¿Es un gas fluorado?"
+                />
                 
                 {manualGasFluorado === "SI" && (
                   <div className="p-4 bg-blue-50 rounded-lg">
