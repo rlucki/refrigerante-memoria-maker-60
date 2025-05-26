@@ -22,9 +22,7 @@ const DatosInstalacionSection: React.FC<DatosInstalacionSectionProps> = ({
   codigoPostal,
   onNormativaChange,
 }) => {
-  useEffect(() => {
-    onChange?.("cpInstalacion", codigoPostal);
-  }, [codigoPostal, onChange]);
+  
 
   const fields = [
     { id: "nombreInstalacion", label: "Nombre de la instalación", defaultValue: "Instalación frigorífica DINOSOL Costa del Silencio (Arona)" },
