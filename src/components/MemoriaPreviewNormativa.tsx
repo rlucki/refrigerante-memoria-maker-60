@@ -158,8 +158,15 @@ const MemoriaPreviewNormativa: React.FC<MemoriaPreviewNormativaProps> = ({ data 
   const aplicaFluorados =
   (data.gasFluorado || "").trim().toUpperCase() === "SI";
 
+  console.log("🔍 Debug MemoriaPreviewNormativa:");
+  console.log("  - data.gasFluorado:", data.gasFluorado);
+  console.log("  - aplicaFluorados:", aplicaFluorados);
+  console.log("  - data.normativaCompleta exists:", !!data.normativaCompleta);
+
   // Normativa base (prop o por defecto)
   const normativaBase = data.normativaCompleta || defaultNormativa;
+
+  console.log("  - normativaBase.gasesFluorados.regulations length:", normativaBase.gasesFluorados?.regulations?.length || 0);
 
   // Si no aplica gases fluorados vaciamos esa categoría para que no se pinte
   const normativa: NormativaData = !aplicaFluorados
@@ -168,6 +175,8 @@ const MemoriaPreviewNormativa: React.FC<MemoriaPreviewNormativaProps> = ({ data 
         gasesFluorados: { ...normativaBase.gasesFluorados, regulations: [] },
       }
     : normativaBase;
+
+  console.log("  - Final normativa.gasesFluorados.regulations length:", normativa.gasesFluorados?.regulations?.length || 0);
 
   // ---------------------------------------------------------------------------
   //  Utilidad para pintar cada categoría
