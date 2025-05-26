@@ -1,9 +1,8 @@
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import NormativaSection from "./NormativaSection";
 
 interface DatosInstalacionSectionProps {
@@ -11,43 +10,40 @@ interface DatosInstalacionSectionProps {
   onCalculationsChange?: (field: string, value: string) => void;
   onExcelUpload?: (data: any) => void;
   gasFluorado?: string;
-  codigoPostal?: string; // Add postal code prop
-  onNormativaChange?: (field: string, value: any) => void; // Add this missing prop
+  codigoPostal?: string;
+  onNormativaChange?: (field: string, value: any) => void;
 }
 
 const DatosInstalacionSection = ({ 
   onChange, 
   onCalculationsChange, 
-  onExcelUpload,
+  onExcelUpload, 
   gasFluorado,
   codigoPostal,
   onNormativaChange
 }: DatosInstalacionSectionProps) => {
-  
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (onChange) {
+      onChange(e.target.id, e.target.value);
+    }
+  };
+
+  console.log("DatosInstalacionSection - gasFluorado prop:", gasFluorado);
+
   return (
     <div className="space-y-6">
       <Card>
         <div className="p-6">
-          <h3 className="text-lg font-medium mb-4">2.- DATOS DE LA INSTALACIÓN</h3>
+          <h3 className="text-lg font-medium mb-4">4.- DATOS DE LA INSTALACIÓN</h3>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label htmlFor="nombreInstalacion">Nombre de la instalación</Label>
+              <Label htmlFor="direccionInstalacion">Dirección</Label>
               <Input 
-                id="nombreInstalacion" 
-                placeholder="Nombre de la instalación" 
-                defaultValue="Instalación frigorífica DINOSOL Costa del Silencio (Arona)"
-                onChange={(e) => onChange?.(e.target.id, e.target.value)}
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="ubicacion">Ubicación</Label>
-              <Input 
-                id="ubicacion" 
-                placeholder="Ubicación" 
-                defaultValue="C/ EL MOJÓN, S/N"
-                onChange={(e) => onChange?.(e.target.id, e.target.value)}
+                id="direccionInstalacion" 
+                placeholder="Dirección de la instalación" 
+                onChange={handleInputChange}
               />
             </div>
             
@@ -56,8 +52,16 @@ const DatosInstalacionSection = ({
               <Input 
                 id="poblacionInstalacion" 
                 placeholder="Población" 
-                defaultValue="COSTA DEL SILENCIO (ARONA)"
-                onChange={(e) => onChange?.(e.target.id, e.target.value)}
+                onChange={handleInputChange}
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="cpInstalacion">Código Postal</Label>
+              <Input 
+                id="cpInstalacion" 
+                placeholder="Código postal" 
+                onChange={handleInputChange}
               />
             </div>
             
@@ -66,30 +70,62 @@ const DatosInstalacionSection = ({
               <Input 
                 id="provinciaInstalacion" 
                 placeholder="Provincia" 
-                defaultValue="SANTA CRUZ DE TENERIFE"
-                onChange={(e) => onChange?.(e.target.id, e.target.value)}
+                onChange={handleInputChange}
               />
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="cpInstalacion">C.P.</Label>
+              <Label htmlFor="telefonoInstalacion">Teléfono</Label>
               <Input 
-                id="cpInstalacion" 
-                placeholder="Código postal" 
-                defaultValue="38640"
-                onChange={(e) => onChange?.(e.target.id, e.target.value)}
+                id="telefonoInstalacion" 
+                placeholder="Teléfono" 
+                onChange={handleInputChange}
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="num_inscripcion">Número de inscripción</Label>
+              <Input 
+                id="num_inscripcion" 
+                placeholder="Número de inscripción" 
+                onChange={handleInputChange}
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="fecha_inscripcion">Fecha de inscripción</Label>
+              <Input 
+                id="fecha_inscripcion" 
+                type="date"
+                onChange={handleInputChange}
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="tipoInstalacion">Tipo de instalación</Label>
+              <Input 
+                id="tipoInstalacion" 
+                placeholder="Tipo de instalación" 
+                onChange={handleInputChange}
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="nombreProyecto">Nombre del proyecto</Label>
+              <Input 
+                id="nombreProyecto" 
+                placeholder="Nombre del proyecto" 
+                onChange={handleInputChange}
               />
             </div>
           </div>
         </div>
       </Card>
-
-      <Separator className="my-6" />
-
-      {/* Pass both gas fluorado and postal code to NormativaSection */}
+      
+      {/* Normativa Section */}
       <NormativaSection 
-        onChange={onChange} 
-        aplicaGasesFluorados={gasFluorado}
+        onChange={onChange}
+        aplicaGasesFluorados={gasFluorado} // Usar el prop recibido
         codigoPostal={codigoPostal}
         onNormativaChange={onNormativaChange}
       />
