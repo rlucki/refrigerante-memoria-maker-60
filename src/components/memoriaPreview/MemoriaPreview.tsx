@@ -1,4 +1,3 @@
-
 import React from "react";
 import MemoriaPortada from "./MemoriaPortada";
 import MemoriaSecciones1a9 from "./MemoriaSecciones1a9";
@@ -83,12 +82,20 @@ interface MemoriaPreviewProps {
 }
 
 const MemoriaPreview: React.FC<MemoriaPreviewProps> = ({ data, currentPage = 1, calculationsData, excelData }) => {
-  
   return (
     <div className="memoria-preview-container continuous-flow">
       <MemoriaPortada data={data} />
       <MemoriaSecciones1a9 data={data} />
-      <MemoriaPreviewNormativa data={data} />
+
+      {/* Cuarta página – NORMATIVA DE APLICACIÓN */}
+      <MemoriaPreviewNormativa
+        data={{
+          ...data,
+          // Pasamos explícitamente el flag que necesita el componente de normativa
+          aplicaGasesFluorados: data.gasFluorado,
+        }}
+      />
+
       <MemClasificacion data={data} />
       <MemoriaClasificacionLocal data={data} />
       <MemoriaClasificacionGas data={data} />
