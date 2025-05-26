@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -51,6 +50,13 @@ const DatosTitularSection = ({
     
     // Also call the original onChange
     handleChange(e);
+  };
+
+  // Handler for normativa changes - separate from postal code changes
+  const handleNormativaChange = (field: string, value: any) => {
+    if (onNormativaChange) {
+      onNormativaChange(field, value);
+    }
   };
 
   // Handler for gas fluorado changes
@@ -223,6 +229,7 @@ const DatosTitularSection = ({
             onExcelUpload={onExcelUpload}
             gasFluorado={gasFluorado}
             codigoPostal={codigoPostal}
+            onNormativaChange={handleNormativaChange}
           />
           <div className="mt-6">
             <ClasificacionSection 
