@@ -61,8 +61,7 @@ const VistaPrevia: React.FC = () => {
 
     // — Refrigerante inicial —
     refrigerante: "R-434A",
-    composicionRefrigerante:
-      "(63,2% R-125 / 18% R-143a / 16% R-134a / 2,8% R-600a)",
+    composicionRefrigerante: "(63,2% R-125 / 18% R-143a / 16% R-134a / 2,8% R-600a)",
     inflamabilidad: "Grupo 1",
     toxicidad: "Grupo A",
     grupoSeguridad: "A1",
@@ -83,7 +82,7 @@ const VistaPrevia: React.FC = () => {
     normativaCompleta: null,
 
     // — Descripción Instalación —
-    descripcionInstalacion: `La instalación está compuesta por ... (texto largo)`,
+    descripcionInstalacion: `La instalación está compuesta por varios muebles frigoríficos tipo mural y dos armarios de congelados, así como tres cámaras de conservación...`,
   });
 
   const [excelData, setExcelData] = useState<any>(null);
@@ -111,7 +110,6 @@ const VistaPrevia: React.FC = () => {
     console.log(`Field changed: ${field}`, value);
 
     if (field === "refrigerante") {
-      // coge toda la info del refrigerante
       const info = refrigerantesData[value];
       if (info) {
         setMemoriaData((prev: any) => ({
@@ -132,10 +130,7 @@ const VistaPrevia: React.FC = () => {
           clasificacionSistema: info.gasFluorado,   // ← también
         }));
       } else {
-        setMemoriaData((prev: any) => ({
-          ...prev,
-          refrigerante: value,
-        }));
+        setMemoriaData((prev: any) => ({ ...prev, refrigerante: value }));
       }
       return;
     }
@@ -158,11 +153,7 @@ const VistaPrevia: React.FC = () => {
       return;
     }
 
-    // resto de campos de texto/select
-    setMemoriaData((prev: any) => ({
-      ...prev,
-      [field]: value,
-    }));
+    setMemoriaData((prev: any) => ({ ...prev, [field]: value }));
   };
 
   // -----------------------------
@@ -173,31 +164,19 @@ const VistaPrevia: React.FC = () => {
   }, [memoriaData]);
 
   // -----------------------------
-  // FILE UPLOAD HANDLERS...
+  // UPLOAD HANDLERS
   // -----------------------------
   const handleExcelUpload = (data: any) => {
-    console.log("Excel data loaded:", data);
     setExcelData(data);
     setExcelVisibleData(data.jsonData || data);
   };
   const handleCalculationsChange = (field: string, value: string) => {
-    console.log(`Calc changed: ${field}`, value);
-    setCalculationsData((prev) => {
-      const next = { ...prev, [field]: value };
-      // lógica adicional...
-      return next;
-    });
+    setCalculationsData((prev) => ({ ...prev, [field]: value }));
   };
-  const handleWordTemplateUpload = (file: File) => {
-    setWordTemplate(file);
-  };
+  const handleWordTemplateUpload = (file: File) => setWordTemplate(file);
   const handleGenerateWordDocument = async () => {
     if (!wordTemplate) {
-      toast({
-        title: "Plantilla no encontrada",
-        description: "Carga primero tu plantilla Word",
-        variant: "destructive",
-      });
+      toast({ title: "Plantilla no encontrada", description: "Carga primero tu plantilla Word", variant: "destructive" });
       return;
     }
     try {
@@ -207,7 +186,6 @@ const VistaPrevia: React.FC = () => {
       await buildWord({ templateArrayBuffer: buf, htmlPreview: html, logoUrl: "/logo.png" });
       toast({ title: "Documento generado" });
     } catch (err: any) {
-      console.error(err);
       toast({ title: "Error", description: err.message, variant: "destructive" });
     }
   };
@@ -227,9 +205,9 @@ const VistaPrevia: React.FC = () => {
         >
           <FormSection
             activeTab={activeTab}
-            setActiveTab={setActiveTab}
+            setActiveTab={(tab: string) => setActiveTab(tab as "form" | "word")}
             activeSubTab={activeSubTab}
-            setActiveSubTab={setActiveSubTab}
+            setActiveSubTab={(sub: string) => setActiveSubTab(sub)}
             onFormChange={handleFormChange}
             onCalculationsChange={handleCalculationsChange}
             onExcelUpload={handleExcelUpload}
