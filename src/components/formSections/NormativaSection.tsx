@@ -62,8 +62,8 @@ const normativaSeguridadSalud = {
 interface NormativaSectionProps {
   onChange?: (field: string, value: any) => void;
   aplicaGasesFluorados?: string;
-  codigoPostal?: string; // Add postal code prop
-  onNormativaChange?: (field: string, value: any) => void; // Add this missing prop
+  codigoPostal?: string;
+  onNormativaChange?: (field: string, value: any) => void;
 }
 
 const NormativaSection = ({ onChange, aplicaGasesFluorados, codigoPostal, onNormativaChange }: NormativaSectionProps) => {
@@ -154,7 +154,6 @@ const NormativaSection = ({ onChange, aplicaGasesFluorados, codigoPostal, onNorm
   const getNormativaAutonomica = () => {
     const comunidad = comunidadesAutonomas.find(c => c.id === comunidadAutonoma);
     if (comunidad) {
-      // Check if the regulation applies to all installations or only to old ones
       if (comunidad.aplicaSiempre || instalacionNueva === "NO") {
         return comunidad.normativa;
       }
@@ -164,6 +163,8 @@ const NormativaSection = ({ onChange, aplicaGasesFluorados, codigoPostal, onNorm
   
   // Function to get all applicable regulations for the current selections
   const getAplicableRegulations = () => {
+    console.log("🔧 getAplicableRegulations called with aplicaGasesFluorados:", aplicaGasesFluorados);
+    
     const regulations = {
       reglamentoRSIF: {
         title: "REGLAMENTOS DE INSTALACIONES FRIGORÍFICAS",
@@ -197,14 +198,12 @@ const NormativaSection = ({ onChange, aplicaGasesFluorados, codigoPostal, onNorm
 
     // Add RSIF regulations
     if (instalacionNueva === "NO") {
-      // For old installations, add the relevant RSIF and current one
       if (rsifAplicable in reglamentosRSIF) {
         regulations.reglamentoRSIF.regulations.push({
           name: rsifAplicable,
           description: reglamentosRSIF[rsifAplicable]
         });
         
-        // Add the current RSIF as well for old installations
         if (rsifAplicable !== "RD 552/2019") {
           regulations.reglamentoRSIF.regulations.push({
             name: "RD 552/2019",
@@ -213,7 +212,6 @@ const NormativaSection = ({ onChange, aplicaGasesFluorados, codigoPostal, onNorm
         }
       }
     } else {
-      // For new installations, just add the current RSIF
       regulations.reglamentoRSIF.regulations.push({
         name: "RD 552/2019",
         description: reglamentosRSIF["RD 552/2019"]
@@ -234,12 +232,16 @@ const NormativaSection = ({ onChange, aplicaGasesFluorados, codigoPostal, onNorm
       regulations.normativasSiempreAplican.regulations.push({ name, description });
     });
     
-    // Add gases fluorados regulations - AUTOMÁTICO
+    // ✅ FIX: Add gases fluorados regulations when aplicaGasesFluorados is "SI"
+    console.log("🔧 Checking gases fluorados. aplicaGasesFluorados:", aplicaGasesFluorados);
     if (aplicaGasesFluorados === "SI") {
-      // If Gases Fluorados is YES, add ALL regulations
+      console.log("🔧 Adding gases fluorados regulations...");
       Object.entries(normativasGasesFluorados).forEach(([name, description]) => {
         regulations.gasesFluorados.regulations.push({ name, description });
       });
+      console.log("🔧 Added", regulations.gasesFluorados.regulations.length, "gases fluorados regulations");
+    } else {
+      console.log("🔧 Not adding gases fluorados regulations (aplicaGasesFluorados is not SI)");
     }
     
     // Add edificación regulations (always apply)
@@ -259,11 +261,13 @@ const NormativaSection = ({ onChange, aplicaGasesFluorados, codigoPostal, onNorm
       regulations.seguridadSalud.regulations.push({ name, description });
     });
     
+    console.log("🔧 Final regulations object:", regulations);
     return regulations;
   };
   
   // Update normativa when any input changes INCLUDING aplicaGasesFluorados
   useEffect(() => {
+    console.log("🔧 useEffect triggered. aplicaGasesFluorados:", aplicaGasesFluorados);
     const regulations = getAplicableRegulations();
     setNormativaCompleta(regulations);
     
@@ -438,8 +442,106 @@ const NormativaSection = ({ onChange, aplicaGasesFluorados, codigoPostal, onNorm
           </div>
         </div>
         
-        {/* Dynamic preview of the normativa */}
-        {renderNormativaPreview()}
+        {/* Dynamic preview section with detailed gases fluorados info */}
+        <div className="mt-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-6">
+              {/* RSIF Section */}
+              {getAplicableRegulations().reglamentoRSIF.regulations.length > 0 && (
+                <div className="space-y-2">
+                  <Label className="font-semibold">REGLAMENTOS DE INSTALACIONES FRIGORÍFICAS</Label>
+                  {getAplicableRegulations().reglamentoRSIF.regulations.map((reg, index) => (
+                    <p key={index} className="text-sm text-gray-500">{reg.name} - {reg.description}</p>
+                  ))}
+                </div>
+              )}
+              
+              {/* Autonomic Section */}
+              {getAplicableRegulations().reglamentoAutonomico.regulations.length > 0 && (
+                <div className="space-y-2">
+                  <Label className="font-semibold">NORMATIVA AUTONÓMICA</Label>
+                  {getAplicableRegulations().reglamentoAutonomico.regulations.map((reg, index) => (
+                    <p key={index} className="text-sm text-gray-500">{reg.name} - {reg.description}</p>
+                  ))}
+                </div>
+              )}
+              
+              {/* Always Apply Section */}
+              <div className="space-y-2">
+                <Label className="font-semibold">NORMATIVA QUE SIEMPRE APLICA</Label>
+                {getAplicableRegulations().normativasSiempreAplican.regulations.map((reg, index) => (
+                  <p key={index} className="text-sm text-gray-500">{reg.name} - {reg.description}</p>
+                ))}
+              </div>
+              
+              {/* Gases Fluorados Section - FIXED */}
+              <div className="space-y-2">
+                <Label className="font-semibold">NORMATIVA GASES FLUORADOS</Label>
+                <Input 
+                  value={aplicaGasesFluorados === "SI" ? "SI (Automático según refrigerante)" : 
+                         aplicaGasesFluorados === "NO" ? "NO (Automático según refrigerante)" : ""}
+                  readOnly
+                  className="bg-gray-50"
+                />
+                {aplicaGasesFluorados === "NO" && (
+                  <p className="text-sm text-gray-500 mt-2">No aplica - Refrigerante no es gas fluorado</p>
+                )}
+                {aplicaGasesFluorados === "SI" && (
+                  <>
+                    <p className="text-sm text-green-600 mt-2">✓ Aplica - Refrigerante es gas fluorado</p>
+                    {getAplicableRegulations().gasesFluorados.regulations.map((reg, index) => (
+                      <p key={index} className="text-sm text-gray-500">{reg.name} - {reg.description}</p>
+                    ))}
+                  </>
+                )}
+              </div>
+            </div>
+            
+            <div className="space-y-6">
+              {/* Edificación Section */}
+              <div className="space-y-2">
+                <Label className="font-semibold">NORMATIVA EDIFICACIÓN</Label>
+                {getAplicableRegulations().edificacion.regulations.map((reg, index) => (
+                  <p key={index} className="text-sm text-gray-500">{reg.name} - {reg.description}</p>
+                ))}
+              </div>
+              
+              {/* Legionela Section */}
+              <div className="space-y-2">
+                <Label className="font-semibold">NORMATIVA LEGIONELOSIS</Label>
+                <Select 
+                  value={aplicaLegionela} 
+                  onValueChange={setAplicaLegionela}
+                  id="legionela_select"
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Seleccionar" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="SI">SI</SelectItem>
+                    <SelectItem value="NO">NO</SelectItem>
+                  </SelectContent>
+                </Select>
+                {aplicaLegionela === "SI" && (
+                  getAplicableRegulations().legionela.regulations.map((reg, index) => (
+                    <p key={index} className="text-sm text-gray-500">{reg.name} - {reg.description}</p>
+                  ))
+                )}
+                {aplicaLegionela === "NO" && (
+                  <p className="text-sm text-gray-500 mt-2">No aplica</p>
+                )}
+              </div>
+              
+              {/* Seguridad y Salud Section */}
+              <div className="space-y-2">
+                <Label className="font-semibold">NORMATIVA SEGURIDAD Y SALUD</Label>
+                {getAplicableRegulations().seguridadSalud.regulations.map((reg, index) => (
+                  <p key={index} className="text-sm text-gray-500">{reg.name} - {reg.description}</p>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
         
         {/* Hidden input to store the full regulation data for form submission */}
         <input 
