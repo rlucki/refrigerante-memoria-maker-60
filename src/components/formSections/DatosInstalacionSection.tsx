@@ -87,12 +87,11 @@ const DatosInstalacionSection = ({
       <Separator className="my-6" />
 
       {/* Pass both gas fluorado and postal code to NormativaSection */}
-      <NormativaSection 
-        onChange={onChange} 
-        aplicaGasesFluorados={gasFluorado}
-        codigoPostal={codigoPostal}
-        onNormativaChange={onNormativaChange}
-      />
+      <NormativaSection
+      gasFluorado={formData.gasFluorado}
+      codigoPostal={formData.cpInstalacion}
+      onNormativaChange={onChange}
+    />
     </div>
   );
 };
