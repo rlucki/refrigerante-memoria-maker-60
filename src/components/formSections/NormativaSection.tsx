@@ -9,7 +9,7 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
+import { postalCodeToCommunity } from "@/data/postalCodeMapping";
 
 // Define regulation descriptions
 const reglamentosRSIF = {
@@ -61,15 +61,15 @@ const normativaSeguridadSalud = {
 
 interface NormativaSectionProps {
   onChange?: (field: string, value: any) => void;
-  aplicaGasesFluorados?: string; // Recibe el valor automáticamente
+  aplicaGasesFluorados?: string;
+  codigoPostal?: string; // Add postal code prop
 }
 
-const NormativaSection = ({ onChange, aplicaGasesFluorados }: NormativaSectionProps) => {
+const NormativaSection = ({ onChange, aplicaGasesFluorados, codigoPostal }: NormativaSectionProps) => {
   const [comunidadAutonoma, setComunidadAutonoma] = useState("CATALUNYA");
   const [instalacionNueva, setInstalacionNueva] = useState("SI");
   const [periodoInstalacionSeleccionado, setPeriodoInstalacionSeleccionado] = useState("nueva");
   const [aplicaLegionela, setAplicaLegionela] = useState("SI");
-  // Eliminamos el estado local para gases fluorados, ahora viene como prop
   const [rsifAplicable, setRsifAplicable] = useState("RD 552/2019");
   const [normativaCompleta, setNormativaCompleta] = useState({});
   
@@ -102,6 +102,15 @@ const NormativaSection = ({ onChange, aplicaGasesFluorados }: NormativaSectionPr
     { id: "desde_2020", nombre: "A partir de 2020", rsif: "RD 552/2019" },
     { id: "nueva", nombre: "Nueva", rsif: "RD 552/2019" },
   ];
+  
+  // Auto-set comunidad autonoma based on postal code
+  useEffect(() => {
+    if (codigoPostal) {
+      const detectedCommunity = postalCodeToCommunity(codigoPostal);
+      setComunidadAutonoma(detectedCommunity);
+      console.log("Auto-detected community based on postal code:", codigoPostal, "->", detectedCommunity);
+    }
+  }, [codigoPostal]);
   
   // Update installation period when the installation status changes
   useEffect(() => {
@@ -351,23 +360,16 @@ const NormativaSection = ({ onChange, aplicaGasesFluorados }: NormativaSectionPr
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <Label htmlFor="comunidad_autonoma_select">Comunidad Autónoma</Label>
-            <Select 
-              value={comunidadAutonoma} 
-              onValueChange={setComunidadAutonoma}
-              id="comunidad_autonoma_select"
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Seleccionar comunidad autónoma" />
-              </SelectTrigger>
-              <SelectContent>
-                {comunidadesAutonomas.map(comunidad => (
-                  <SelectItem key={comunidad.id} value={comunidad.id}>
-                    {comunidad.nombre}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Label htmlFor="comunidad_autonoma_display">Comunidad Autónoma (automático según C.P.)</Label>
+            <Input 
+              id="comunidad_autonoma_display"
+              value={comunidadesAutonomas.find(c => c.id === comunidadAutonoma)?.nombre || ""}
+              readOnly
+              className="bg-gray-50"
+            />
+            {codigoPostal && (
+              <p className="text-sm text-green-600">✓ Detectado automáticamente desde C.P. {codigoPostal}</p>
+            )}
           </div>
           
           <div className="space-y-2">
@@ -377,6 +379,7 @@ const NormativaSection = ({ onChange, aplicaGasesFluorados }: NormativaSectionPr
               placeholder="Normativa" 
               value={getNormativaAutonomica()}
               readOnly
+              className="bg-gray-50"
             />
           </div>
         </div>
@@ -436,7 +439,7 @@ const NormativaSection = ({ onChange, aplicaGasesFluorados }: NormativaSectionPr
         
         {/* Dynamic preview of the normativa */}
         {renderNormativaPreview()}
-
+        
         {/* Hidden input to store the full regulation data for form submission */}
         <input 
           type="hidden" 
