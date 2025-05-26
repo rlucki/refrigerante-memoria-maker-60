@@ -28,7 +28,7 @@ interface MemoriaPreviewNormativaProps {
     /** Permite inyectar toda la normativa ya procesada si se desea */
     normativaCompleta?: NormativaData | null;
     /** Valor "SI" / "NO" calculado en el formulario a partir del refrigerante */
-    gasFluorado?: "SI" | "NO";
+    gasFluorado?: string;
     /** Otros posibles metadatos (se mantienen por compatibilidad) */
     comunidadAutonoma?: string;
     instalacionNueva?: string;
