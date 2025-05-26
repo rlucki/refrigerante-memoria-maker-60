@@ -61,20 +61,16 @@ const normativaSeguridadSalud = {
 
 interface NormativaSectionProps {
   onChange?: (field: string, value: any) => void;
-  gasFluoradoValue?: string; // Add prop to receive the manual gasFluorado value
 }
 
-const NormativaSection = ({ onChange, gasFluoradoValue }: NormativaSectionProps) => {
+const NormativaSection = ({ onChange }: NormativaSectionProps) => {
   const [comunidadAutonoma, setComunidadAutonoma] = useState("CATALUNYA");
   const [instalacionNueva, setInstalacionNueva] = useState("SI");
   const [periodoInstalacionSeleccionado, setPeriodoInstalacionSeleccionado] = useState("nueva");
   const [aplicaLegionela, setAplicaLegionela] = useState("SI");
-  // Remove local aplicaGasesFluorados state - use the prop instead
+  const [aplicaGasesFluorados, setAplicaGasesFluorados] = useState("NO");
   const [rsifAplicable, setRsifAplicable] = useState("RD 552/2019");
   const [normativaCompleta, setNormativaCompleta] = useState({});
-  
-  // Use gasFluoradoValue prop or default to "NO"
-  const aplicaGasesFluorados = gasFluoradoValue === "SI" ? "SI" : "NO";
   
   const comunidadesAutonomas = [
     { id: "ANDALUCIA", nombre: "ANDALUCÍA", normativa: "Decreto-Ley 4/2023", aplicaSiempre: true },
@@ -163,7 +159,7 @@ const NormativaSection = ({ onChange, gasFluoradoValue }: NormativaSectionProps)
         regulations: []
       },
       reglamentoAutonomico: {
-        title: "NORMATIVA AUTONÓMICA", 
+        title: "NORMATIVA AUTONÓMICA",
         regulations: []
       },
       normativasSiempreAplican: {
@@ -227,7 +223,7 @@ const NormativaSection = ({ onChange, gasFluoradoValue }: NormativaSectionProps)
       regulations.normativasSiempreAplican.regulations.push({ name, description });
     });
     
-    // Add gases fluorados regulations based on the manual selection
+    // Add gases fluorados regulations
     if (aplicaGasesFluorados === "SI") {
       // If Gases Fluorados is YES, add ALL regulations
       Object.entries(normativasGasesFluorados).forEach(([name, description]) => {
@@ -255,7 +251,7 @@ const NormativaSection = ({ onChange, gasFluoradoValue }: NormativaSectionProps)
     return regulations;
   };
   
-  // Update normativa when any input changes (including gasFluoradoValue)
+  // Update normativa when any input changes
   useEffect(() => {
     const regulations = getAplicableRegulations();
     setNormativaCompleta(regulations);
@@ -264,7 +260,7 @@ const NormativaSection = ({ onChange, gasFluoradoValue }: NormativaSectionProps)
     if (onChange) {
       onChange('normativaCompleta', regulations);
     }
-  }, [comunidadAutonoma, instalacionNueva, periodoInstalacionSeleccionado, aplicaLegionela, gasFluoradoValue]);
+  }, [comunidadAutonoma, instalacionNueva, periodoInstalacionSeleccionado, aplicaLegionela, aplicaGasesFluorados]);
   
   // Render a normativa section with its regulations
   const renderNormativaSection = (title: string, regulations: any[]) => {
@@ -296,9 +292,19 @@ const NormativaSection = ({ onChange, gasFluoradoValue }: NormativaSectionProps)
             
             <div className="space-y-2">
               <Label className="font-semibold">NORMATIVA GASES FLUORADOS</Label>
-              <p className="text-sm text-gray-600">
-                Controlado por la selección manual en el ítem 10: {aplicaGasesFluorados}
-              </p>
+              <Select 
+                value={aplicaGasesFluorados} 
+                onValueChange={setAplicaGasesFluorados}
+                id="gases_fluorados_select"
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Seleccionar" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="SI">SI</SelectItem>
+                  <SelectItem value="NO">NO</SelectItem>
+                </SelectContent>
+              </Select>
               {aplicaGasesFluorados === "NO" && (
                 <p className="text-sm text-gray-500 mt-2">No aplica</p>
               )}

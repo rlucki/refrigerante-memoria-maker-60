@@ -21,11 +21,6 @@ interface SistemaData {
   limiteInflamabilidad: string;
   temperaturaAutoignicion: string;
   gasFluorado: string;
-  metodoEnfriamiento: string;
-  seguridadSistema: string;
-  categoriaLocal: string;
-  nivelInstalacion: string;
-  documentoNecesario: string;
   [key: string]: string;
 }
 
@@ -43,15 +38,10 @@ const useRefrigeranteData = ({ onChange, onGasFluoradoChange }: UseRefrigeranteD
     atelOdl: "",
     limiteInflamabilidad: "",
     temperaturaAutoignicion: "",
-    gasFluorado: "NO",
-    metodoEnfriamiento: "",
-    seguridadSistema: "",
-    categoriaLocal: "",
-    nivelInstalacion: "",
-    documentoNecesario: "",
+    gasFluorado: "",
   });
 
-  // Update refrigerant properties when refrigerant changes (WITHOUT gasFluorado)
+  // Update refrigerant properties when refrigerant changes
   const updateRefrigerantProperties = (refrigeranteName: string) => {
     if (!refrigeranteName) return;
 
@@ -78,6 +68,17 @@ const useRefrigeranteData = ({ onChange, onGasFluoradoChange }: UseRefrigeranteD
       setSistemaData(prev => ({ ...prev, [field]: value }));
       notifyChange(field, value);
     });
+
+    // Handle gasFluorado separately as it needs special notification
+    const gasFluorado = refrigerante.gasFluorado || "";
+    setSistemaData(prev => ({ ...prev, gasFluorado }));
+    console.log("Setting gasFluorado from refrigerant to:", gasFluorado);
+    notifyChange("gasFluorado", gasFluorado);
+    
+    if (onGasFluoradoChange) {
+      onGasFluoradoChange("gasFluorado", gasFluorado);
+      console.log("Updated gasFluorado and clasificacionSistema to:", gasFluorado);
+    }
   };
 
   // Generic handler for select changes
@@ -88,6 +89,13 @@ const useRefrigeranteData = ({ onChange, onGasFluoradoChange }: UseRefrigeranteD
     } else {
       setSistemaData(prev => ({ ...prev, [field]: value }));
       notifyChange(field, value);
+      
+      // Special case for gasFluorado
+      if (field === "gasFluorado" && onGasFluoradoChange) {
+        onGasFluoradoChange(field, value);
+        console.log("Field changed:", field, value);
+        console.log("Updated gasFluorado and clasificacionSistema to:", value);
+      }
     }
   };
 
