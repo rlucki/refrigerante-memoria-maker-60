@@ -7,8 +7,8 @@ import DatosInstaladorSection from "./DatosInstaladorSection";
 import DatosInstalacionSection from "./DatosInstalacionSection";
 import DatosTecnicosSection from "./DatosTecnicosSection";
 import ClasificacionSection from "./ClasificacionSection";
-import { ExcelCalculationsForm } from "../ExcelCalculationsForm";
-import { ExcelDataViewer } from "../ExcelDataViewer";
+import ExcelCalculationsForm from "../ExcelCalculationsForm";
+import ExcelDataViewer from "../ExcelDataViewer";
 
 interface DatosTitularSectionProps {
   onChange?: (e: React.ChangeEvent<HTMLInputElement> | { id: string, value: string }) => void;
@@ -27,7 +27,7 @@ const DatosTitularSection = ({
 }: DatosTitularSectionProps) => {
   const [activeSubTab, setActiveSubTab] = useState("titular");
   const [codigoPostal, setCodigoPostal] = useState("");
-  const [gasFluorado, setGasFluorado] = useState("SI"); // Estado local para gas fluorado
+  const [gasFluorado, setGasFluorado] = useState("SI");
 
   // Handle postal code changes and propagate them
   const handlePostalCodeChange = (e: React.ChangeEvent<HTMLInputElement> | { id: string, value: string }) => {
@@ -104,7 +104,7 @@ const DatosTitularSection = ({
             onChange={handleInstalacionChange}
             onCalculationsChange={onCalculationsChange}
             onExcelUpload={onExcelUpload}
-            gasFluorado={gasFluorado} // Pasar el estado actual
+            gasFluorado={gasFluorado}
             codigoPostal={codigoPostal}
             onNormativaChange={onNormativaChange}
           />
