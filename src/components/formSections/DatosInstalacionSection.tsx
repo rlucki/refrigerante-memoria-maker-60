@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
@@ -9,81 +9,59 @@ interface DatosInstalacionSectionProps {
   onChange?: (field: string, value: any) => void;
   onCalculationsChange?: (field: string, value: string) => void;
   onExcelUpload?: (data: any) => void;
-  gasFluorado?: string;
-  codigoPostal?: string;
-  onNormativaChange?: (field: string, value: any) => void;
+  gasFluorado: string;
+  codigoPostal: string;
 }
 
 const DatosInstalacionSection: React.FC<DatosInstalacionSectionProps> = ({
   onChange,
   onCalculationsChange,
   onExcelUpload,
-  gasFluorado = "NO",
-  codigoPostal = "",
-  onNormativaChange,
+  gasFluorado,
+  codigoPostal,
 }) => {
+  // Notificar cambio de código postal al formulario
+  useEffect(() => {
+    onChange?.("cpInstalacion", codigoPostal);
+  }, [codigoPostal, onChange]);
+
+  // Configuración de campos de entrada
+  const fields = [
+    { id: "nombreInstalacion", label: "Nombre de la instalación", defaultValue: "Instalación frigorífica DINOSOL Costa del Silencio (Arona)" },
+    { id: "ubicacion", label: "Ubicación", defaultValue: "C/ EL MOJÓN, S/N" },
+    { id: "poblacionInstalacion", label: "Población", defaultValue: "COSTA DEL SILENCIO (ARONA)" },
+    { id: "provinciaInstalacion", label: "Provincia", defaultValue: "SANTA CRUZ DE TENERIFE" },
+    { id: "cpInstalacion", label: "C.P.", defaultValue: codigoPostal },
+  ];
+
   return (
     <div className="space-y-6">
       <Card>
         <div className="p-6">
           <h3 className="text-lg font-medium mb-4">2.- DATOS DE LA INSTALACIÓN</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <Label htmlFor="nombreInstalacion">Nombre de la instalación</Label>
-              <Input
-                id="nombreInstalacion"
-                placeholder="Nombre de la instalación"
-                defaultValue="Instalación frigorífica DINOSOL Costa del Silencio (Arona)"
-                onChange={e => onChange?.(e.target.id, e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="ubicacion">Ubicación</Label>
-              <Input
-                id="ubicacion"
-                placeholder="Ubicación"
-                defaultValue="C/ EL MOJÓN, S/N"
-                onChange={e => onChange?.(e.target.id, e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="poblacionInstalacion">Población</Label>
-              <Input
-                id="poblacionInstalacion"
-                placeholder="Población"
-                defaultValue="COSTA DEL SILENCIO (ARONA)"
-                onChange={e => onChange?.(e.target.id, e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="provinciaInstalacion">Provincia</Label>
-              <Input
-                id="provinciaInstalacion"
-                placeholder="Provincia"
-                defaultValue="SANTA CRUZ DE TENERIFE"
-                onChange={e => onChange?.(e.target.id, e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="cpInstalacion">C.P.</Label>
-              <Input
-                id="cpInstalacion"
-                placeholder="Código postal"
-                defaultValue="38640"
-                onChange={e => onChange?.(e.target.id, e.target.value)}
-              />
-            </div>
+            {fields.map(field => (
+              <div key={field.id} className="space-y-2">
+                <Label htmlFor={field.id}>{field.label}</Label>
+                <Input
+                  id={field.id}
+                  value={field.id === "cpInstalacion" ? codigoPostal : undefined}
+                  defaultValue={field.defaultValue}
+                  onChange={e => onChange?.(e.target.id, e.target.value)}
+                />
+              </div>
+            ))}
           </div>
         </div>
       </Card>
 
       <Separator className="my-6" />
 
-      {/* Normativa basada en gas fluorado y código postal */}
+      {/* Sección de normativa ligada a gases fluorados y CP */}
       <NormativaSection
         gasFluorado={gasFluorado}
         codigoPostal={codigoPostal}
-        onNormativaChange={onNormativaChange}
+        onNormativaChange={(field, value) => onChange?.(field, value)}
       />
     </div>
   );
