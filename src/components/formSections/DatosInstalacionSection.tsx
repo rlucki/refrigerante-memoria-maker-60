@@ -11,6 +11,7 @@ interface DatosInstalacionSectionProps {
   onExcelUpload?: (data: any) => void;
   gasFluorado: string;
   codigoPostal: string;
+  onNormativaChange?: (field: string, value: any) => void;
 }
 
 const DatosInstalacionSection: React.FC<DatosInstalacionSectionProps> = ({
