@@ -13,42 +13,13 @@ interface DatosInstalacionSectionProps {
   codigoPostal: string;
 }
 
-const DatosInstalacionSection: React.FC<DatosInstalacionSectionProps> = ({
-  onChange,
-  onCalculationsChange,
-  onExcelUpload,
-  gasFluorado,
-  codigoPostal,
-}) => {
-  // Notificar cambio de código postal al formulario
-  useEffect(() => {
-    onChange?.("cpInstalacion", codigoPostal);
-  }, [codigoPostal, onChange]);
-
-  // Configuración de campos de entrada
-  const fields = [
-    { id: "nombreInstalacion", label: "Nombre de la instalación", defaultValue: "Instalación frigorífica DINOSOL Costa del Silencio (Arona)" },
-    { id: "ubicacion", label: "Ubicación", defaultValue: "C/ EL MOJÓN, S/N" },
-    { id: "poblacionInstalacion", label: "Población", defaultValue: "COSTA DEL SILENCIO (ARONA)" },
-    { id: "provinciaInstalacion", label: "Provincia", defaultValue: "SANTA CRUZ DE TENERIFE" },
-    { id: "cpInstalacion", label: "C.P.", defaultValue: codigoPostal },
-  ];
-
-  return (
-    <div className="space-y-6">
-      <Card>
-        <div className="p-6">
-          <h3 className="text-lg font-medium mb-4">2.- DATOS DE LA INSTALACIÓN</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {fields.map(field => (
-              <div key={field.id} className="space-y-2">
-                <Label htmlFor={field.id}>{field.label}</Label>
-                <Input
-                  id={field.id}
-                  value={field.id === "cpInstalacion" ? codigoPostal : undefined}
-                  defaultValue={field.defaultValue}
-                  onChange={e => onChange?.(e.target.id, e.target.value)}
-                />
+const DatosInstalacionSection: React.FC<DatosInstalacionSection
+  onChange={onChange}
+  onCalculationsChange={onCalculationsChange}
+  onExcelUpload={onExcelUpload}
+  gasFluorado={formData.gasFluorado}
+  codigoPostal={formData.cpInstalacion}
+/>
               </div>
             ))}
           </div>
