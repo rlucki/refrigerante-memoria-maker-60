@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -29,6 +28,8 @@ const NormativaDisplay: React.FC<NormativaDisplayProps> = ({
   codigoPostal, 
   onNormativaChange 
 }) => {
+  console.log("🔍 NormativaDisplay received aplicaGasesFluorados:", aplicaGasesFluorados);
+  
   const {
     comunidadAutonoma,
     instalacionNueva,

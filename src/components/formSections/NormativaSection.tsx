@@ -4,7 +4,7 @@ import NormativaDisplay from "./normativa/NormativaDisplay";
 
 interface NormativaSectionProps {
   onChange?: (field: string, value: any) => void;
-  aplicaGasesFluorados?: string;
+  aplicaGasesFluorados?: string; // ✓ Cambiamos el nombre de la prop
   codigoPostal?: string;
   onNormativaChange?: (field: string, value: any) => void;
 }

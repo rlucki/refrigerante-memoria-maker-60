@@ -11,8 +11,8 @@ interface DatosInstalacionSectionProps {
   onCalculationsChange?: (field: string, value: string) => void;
   onExcelUpload?: (data: any) => void;
   gasFluorado?: string;
-  codigoPostal?: string; // Add postal code prop
-  onNormativaChange?: (field: string, value: any) => void; // Add this missing prop
+  codigoPostal?: string;
+  onNormativaChange?: (field: string, value: any) => void;
 }
 
 const DatosInstalacionSection = ({ 
@@ -86,7 +86,7 @@ const DatosInstalacionSection = ({
 
       <Separator className="my-6" />
 
-      {/* Pass both gas fluorado and postal code to NormativaSection */}
+      {/* ✓ Cambiamos gasFluorado por aplicaGasesFluorados */}
       <NormativaSection 
         onChange={onChange} 
         aplicaGasesFluorados={gasFluorado}
