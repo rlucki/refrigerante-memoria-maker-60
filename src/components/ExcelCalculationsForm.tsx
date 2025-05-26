@@ -17,12 +17,16 @@ import {
 
 interface ExcelCalculationsFormProps {
   onChange?: (field: string, value: string) => void;
+  onCalculationsChange?: (field: string, value: string) => void;
 }
 
-const ExcelCalculationsForm: React.FC<ExcelCalculationsFormProps> = ({ onChange }) => {
+const ExcelCalculationsForm: React.FC<ExcelCalculationsFormProps> = ({ onChange, onCalculationsChange }) => {
   const handleSelectChange = (field: string, value: string) => {
     if (onChange) {
       onChange(field, value);
+    }
+    if (onCalculationsChange) {
+      onCalculationsChange(field, value);
     }
   };
 
@@ -30,11 +34,17 @@ const ExcelCalculationsForm: React.FC<ExcelCalculationsFormProps> = ({ onChange 
     if (onChange) {
       onChange(field, value);
     }
+    if (onCalculationsChange) {
+      onCalculationsChange(field, value);
+    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (onChange) {
       onChange(e.target.id, e.target.value);
+    }
+    if (onCalculationsChange) {
+      onCalculationsChange(e.target.id, e.target.value);
     }
   };
 
