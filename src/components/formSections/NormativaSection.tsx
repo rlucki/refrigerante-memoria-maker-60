@@ -63,9 +63,10 @@ interface NormativaSectionProps {
   onChange?: (field: string, value: any) => void;
   aplicaGasesFluorados?: string;
   codigoPostal?: string; // Add postal code prop
+  onNormativaChange?: (field: string, value: any) => void; // Add this missing prop
 }
 
-const NormativaSection = ({ onChange, aplicaGasesFluorados, codigoPostal }: NormativaSectionProps) => {
+const NormativaSection = ({ onChange, aplicaGasesFluorados, codigoPostal, onNormativaChange }: NormativaSectionProps) => {
   const [comunidadAutonoma, setComunidadAutonoma] = useState("CATALUNYA");
   const [instalacionNueva, setInstalacionNueva] = useState("SI");
   const [periodoInstalacionSeleccionado, setPeriodoInstalacionSeleccionado] = useState("nueva");
@@ -267,10 +268,10 @@ const NormativaSection = ({ onChange, aplicaGasesFluorados, codigoPostal }: Norm
     setNormativaCompleta(regulations);
     
     // Notify parent component about normativa changes
-    if (onChange) {
-      onChange('normativaCompleta', regulations);
+    if (onNormativaChange) {
+      onNormativaChange('normativaCompleta', regulations);
     }
-  }, [comunidadAutonoma, instalacionNueva, periodoInstalacionSeleccionado, aplicaLegionela, aplicaGasesFluorados]);
+  }, [comunidadAutonoma, instalacionNueva, periodoInstalacionSeleccionado, aplicaLegionela, aplicaGasesFluorados, onNormativaChange]);
   
   // Render a normativa section with its regulations
   const renderNormativaSection = (title: string, regulations: any[]) => {
