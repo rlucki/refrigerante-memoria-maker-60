@@ -155,7 +155,8 @@ const defaultNormativa: NormativaData = {
 // -----------------------------------------------------------------------------
 const MemoriaPreviewNormativa: React.FC<MemoriaPreviewNormativaProps> = ({ data }) => {
   // ¿Aplica normativa de gases fluorados?
-  const aplicaFluorados = data.gasFluorado === "SI";
+  const aplicaFluorados =
+  (data.gasFluorado || "").trim().toUpperCase() === "SI";
 
   // Normativa base (prop o por defecto)
   const normativaBase = data.normativaCompleta || defaultNormativa;
