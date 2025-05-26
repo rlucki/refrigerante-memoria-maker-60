@@ -24,10 +24,11 @@ const ClasificacionSection = ({ onChange, onGasFluoradoChange }: ClasificacionSe
         <h3 className="text-lg font-medium mb-4">CLASIFICACIÓN DEL SISTEMA</h3>
         
         <div className="space-y-6 classification-section">
-          {/* Clasificación del sistema */}
+          {/* Clasificación del sistema - incluye la pregunta principal de gas fluorado */}
           <ClasificacionSistemaTable 
             metodoEnfriamiento={sistemaData.metodoEnfriamiento}
             seguridadSistema={sistemaData.seguridadSistema}
+            gasFluorado={sistemaData.gasFluorado}
             onSelectChange={handleSelectChange}
           />
 
@@ -37,7 +38,7 @@ const ClasificacionSection = ({ onChange, onGasFluoradoChange }: ClasificacionSe
             onSelectChange={handleSelectChange}
           />
 
-          {/* Refrigerante */}
+          {/* Refrigerante - sin la pregunta duplicada de gas fluorado */}
           <RefrigeranteTable 
             sistemaData={sistemaData}
             onSelectChange={handleSelectChange}

@@ -1,224 +1,117 @@
 
+import React from "react";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { refrigerantes, inflamabilidadOpciones, toxicidadOpciones } from "@/data/refrigerantsData";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { refrigerantes } from "@/data/refrigerantsData";
 
 interface RefrigeranteTableProps {
-  sistemaData: {
-    refrigerante: string;
-    composicionRefrigerante: string;
-    inflamabilidad: string;
-    toxicidad: string;
-    grupoSeguridad: string;
-    directivaEquipos: string;
-    pca: string;
-    agotamientoOzono: string;
-    limitePractico: string;
-    atelOdl: string;
-    limiteInflamabilidad: string;
-    temperaturaAutoignicion: string;
-    gasFluorado: string;
-  };
+  sistemaData: any;
   onSelectChange: (field: string, value: string) => void;
   onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const RefrigeranteTable = ({ sistemaData, onSelectChange, onInputChange }: RefrigeranteTableProps) => {
   return (
-    <div className="border-b pb-4 classification-section">
-      <table className="w-full border-collapse classification-table">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="text-left p-2 border">Parámetro</th>
-            <th className="text-left p-2 border">Valor</th>
-            <th className="text-left p-2 border">Resultado</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td className="p-2 border font-medium">Refrigerante</td>
-            <td className="p-2 border">
-              <Select 
-                value={sistemaData.refrigerante} 
-                onValueChange={(value) => onSelectChange("refrigerante", value)}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Seleccionar refrigerante" />
-                </SelectTrigger>
-                <SelectContent>
-                  {refrigerantes.map((ref) => (
-                    <SelectItem key={ref} value={ref}>
-                      {ref}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </td>
-            <td className="p-2 border">
-              <Input
-                id="composicionRefrigerante"
-                value={sistemaData.composicionRefrigerante}
-                onChange={onInputChange}
-                className="w-full"
-                readOnly
-              />
-            </td>
-          </tr>
-          <tr>
-            <td className="p-2 border">- Clasificación en función de su inflamabilidad:</td>
-            <td className="p-2 border" colSpan={2}>
-              <Select 
-                value={sistemaData.inflamabilidad}
-                onValueChange={(value) => onSelectChange("inflamabilidad", value)}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Seleccionar grupo" />
-                </SelectTrigger>
-                <SelectContent>
-                  {inflamabilidadOpciones.map((opcion) => (
-                    <SelectItem key={opcion.value} value={opcion.value}>
-                      {opcion.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </td>
-          </tr>
-          <tr>
-            <td className="p-2 border">- Clasificación en función de su toxicidad:</td>
-            <td className="p-2 border" colSpan={2}>
-              <Select 
-                value={sistemaData.toxicidad} 
-                onValueChange={(value) => onSelectChange("toxicidad", value)}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Seleccionar grupo" />
-                </SelectTrigger>
-                <SelectContent>
-                  {toxicidadOpciones.map((opcion) => (
-                    <SelectItem key={opcion.value} value={opcion.value}>
-                      {opcion.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </td>
-          </tr>
-          <tr>
-            <td className="p-2 border">- Grupo de seguridad:</td>
-            <td className="p-2 border" colSpan={2}>
-              <Input
-                id="grupoSeguridad"
-                value={sistemaData.grupoSeguridad}
-                onChange={onInputChange}
-                className="w-full"
-                readOnly
-              />
-            </td>
-          </tr>
-          <tr>
-            <td className="p-2 border">- Clasificación según Directiva de Equipos a Presión:</td>
-            <td className="p-2 border" colSpan={2}>
-              <Input
-                id="directivaEquipos"
-                value={sistemaData.directivaEquipos}
-                onChange={onInputChange}
-                className="w-full"
-                readOnly
-              />
-            </td>
-          </tr>
-          <tr>
-            <td className="p-2 border">- Potencial de calentamiento atmosférico (PCA):</td>
-            <td className="p-2 border" colSpan={2}>
-              <Input
-                id="pca"
-                value={sistemaData.pca}
-                onChange={onInputChange}
-                className="w-full"
-                readOnly
-              />
-            </td>
-          </tr>
-          <tr>
-            <td className="p-2 border">- Potencial de agotamiento de la capa de ozono (PAO):</td>
-            <td className="p-2 border" colSpan={2}>
-              <Input
-                id="agotamientoOzono"
-                value={sistemaData.agotamientoOzono}
-                onChange={onInputChange}
-                className="w-full"
-                readOnly
-              />
-            </td>
-          </tr>
-          <tr>
-            <td className="p-2 border">- Límite práctico admisible:</td>
-            <td className="p-2 border" colSpan={2}>
-              <Input
-                id="limitePractico"
-                value={sistemaData.limitePractico}
-                onChange={onInputChange}
-                className="w-full"
-                readOnly
-              />
-            </td>
-          </tr>
-          <tr>
-            <td className="p-2 border">- ATEL/ODL:</td>
-            <td className="p-2 border" colSpan={2}>
-              <Input
-                id="atelOdl"
-                value={sistemaData.atelOdl}
-                onChange={onInputChange}
-                className="w-full"
-                readOnly
-              />
-            </td>
-          </tr>
-          <tr>
-            <td className="p-2 border">- Límite inferior de inflamabilidad (LII):</td>
-            <td className="p-2 border" colSpan={2}>
-              <Input
-                id="limiteInflamabilidad"
-                value={sistemaData.limiteInflamabilidad}
-                onChange={onInputChange}
-                className="w-full"
-                readOnly
-              />
-            </td>
-          </tr>
-          <tr>
-            <td className="p-2 border">- Temperatura de autoignición:</td>
-            <td className="p-2 border" colSpan={2}>
-              <Input
-                id="temperaturaAutoignicion"
-                value={sistemaData.temperaturaAutoignicion}
-                onChange={onInputChange}
-                className="w-full"
-                readOnly
-              />
-            </td>
-          </tr>
-          <tr>
-            <td className="p-2 border">- Gas fluorado:</td>
-            <td className="p-2 border" colSpan={2}>
-              <Select 
-                value={sistemaData.gasFluorado} 
-                onValueChange={(value) => onSelectChange("gasFluorado", value)}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Seleccionar" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="SI">SI</SelectItem>
-                  <SelectItem value="NO">NO</SelectItem>
-                </SelectContent>
-              </Select>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div className="space-y-4">
+      <h4 className="text-md font-medium">REFRIGERANTE</h4>
+      
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse border border-gray-300">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="border border-gray-300 p-2 text-left">Parámetro</th>
+              <th className="border border-gray-300 p-2 text-left">Valor</th>
+              <th className="border border-gray-300 p-2 text-left">Resultado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td className="border border-gray-300 p-2">Refrigerante</td>
+              <td className="border border-gray-300 p-2">
+                <Select
+                  value={sistemaData.refrigerante}
+                  onValueChange={(val) => onSelectChange("refrigerante", val)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Seleccionar..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {refrigerantes.map(r => (
+                      <SelectItem key={r} value={r}>
+                        {r}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </td>
+              <td className="border border-gray-300 p-2">
+                <Input
+                  value={sistemaData.composicionRefrigerante || ""}
+                  readOnly
+                  className="bg-gray-50"
+                />
+              </td>
+            </tr>
+            
+            {[
+              ["inflamabilidad", "- Clasificación en función de su inflamabilidad:"],
+              ["toxicidad", "- Clasificación en función de su toxicidad:"],
+              ["grupoSeguridad", "- Grupo de seguridad:"],
+              ["directivaEquipos", "- Clasificación según Directiva de Equipos a Presión:"],
+              ["pca", "- Potencial de calentamiento atmosférico (PCA):"],
+              ["agotamientoOzono", "- Potencial de agotamiento de la capa de ozono (PAO):"],
+              ["limitePractico", "- Límite práctico admisible:"],
+              ["atelOdl", "- ATEL/ODL:"],
+              ["limiteInflamabilidad", "- Límite inferior de inflamabilidad (LII):"],
+              ["temperaturaAutoignicion", "- Temperatura de autoignición:"],
+            ].map(([field, label]) => (
+              <tr key={field}>
+                <td className="border border-gray-300 p-2">{label}</td>
+                <td className="border border-gray-300 p-2">
+                  {field === "inflamabilidad" || field === "toxicidad" ? (
+                    <Select
+                      value={(sistemaData as any)[field] || ""}
+                      onValueChange={(val) => onSelectChange(field, val)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Seleccionar grupo" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {field === "inflamabilidad" ? (
+                          <>
+                            <SelectItem value="Grupo 1">Grupo 1</SelectItem>
+                            <SelectItem value="Grupo 2">Grupo 2</SelectItem>
+                            <SelectItem value="Grupo 3">Grupo 3</SelectItem>
+                          </>
+                        ) : (
+                          <>
+                            <SelectItem value="Grupo A">Grupo A</SelectItem>
+                            <SelectItem value="Grupo B">Grupo B</SelectItem>
+                          </>
+                        )}
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <Input
+                      value={(sistemaData as any)[field] || ""}
+                      readOnly
+                      className="bg-gray-50"
+                    />
+                  )}
+                </td>
+                <td className="border border-gray-300 p-2"></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
