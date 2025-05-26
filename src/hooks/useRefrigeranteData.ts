@@ -51,6 +51,18 @@ const useRefrigeranteData = ({ onChange, onGasFluoradoChange }: UseRefrigeranteD
     documentoNecesario: "",
   });
 
+  // Función centralizada para actualizar gasFluorado
+  const updateGasFluorado = (value: string, source: string = "manual") => {
+    console.log(`Updating gasFluorado from ${source}:`, value);
+    
+    setSistemaData(prev => ({ ...prev, gasFluorado: value }));
+    notifyChange("gasFluorado", value);
+    
+    if (onGasFluoradoChange) {
+      onGasFluoradoChange("gasFluorado", value);
+    }
+  };
+
   // Update refrigerant properties when refrigerant changes
   const updateRefrigerantProperties = (refrigeranteName: string) => {
     if (!refrigeranteName) return;
@@ -71,19 +83,17 @@ const useRefrigeranteData = ({ onChange, onGasFluoradoChange }: UseRefrigeranteD
       atelOdl: refrigerante.atelOdl || "",
       limiteInflamabilidad: refrigerante.limiteInflamabilidad || "",
       temperaturaAutoignicion: refrigerante.temperaturaAutoignicion || "",
-      gasFluorado: refrigerante.gasFluorado || "",
     };
 
-    // Update each field individually and notify parent
+    // Update all fields except gasFluorado first
     Object.entries(updates).forEach(([field, value]) => {
       setSistemaData(prev => ({ ...prev, [field]: value }));
       notifyChange(field, value);
     });
 
-    // Special handling for gasFluorado
-    if (onGasFluoradoChange) {
-      onGasFluoradoChange("gasFluorado", updates.gasFluorado);
-      console.log("Updated gasFluorado from refrigerant to:", updates.gasFluorado);
+    // Then update gasFluorado using the centralized function
+    if (refrigerante.gasFluorado) {
+      updateGasFluorado(refrigerante.gasFluorado, "refrigerant");
     }
   };
 
@@ -92,15 +102,15 @@ const useRefrigeranteData = ({ onChange, onGasFluoradoChange }: UseRefrigeranteD
     // Special case for refrigerante selection
     if (field === "refrigerante") {
       updateRefrigerantProperties(value);
-    } else {
+    } 
+    // Special case for gasFluorado - use centralized function
+    else if (field === "gasFluorado") {
+      updateGasFluorado(value, "manual");
+    } 
+    // All other fields
+    else {
       setSistemaData(prev => ({ ...prev, [field]: value }));
       notifyChange(field, value);
-      
-      // Special case for gasFluorado - this is the main manual control
-      if (field === "gasFluorado" && onGasFluoradoChange) {
-        onGasFluoradoChange(field, value);
-        console.log("Manual gasFluorado change:", field, value);
-      }
     }
   };
 
@@ -123,7 +133,8 @@ const useRefrigeranteData = ({ onChange, onGasFluoradoChange }: UseRefrigeranteD
     sistemaData,
     handleSelectChange,
     handleInputChange,
-    updateRefrigerantProperties
+    updateRefrigerantProperties,
+    updateGasFluorado
   };
 };
 

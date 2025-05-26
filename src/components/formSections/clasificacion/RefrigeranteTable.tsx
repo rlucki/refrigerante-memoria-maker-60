@@ -109,6 +109,20 @@ const RefrigeranteTable = ({ sistemaData, onSelectChange, onInputChange }: Refri
                 <td className="border border-gray-300 p-2"></td>
               </tr>
             ))}
+
+            {/* Fila para Gas Fluorado - SOLO LECTURA, controlado desde ClasificacionSistemaTable */}
+            <tr>
+              <td className="border border-gray-300 p-2">- Gas fluorado:</td>
+              <td className="border border-gray-300 p-2">
+                <Input
+                  value={sistemaData.gasFluorado || ""}
+                  readOnly
+                  className="bg-gray-50"
+                  placeholder="Controlado desde clasificación del sistema"
+                />
+              </td>
+              <td className="border border-gray-300 p-2"></td>
+            </tr>
           </tbody>
         </table>
       </div>
