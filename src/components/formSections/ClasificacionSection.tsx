@@ -39,10 +39,10 @@ const ClasificacionSection = ({ onChange, onGasFluoradoChange }: ClasificacionSe
           />
 
           {/* Refrigerante - sin la pregunta duplicada de gas fluorado */}
-          <RefrigeranteTable 
-            sistemaData={sistemaData}
-            onSelectChange={handleSelectChange}
-            onInputChange={handleInputChange}
+          <RefrigeranteTable
+          sistemaData={sistemaData}
+          onSelectChange={handleSelectChange}
+          onInputChange={handleInputChange}   // <- quítalo
           />
 
           {/* Clasificación de la instalación */}
