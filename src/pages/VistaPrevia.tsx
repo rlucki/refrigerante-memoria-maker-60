@@ -61,7 +61,8 @@ const VistaPrevia: React.FC = () => {
 
     // — Refrigerante inicial —
     refrigerante: "R-434A",
-    composicionRefrigerante: "(63,2% R-125 / 18% R-143a / 16% R-134a / 2,8% R-600a)",
+    composicionRefrigerante:
+      "(63,2% R-125 / 18% R-143a / 16% R-134a / 2,8% R-600a)",
     inflamabilidad: "Grupo 1",
     toxicidad: "Grupo A",
     grupoSeguridad: "A1",
@@ -126,8 +127,8 @@ const VistaPrevia: React.FC = () => {
           atelOdl: info.atelOdl,
           limiteInflamabilidad: info.limiteInflamabilidad,
           temperaturaAutoignicion: info.temperaturaAutoignicion,
-          gasFluorado: info.gasFluorado,            // ← auto‐marca
-          clasificacionSistema: info.gasFluorado,   // ← también
+          gasFluorado: info.gasFluorado,
+          clasificacionSistema: info.gasFluorado,
         }));
       } else {
         setMemoriaData((prev: any) => ({ ...prev, refrigerante: value }));
