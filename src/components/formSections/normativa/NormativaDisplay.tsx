@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -42,6 +43,9 @@ const NormativaDisplay: React.FC<NormativaDisplayProps> = ({
     setAplicaLegionela,
     setPeriodoInstalacionSeleccionado
   } = useNormativaLogic(aplicaGasesFluorados, codigoPostal, onNormativaChange);
+
+  // Force synchronization of gas fluorado value
+  const gasesFlooradosAplica = aplicaGasesFluorados === "SI";
 
   // Render a normativa section with its regulations
   const renderNormativaSection = (title: string, regulations: any[]) => {
@@ -173,19 +177,18 @@ const NormativaDisplay: React.FC<NormativaDisplayProps> = ({
                 ))}
               </div>
               
-              {/* Gases Fluorados Section */}
+              {/* Gases Fluorados Section - FIXED */}
               <div className="space-y-2">
                 <Label className="font-semibold">NORMATIVA GASES FLUORADOS</Label>
                 <Input 
-                  value={aplicaGasesFluorados === "SI" ? "SI (Automático según refrigerante)" : 
-                         aplicaGasesFluorados === "NO" ? "NO (Automático según refrigerante)" : ""}
+                  value={gasesFlooradosAplica ? "SI (Automático según refrigerante)" : "NO (Automático según refrigerante)"}
                   readOnly
                   className="bg-gray-50"
                 />
-                {aplicaGasesFluorados === "NO" && (
+                {!gasesFlooradosAplica && (
                   <p className="text-sm text-gray-500 mt-2">No aplica - Refrigerante no es gas fluorado</p>
                 )}
-                {aplicaGasesFluorados === "SI" && (
+                {gasesFlooradosAplica && (
                   <>
                     <p className="text-sm text-green-600 mt-2">✓ Aplica - Refrigerante es gas fluorado</p>
                     {getAplicableRegulations().gasesFluorados.regulations.map((reg, index) => (
