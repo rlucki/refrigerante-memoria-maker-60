@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -64,6 +65,13 @@ const DatosTitularSection = ({
     if (onGasFluoradoChange) {
       onGasFluoradoChange(field, value);
     }
+  };
+
+  // Adapter function to convert from field/value format to event format for postal code tracking
+  const handleInstalacionChange = (field: string, value: any) => {
+    // Convert to the format expected by handlePostalCodeChange
+    const syntheticEvent = { id: field, value: value };
+    handlePostalCodeChange(syntheticEvent);
   };
   
   return (
@@ -224,7 +232,7 @@ const DatosTitularSection = ({
         
         <TabsContent value="instalacion" className="space-y-6">
           <DatosInstalacionSection 
-            onChange={handlePostalCodeChange}
+            onChange={handleInstalacionChange}
             onCalculationsChange={onCalculationsChange}
             onExcelUpload={onExcelUpload}
             gasFluorado={gasFluorado}
