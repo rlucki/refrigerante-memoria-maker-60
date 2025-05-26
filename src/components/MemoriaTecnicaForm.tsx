@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import DatosTitularSection from "./formSections/DatosTitularSection";
 
@@ -14,51 +13,63 @@ interface MemoriaTecnicaFormProps {
   onExcelUpload?: (data: any) => void;
 }
 
-const MemoriaTecnicaForm = ({ 
-  onSubmit, 
-  onChange, 
+/**
+ * Formulario principal. A partir de ahora **solo existe** un campo real
+ * para el dato de gases fluorados → `gasFluorado`.
+ * Cualquier otra casilla de apoyo debe leer ese valor o ser eliminada.
+ */
+const MemoriaTecnicaForm = ({
+  onSubmit,
+  onChange,
   onCalculationsChange,
-  onExcelUpload
+  onExcelUpload,
 }: MemoriaTecnicaFormProps) => {
-  
+  /* -------------------------------------------------------------------- */
+  /* Handlers                                                             */
+  /* -------------------------------------------------------------------- */
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit();
   };
 
-  // Adapter function for input changes
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement> | { id: string, value: string }) => {
-    if (onChange) {
-      if ('target' in e) {
-        onChange(e.target.id, e.target.value);
-      } else {
-        onChange(e.id, e.value);
-      }
-    }
-  };
-  
-  // Adapter function for NormativaSection
-  const handleNormativaChange = (field: string, value: any) => {
-    if (onChange) {
-      onChange(field, value);
+  /** Adapter para inputs estándar */
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement> | { id: string; value: string }
+  ) => {
+    if (!onChange) return;
+
+    if ("target" in e) {
+      onChange(e.target.id, e.target.value);
+    } else {
+      onChange(e.id, e.value);
     }
   };
 
-  // Special handler for gas fluorado changes
+  /** Cambios procedentes de secciones de normativa, Excel, etc. */
+  const handleNormativaChange = (field: string, value: any) => {
+    onChange?.(field, value);
+  };
+
+  /**
+   * Cambios del selector de gas fluorado.
+   * Sólo actualizamos **gasFluorado**.  Cualquier casilla espejo debe leer
+   * este valor en modo read-only; NO mantenemos más campos duplicados.
+   */
   const handleGasFluoradoChange = (field: string, value: string) => {
-    if (onChange) {
-      // When gasFluorado is changed, update both gasFluorado and clasificacionSistema
-      if (field === "gasFluorado" || field === "manualGasFluorado") {
-        onChange("gasFluorado", value);
-        onChange("clasificacionSistema", value);
-        console.log("MemoriaTecnicaForm: Gas fluorado changed to", value);
-      }
+    if (!onChange) return;
+
+    if (field === "gasFluorado") {
+      onChange("gasFluorado", value);
+      console.log("MemoriaTecnicaForm → gasFluorado cambiado a", value);
     }
   };
-  
+
+  /* -------------------------------------------------------------------- */
+  /* Render                                                               */
+  /* -------------------------------------------------------------------- */
   return (
     <form onSubmit={handleSubmit}>
-      <DatosTitularSection 
+      <DatosTitularSection
         onChange={handleInputChange}
         onNormativaChange={handleNormativaChange}
         onCalculationsChange={onCalculationsChange}
