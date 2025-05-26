@@ -33,9 +33,6 @@ const DatosTecnicosSection = ({ onChange, onGasFluoradoChange }: DatosTecnicosSe
       <div className="p-6">
         <h3 className="text-lg font-medium mb-4">7.- DATOS TÉCNICOS</h3>
 
-        {/* Cámaras, compresores... siguen igual, usando handleInputChange */}
-        {/* ... */}
-
         <Separator className="my-6" />
 
         <div className="mb-6">
@@ -61,7 +58,7 @@ const DatosTecnicosSection = ({ onChange, onGasFluoradoChange }: DatosTecnicosSe
               </Select>
             </div>
             
-            {/* Campos derivados */}
+            {/* Campos derivados (SIN gasFluorado) */}
             {[
               ["composicionRefrigerante", "Composición"],
               ["inflamabilidad", "Inflamabilidad"],
@@ -73,8 +70,7 @@ const DatosTecnicosSection = ({ onChange, onGasFluoradoChange }: DatosTecnicosSe
               ["limitePractico", "Límite práctico"],
               ["atelOdl", "ATEL/ODL"],
               ["limiteInflamabilidad", "Límite inflamabilidad"],
-              ["temperaturaAutoignicion", "Temperatura autoignición"],
-              ["gasFluorado", "Gas fluorado"]
+              ["temperaturaAutoignicion", "Temperatura autoignición"]
             ].map(([field, label]) => (
               <div className="space-y-2" key={field}>
                 <Label htmlFor={field}>{label}</Label>
