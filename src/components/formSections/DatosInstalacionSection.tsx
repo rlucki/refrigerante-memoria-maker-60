@@ -9,6 +9,7 @@ import DatosInstaladorSection from "./DatosInstaladorSection";
 import DatosTecnicosSection from "./DatosTecnicosSection";
 import NormativaSection from "./NormativaSection";
 import ClasificacionSection from "./ClasificacionSection";
+import useRefrigeranteData, { SistemaData } from "@/hooks/useRefrigeranteData";
 import ExcelCalculationsForm from "../ExcelCalculationsForm";
 
 interface DatosInstalacionSectionProps {
@@ -20,7 +21,7 @@ interface DatosInstalacionSectionProps {
   onNormativaChange?: (field: string, value: any) => void;
 }
 
-const DatosInstalacionSection = ({ 
+const DatosInstalacionSection = ({
   onChange, 
   onCalculationsChange, 
   onExcelUpload, 
@@ -89,14 +90,22 @@ const DatosInstalacionSection = ({
     }
   };
 
+  const {
+    sistemaData,
+    handleSelectChange,
+    handleInputChange: handleRefrigeranteInputChange
+  } = useRefrigeranteData({
+    onChange: handleTecnicosChange,
+    onGasFluoradoChange: handleGasFluoradoChange
+  });
+
   return (
     <div className="space-y-6">
       <Tabs defaultValue="instalacion" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="instalacion">2. Datos Instalación</TabsTrigger>
           <TabsTrigger value="instalador">3. Datos Instalador</TabsTrigger>
           <TabsTrigger value="tecnicos">4. Datos Técnicos</TabsTrigger>
-          <TabsTrigger value="clasificacion">5. Clasificación</TabsTrigger>
         </TabsList>
 
         <TabsContent value="instalacion" className="space-y-6">
@@ -189,22 +198,18 @@ const DatosInstalacionSection = ({
         </TabsContent>
 
         <TabsContent value="instalador" className="space-y-6">
-          <DatosInstaladorSection 
-            onChange={handleInstaladorChange} 
+          <DatosInstaladorSection onChange={handleInstaladorChange} />
+          <ClasificacionSection
+            sistemaData={sistemaData}
+            onSelectChange={handleSelectChange}
           />
         </TabsContent>
 
         <TabsContent value="tecnicos" className="space-y-6">
-          <DatosTecnicosSection 
-            onChange={handleTecnicosChange}
-            onGasFluoradoChange={handleGasFluoradoChange}
-          />
-        </TabsContent>
-
-        <TabsContent value="clasificacion" className="space-y-6">
-          <ClasificacionSection
-            onChange={handleTecnicosChange}
-            onGasFluoradoChange={handleGasFluoradoChange}
+          <DatosTecnicosSection
+            sistemaData={sistemaData}
+            onSelectChange={handleSelectChange}
+            onInputChange={handleRefrigeranteInputChange}
           />
         </TabsContent>
       </Tabs>

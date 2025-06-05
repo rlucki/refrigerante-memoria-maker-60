@@ -7,7 +7,6 @@ import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import DatosInstalacionSection from "./DatosInstalacionSection";
 import DatosInstaladorSection from "./DatosInstaladorSection";
-import ClasificacionSection from "./ClasificacionSection";
 import DatosTecnicosSection from "./DatosTecnicosSection";
 import ExcelUploader from "../ExcelUploader";
 import WordDocumentTemplate from "../WordDocumentTemplate";
@@ -108,12 +107,6 @@ const DatosTitularSection = ({
             codigoPostal={codigoPostal}
             onNormativaChange={handleNormativaChange}
           />
-          <div className="mt-6">
-            <ClasificacionSection 
-              onChange={onChange} 
-              onGasFluoradoChange={handleGasFluoradoChange}  
-            />
-          </div>
         </TabsContent>
         
         <TabsContent value="proyecto" className="space-y-6">

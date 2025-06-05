@@ -1,21 +1,16 @@
 
 import React from "react";
 import { Card } from "@/components/ui/card";
-import useRefrigeranteData from "@/hooks/useRefrigeranteData";
+import { SistemaData } from "@/hooks/useRefrigeranteData";
 import ClasificacionLocalTable from "./clasificacion/ClasificacionLocalTable";
-import RefrigeranteTable from "./clasificacion/RefrigeranteTable";
 import ClasificacionInstalacionTable from "./clasificacion/ClasificacionInstalacionTable";
 
 interface ClasificacionSectionProps {
-  onChange?: (e: React.ChangeEvent<HTMLInputElement> | { id: string, value: string }) => void;
-  onGasFluoradoChange?: (field: string, value: string) => void;
+  sistemaData: SistemaData;
+  onSelectChange: (field: string, value: string) => void;
 }
 
-const ClasificacionSection = ({ onChange, onGasFluoradoChange }: ClasificacionSectionProps) => {
-  const { sistemaData, handleSelectChange, handleInputChange } = useRefrigeranteData({ 
-    onChange, 
-    onGasFluoradoChange 
-  });
+const ClasificacionSection = ({ sistemaData, onSelectChange }: ClasificacionSectionProps) => {
   
   return (
     <Card>
@@ -24,22 +19,16 @@ const ClasificacionSection = ({ onChange, onGasFluoradoChange }: ClasificacionSe
         
         <div className="space-y-6 classification-section">
           {/* Clasificación del local */}
-          <ClasificacionLocalTable 
+          <ClasificacionLocalTable
             categoriaLocal={sistemaData.categoriaLocal}
-            onSelectChange={handleSelectChange}
-          />
-
-          {/* Refrigerante */}
-          <RefrigeranteTable
-            sistemaData={sistemaData}
-            onSelectChange={handleSelectChange}
+            onSelectChange={onSelectChange}
           />
 
           {/* Clasificación de la instalación */}
-          <ClasificacionInstalacionTable 
+          <ClasificacionInstalacionTable
             nivelInstalacion={sistemaData.nivelInstalacion}
             documentoNecesario={sistemaData.documentoNecesario}
-            onSelectChange={handleSelectChange}
+            onSelectChange={onSelectChange}
           />
         </div>
       </div>

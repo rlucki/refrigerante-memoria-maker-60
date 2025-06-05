@@ -7,7 +7,7 @@ interface UseRefrigeranteDataProps {
   onGasFluoradoChange?: (field: string, value: string) => void;
 }
 
-interface SistemaData {
+export interface SistemaData {
   refrigerante: string;
   composicionRefrigerante: string;
   inflamabilidad: string;

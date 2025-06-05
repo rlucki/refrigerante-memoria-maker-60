@@ -13,21 +13,16 @@ import {
 } from "@/components/ui/select";
 
 // Import the hook and data
-import useRefrigeranteData from "@/hooks/useRefrigeranteData";
+import { SistemaData } from "@/hooks/useRefrigeranteData";
 import { refrigerantesData, refrigerantes } from "@/data/refrigerantsData";
 
 interface DatosTecnicosSectionProps {
-  onChange?: (e: React.ChangeEvent<HTMLInputElement> | { id: string; value: string }) => void;
-  onGasFluoradoChange?: (field: string, value: string) => void;
+  sistemaData: SistemaData;
+  onSelectChange: (field: string, value: string) => void;
+  onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const DatosTecnicosSection = ({ onChange, onGasFluoradoChange }: DatosTecnicosSectionProps) => {
-  // Use the refrigeranteData hook
-  const {
-    sistemaData,
-    handleSelectChange,
-    handleInputChange
-  } = useRefrigeranteData({ onChange, onGasFluoradoChange });
+const DatosTecnicosSection = ({ sistemaData, onSelectChange, onInputChange }: DatosTecnicosSectionProps) => {
 
   return (
     <Card>
@@ -42,7 +37,7 @@ const DatosTecnicosSection = ({ onChange, onGasFluoradoChange }: DatosTecnicosSe
               <Input 
                 id="camaras" 
                 placeholder="Número de cámaras"
-                onChange={handleInputChange}
+                onChange={onInputChange}
               />
             </div>
             
@@ -51,7 +46,7 @@ const DatosTecnicosSection = ({ onChange, onGasFluoradoChange }: DatosTecnicosSe
               <Input 
                 id="compresores" 
                 placeholder="Número de compresores"
-                onChange={handleInputChange}
+                onChange={onInputChange}
               />
             </div>
             
@@ -60,7 +55,7 @@ const DatosTecnicosSection = ({ onChange, onGasFluoradoChange }: DatosTecnicosSe
               <Input 
                 id="evaporadores" 
                 placeholder="Número de evaporadores"
-                onChange={handleInputChange}
+                onChange={onInputChange}
               />
             </div>
             
@@ -69,7 +64,7 @@ const DatosTecnicosSection = ({ onChange, onGasFluoradoChange }: DatosTecnicosSe
               <Input 
                 id="condensadores" 
                 placeholder="Número de condensadores"
-                onChange={handleInputChange}
+                onChange={onInputChange}
               />
             </div>
           </div>
@@ -85,7 +80,7 @@ const DatosTecnicosSection = ({ onChange, onGasFluoradoChange }: DatosTecnicosSe
               <Label htmlFor="refrigerante">Identificación del refrigerante</Label>
               <Select
                 value={sistemaData.refrigerante}
-                onValueChange={(val) => handleSelectChange("refrigerante", val)}
+                onValueChange={(val) => onSelectChange("refrigerante", val)}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Seleccionar refrigerante" />
