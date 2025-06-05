@@ -2,7 +2,6 @@
 import React from "react";
 import { Card } from "@/components/ui/card";
 import useRefrigeranteData from "@/hooks/useRefrigeranteData";
-import ClasificacionSistemaTable from "./clasificacion/ClasificacionSistemaTable";
 import ClasificacionLocalTable from "./clasificacion/ClasificacionLocalTable";
 import RefrigeranteTable from "./clasificacion/RefrigeranteTable";
 import ClasificacionInstalacionTable from "./clasificacion/ClasificacionInstalacionTable";
@@ -21,27 +20,19 @@ const ClasificacionSection = ({ onChange, onGasFluoradoChange }: ClasificacionSe
   return (
     <Card>
       <div className="p-6">
-        <h3 className="text-lg font-medium mb-4">CLASIFICACIÓN DEL SISTEMA</h3>
+        <h3 className="text-lg font-medium mb-4">5.- CLASIFICACIÓN</h3>
         
         <div className="space-y-6 classification-section">
-          {/* Clasificación del sistema - incluye la pregunta principal de gas fluorado */}
-          <ClasificacionSistemaTable 
-            metodoEnfriamiento={sistemaData.metodoEnfriamiento}
-            seguridadSistema={sistemaData.seguridadSistema}
-            gasFluorado={sistemaData.gasFluorado}
-            onSelectChange={handleSelectChange}
-          />
-
           {/* Clasificación del local */}
           <ClasificacionLocalTable 
             categoriaLocal={sistemaData.categoriaLocal}
             onSelectChange={handleSelectChange}
           />
 
-          {/* Refrigerante - sin la pregunta duplicada de gas fluorado */}
+          {/* Refrigerante */}
           <RefrigeranteTable
-          sistemaData={sistemaData}
-          onSelectChange={handleSelectChange}
+            sistemaData={sistemaData}
+            onSelectChange={handleSelectChange}
           />
 
           {/* Clasificación de la instalación */}
