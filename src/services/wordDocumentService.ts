@@ -1,11 +1,25 @@
 
 import PizZip from "pizzip";
-import htmlToDocx from "html-to-docx";
 import { saveAs } from "file-saver";
+
+// Dynamic import for html-to-docx to handle potential compatibility issues
+let htmlToDocx: any;
+
+async function loadHtmlToDocx() {
+  if (!htmlToDocx) {
+    try {
+      const module = await import("html-to-docx");
+      htmlToDocx = module.default || module;
+    } catch (error) {
+      console.error("Failed to load html-to-docx:", error);
+      throw new Error("html-to-docx package is not available");
+    }
+  }
+  return htmlToDocx;
+}
 
 // The footer (logo and page numbers) should be defined in the Word template
 // uploaded by the user, so we no longer construct it programmatically here.
-
 
 /* ───── API principal ───── */
 export async function buildWord(opts: {
@@ -15,13 +29,16 @@ export async function buildWord(opts: {
 }) {
   const { templateArrayBuffer, htmlPreview, logoUrl } = opts;
 
+  // Load html-to-docx dynamically
+  const htmlToDocxConverter = await loadHtmlToDocx();
+
   // 1️⃣ Convert the preview HTML to a DOCX fragment
   const tmp = document.createElement("div");
   tmp.innerHTML = htmlPreview;
 
   try {
     // 2️⃣ Convert HTML to a DOCX file using html-to-docx
-    const bodyBuf = await htmlToDocx(tmp.innerHTML, {
+    const bodyBuf = await htmlToDocxConverter(tmp.innerHTML, {
       table: { row: { cantSplit: true } },
     });
 
