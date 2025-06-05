@@ -99,6 +99,17 @@
   max-width: 210mm;
   margin: 0 auto;
   padding-bottom: 2rem;
+  /* Base font size to mimic Word's default */
+  font-size: 12px;
+}
+
+/* Heading styles similar to Word */
+.memoria-preview-container h1,
+.memoria-preview-container h2,
+.memoria-preview-container h3,
+.memoria-preview-container h4 {
+  font-size: 16px;
+  font-weight: bold;
 }
 
 /* Estilo para vista continua sin saltos de página */
@@ -107,10 +118,11 @@
   border: 1px solid #f3f3f3;
   position: relative;
   background-color: white;
-  width: 100%;
+  width: 210mm;
+  min-height: 297mm;
   padding: 2rem;
   box-sizing: border-box;
-  margin-bottom: 2rem;
+  margin: 0 auto 2rem;
   overflow: visible;
 }
 
@@ -145,11 +157,12 @@
 .memory-preview-page {
   position: relative;
   background-color: white;
-  width: 100%;
+  width: 210mm;
+  min-height: 297mm;
   padding: 2rem;
   box-sizing: border-box;
   overflow: visible;
-  margin-bottom: 2rem;
+  margin: 0 auto 2rem;
 }
 
 /* Ajuste para tablas largas en la sección de clasificación */
