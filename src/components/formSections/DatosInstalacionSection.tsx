@@ -9,7 +9,6 @@ import DatosInstaladorSection from "./DatosInstaladorSection";
 import DatosTecnicosSection from "./DatosTecnicosSection";
 import NormativaSection from "./NormativaSection";
 import ExcelCalculationsForm from "../ExcelCalculationsForm";
-import ExcelUploader from "../ExcelUploader";
 
 interface DatosInstalacionSectionProps {
   onChange?: (field: string, value: any) => void;
@@ -178,8 +177,7 @@ const DatosInstalacionSection = ({
             </div>
           </Card>
 
-          <ExcelCalculationsForm onChange={onCalculationsChange} />
-          <ExcelUploader onDataLoaded={onExcelUpload || (() => {})} />
+          <ExcelCalculationsForm />
           
           <NormativaSection
             aplicaGasesFluorados={formData.gasFluorado}
