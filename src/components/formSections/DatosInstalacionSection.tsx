@@ -92,11 +92,10 @@ const DatosInstalacionSection = ({
   return (
     <div className="space-y-6">
       <Tabs defaultValue="instalacion" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="instalacion">2. Datos Instalación</TabsTrigger>
           <TabsTrigger value="instalador">3. Datos Instalador</TabsTrigger>
           <TabsTrigger value="tecnicos">4. Datos Técnicos</TabsTrigger>
-          <TabsTrigger value="clasificacion">5. Clasificación</TabsTrigger>
         </TabsList>
 
         <TabsContent value="instalacion" className="space-y-6">
@@ -189,20 +188,15 @@ const DatosInstalacionSection = ({
         </TabsContent>
 
         <TabsContent value="instalador" className="space-y-6">
-          <DatosInstaladorSection 
-            onChange={handleInstaladorChange} 
-          />
-        </TabsContent>
-
-        <TabsContent value="tecnicos" className="space-y-6">
-          <DatosTecnicosSection 
+          <DatosInstaladorSection onChange={handleInstaladorChange} />
+          <ClasificacionSection
             onChange={handleTecnicosChange}
             onGasFluoradoChange={handleGasFluoradoChange}
           />
         </TabsContent>
 
-        <TabsContent value="clasificacion" className="space-y-6">
-          <ClasificacionSection
+        <TabsContent value="tecnicos" className="space-y-6">
+          <DatosTecnicosSection
             onChange={handleTecnicosChange}
             onGasFluoradoChange={handleGasFluoradoChange}
           />
