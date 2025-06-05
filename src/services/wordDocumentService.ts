@@ -1,97 +1,11 @@
 
 import PizZip from "pizzip";
-import Docxtemplater from "docxtemplater";
+import htmlToDocx from "html-to-docx";
 import { saveAs } from "file-saver";
-import {
-  Document,
-  Packer,
-  Paragraph,
-  HeadingLevel,
-  TableOfContents,
-  Footer,
-  ImageRun,
-  TextRun,
-  PageNumber,
-} from "docx";
 
-/* ───── helper: pie con logo + nº página ───── */
-async function buildFooter(logoUrl?: string) {
-  const runs: any[] = [];
-  if (logoUrl) {
-    try {
-      const buf = await (await fetch(logoUrl)).arrayBuffer();
-      runs.push(
-        new ImageRun({
-          data: buf,
-          transformation: { width: 80, height: 40 },
-          type: "png", // Add required type property
-        }),
-        new TextRun("   ")
-      );
-    } catch (error) {
-      console.error("Error loading logo for footer:", error);
-    }
-  }
-  runs.push(
-    new TextRun("Página "),
-    PageNumber.CURRENT,
-    new TextRun(" de "),
-    PageNumber.TOTAL_PAGES
-  );
+// The footer (logo and page numbers) should be defined in the Word template
+// uploaded by the user, so we no longer construct it programmatically here.
 
-  return new Footer({
-    children: [new Paragraph({ children: runs })],
-  });
-}
-
-// Simple HTML to DOCX conversion function
-async function simpleHtmlToDocx(html: string) {
-  // Create a temporary element to parse the HTML
-  const tmp = document.createElement("div");
-  tmp.innerHTML = html;
-  
-  // Basic conversion of HTML elements to DOCX paragraphs
-  const paragraphs: Paragraph[] = [];
-  
-  // Process text nodes and basic formatting
-  Array.from(tmp.childNodes).forEach((node) => {
-    if (node.nodeType === Node.TEXT_NODE && node.textContent?.trim()) {
-      paragraphs.push(new Paragraph({ text: node.textContent.trim() }));
-    } else if (node.nodeType === Node.ELEMENT_NODE) {
-      const element = node as HTMLElement;
-      
-      // Handle headings
-      if (element.tagName.match(/^H[1-6]$/)) {
-        const level = parseInt(element.tagName[1]);
-        paragraphs.push(new Paragraph({ 
-          text: element.textContent || "",
-          heading: level <= 2 ? HeadingLevel.HEADING_1 : HeadingLevel.HEADING_2
-        }));
-      } 
-      // Handle paragraphs
-      else if (element.tagName === 'P' || element.tagName === 'DIV') {
-        paragraphs.push(new Paragraph({ text: element.textContent || "" }));
-      }
-      // Handle lists (simplified)
-      else if (element.tagName === 'UL' || element.tagName === 'OL') {
-        Array.from(element.children).forEach((li) => {
-          paragraphs.push(new Paragraph({ text: `• ${li.textContent || ""}` }));
-        });
-      }
-    }
-  });
-  
-  // Create a basic document with these paragraphs
-  const doc = new Document({
-    sections: [{
-      properties: {},
-      children: paragraphs
-    }]
-  });
-  
-  // Convert to ArrayBuffer
-  return await Packer.toBuffer(doc);
-}
 
 /* ───── API principal ───── */
 export async function buildWord(opts: {
@@ -101,98 +15,41 @@ export async function buildWord(opts: {
 }) {
   const { templateArrayBuffer, htmlPreview, logoUrl } = opts;
 
-  /* 1️⃣  extraer títulos marcados */
+  // 1️⃣ Convert the preview HTML to a DOCX fragment
   const tmp = document.createElement("div");
   tmp.innerHTML = htmlPreview;
-  const headingEls = Array.from(
-    tmp.querySelectorAll<HTMLElement>("[data-heading]")
-  );
-
-  const headingParas = headingEls.map(
-    (el) =>
-      new Paragraph({
-        text: el.dataset.heading!.replace(/&&/g, ""),
-        heading: HeadingLevel.HEADING_2,
-      })
-  );
 
   try {
-    /* 2️⃣  convertir todo el HTML a fragmento DOCX usando nuestra implementación simple */
-    const bodyBuf = await simpleHtmlToDocx(tmp.innerHTML);
-    
-    // Convert the ArrayBuffer to base64 string for browser environment
-    let base64String = btoa(
-      new Uint8Array(bodyBuf)
-        .reduce((data, byte) => data + String.fromCharCode(byte), '')
-    );
-    
-    const bodyAttach = {
-      _type: "doc_attach",
-      data: base64String,
-    };
-
-    /* 3️⃣  renderizar plantilla con Docxtemplater */
-    const zip = new PizZip(templateArrayBuffer);
-    const docTpl = new Docxtemplater(zip, {
-      paragraphLoop: true,
-      linebreaks: true,
+    // 2️⃣ Convert HTML to a DOCX file using html-to-docx
+    const bodyBuf = await htmlToDocx(tmp.innerHTML, {
+      table: { row: { cantSplit: true } },
     });
 
-    docTpl.setData({ memoriaCompleta: bodyAttach });
-    docTpl.render(); // sustituye {{memoriaCompleta}}
+    // Open the generated docx and extract its XML and media
+    const bodyZip = new PizZip(bodyBuf);
+    const bodyXml = bodyZip.file("word/document.xml")?.asText() || "";
 
-    const renderedBuf = docTpl.getZip().generate({ type: "arraybuffer" });
+    // Create zip from the uploaded template
+    const templateZip = new PizZip(templateArrayBuffer);
 
-    /* 4️⃣  construir documento final con TOC y pie */
-    const footer = await buildFooter(logoUrl);
+    // Replace placeholder with the generated XML
+    const placeholder = "{{memoriaCompleta}}";
+    const docXml = templateZip.file("word/document.xml")?.asText() || "";
+    const newDocXml = docXml.replace(placeholder, bodyXml);
+    templateZip.file("word/document.xml", newDocXml);
 
-    // Save the sections configuration separately to avoid type issues
-    const docSections = [
-      {
-        properties: {},
-        footers: footer ? { default: footer } : undefined,
-        children: [], // el contenido viene de la plantilla renderizada
-      },
-      {
-        properties: {},
-        children: [
-          new Paragraph({
-            text: "ÍNDICE",
-            heading: HeadingLevel.HEADING_1,
-            alignment: "center",
-          }),
-          new TableOfContents("Índice", {
-            hyperlink: true,
-            headingStyleRange: "1-9",
-          }),
-          ...headingParas,
-        ],
-      },
-    ];
+    // Copy media files from generated docx into template
+    Object.keys(bodyZip.files)
+      .filter((name) => name.startsWith("word/media"))
+      .forEach((name) => {
+        const content = bodyZip.file(name)?.asArrayBuffer();
+        if (content) templateZip.file(name, content);
+      });
 
-    // Create the document with the sections
-    const doc = new Document({
-      sections: docSections,
-    });
+    // Generate final document
+    const renderedBuf = templateZip.generate({ type: "arraybuffer" });
 
-    /* 5️⃣  fusionar la parte renderizada y la nueva sección */
-    const finalZip = PizZip(renderedBuf);
-    
-    // Create a document with the same sections configuration
-    const finalDoc = new Document({
-      sections: docSections,
-    });
-    
-    // Convert the document to a string and use it to replace the content in the ZIP
-    const finalDocXml = await Packer.toString(finalDoc);
-    
-    finalZip.file(
-      "word/document.xml",
-      finalDocXml
-    );
-
-    /* 6️⃣  descargar */
-    const blob = new Blob([finalZip.generate({ type: "arraybuffer" })], {
+    const blob = new Blob([renderedBuf], {
       type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     });
     saveAs(blob, "MemoriaTecnica.docx");
