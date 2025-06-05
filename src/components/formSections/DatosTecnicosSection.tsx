@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -31,10 +32,48 @@ const DatosTecnicosSection = ({ onChange, onGasFluoradoChange }: DatosTecnicosSe
   return (
     <Card>
       <div className="p-6">
-        <h3 className="text-lg font-medium mb-4">7.- DATOS TÉCNICOS</h3>
+        <h3 className="text-lg font-medium mb-4">4.- DATOS TÉCNICOS</h3>
 
-        {/* Cámaras, compresores... siguen igual, usando handleInputChange */}
-        {/* ... */}
+        <div className="mb-6">
+          <h4 className="text-md font-medium mb-3">EQUIPOS DE REFRIGERACIÓN</h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <Label htmlFor="camaras">Número de cámaras</Label>
+              <Input 
+                id="camaras" 
+                placeholder="Número de cámaras"
+                onChange={handleInputChange}
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="compresores">Número de compresores</Label>
+              <Input 
+                id="compresores" 
+                placeholder="Número de compresores"
+                onChange={handleInputChange}
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="evaporadores">Número de evaporadores</Label>
+              <Input 
+                id="evaporadores" 
+                placeholder="Número de evaporadores"
+                onChange={handleInputChange}
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="condensadores">Número de condensadores</Label>
+              <Input 
+                id="condensadores" 
+                placeholder="Número de condensadores"
+                onChange={handleInputChange}
+              />
+            </div>
+          </div>
+        </div>
 
         <Separator className="my-6" />
 

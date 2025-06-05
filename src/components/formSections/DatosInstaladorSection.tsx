@@ -1,3 +1,4 @@
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
@@ -11,7 +12,7 @@ const DatosInstaladorSection = ({ onChange }: DatosInstaladorSectionProps) => {
   return (
     <Card>
       <div className="p-6">
-        <h3 className="text-lg font-medium mb-4">2.- DATOS INSTALADOR Y MANTENEDOR</h3>
+        <h3 className="text-lg font-medium mb-4">3.- DATOS INSTALADOR Y MANTENEDOR</h3>
         
         <div className="mb-6">
           <h4 className="text-md font-medium mb-3">Empresa frigorista que realiza la instalación</h4>
@@ -62,6 +63,7 @@ const DatosInstaladorSection = ({ onChange }: DatosInstaladorSectionProps) => {
                 id="poblacion_instalacion" 
                 placeholder="Población" 
                 defaultValue="EL ROSARIO"
+                onChange={onChange}
               />
             </div>
             
@@ -71,6 +73,7 @@ const DatosInstaladorSection = ({ onChange }: DatosInstaladorSectionProps) => {
                 id="cp_instalacion" 
                 placeholder="Código postal" 
                 defaultValue="38109"
+                onChange={onChange}
               />
             </div>
             
@@ -80,6 +83,7 @@ const DatosInstaladorSection = ({ onChange }: DatosInstaladorSectionProps) => {
                 id="telefono_instalacion" 
                 placeholder="Teléfono" 
                 defaultValue="922618202"
+                onChange={onChange}
               />
             </div>
             
@@ -90,6 +94,7 @@ const DatosInstaladorSection = ({ onChange }: DatosInstaladorSectionProps) => {
                 placeholder="Email" 
                 type="email"
                 defaultValue="gestecnicaintegral10@gestecnicaintegral10.es"
+                onChange={onChange}
               />
             </div>
           </div>
@@ -106,6 +111,7 @@ const DatosInstaladorSection = ({ onChange }: DatosInstaladorSectionProps) => {
                 id="empresa_mantenimiento" 
                 placeholder="Empresa frigorista encargada mantenimiento" 
                 defaultValue="GESTÉCNICA INTEGRAL 10. S.L."
+                onChange={onChange}
               />
             </div>
             
@@ -115,6 +121,7 @@ const DatosInstaladorSection = ({ onChange }: DatosInstaladorSectionProps) => {
                 id="cif_mantenimiento" 
                 placeholder="CIF" 
                 defaultValue="B76501931"
+                onChange={onChange}
               />
             </div>
             
@@ -124,6 +131,7 @@ const DatosInstaladorSection = ({ onChange }: DatosInstaladorSectionProps) => {
                 id="n_registro_mantenimiento" 
                 placeholder="Nº registro" 
                 defaultValue="38020755"
+                onChange={onChange}
               />
             </div>
           </div>
@@ -132,7 +140,7 @@ const DatosInstaladorSection = ({ onChange }: DatosInstaladorSectionProps) => {
         <Separator className="my-6" />
         
         <div>
-          <h4 className="text-md font-medium mb-3">3.- FRIGORISTA HABILITADO EMPRESA INSTALADORA</h4>
+          <h4 className="text-md font-medium mb-3">FRIGORISTA HABILITADO EMPRESA INSTALADORA</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <Label htmlFor="frigorista_nombre">D/Dª</Label>
@@ -140,6 +148,7 @@ const DatosInstaladorSection = ({ onChange }: DatosInstaladorSectionProps) => {
                 id="frigorista_nombre" 
                 placeholder="Nombre del frigorista" 
                 defaultValue="PEDRO ROBERTO MENESES ALONSO"
+                onChange={onChange}
               />
             </div>
             
@@ -149,6 +158,7 @@ const DatosInstaladorSection = ({ onChange }: DatosInstaladorSectionProps) => {
                 id="frigorista_dni" 
                 placeholder="DNI" 
                 defaultValue="45705298C"
+                onChange={onChange}
               />
             </div>
           </div>
